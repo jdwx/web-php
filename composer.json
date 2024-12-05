@@ -1,5 +1,6 @@
 {
 	"name": "jdwx/web",
+	"license": "MIT",
 	"autoload": {
 		"psr-4": {
 			"JDWX\\Web\\": "src/"

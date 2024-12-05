@@ -1,0 +1,16 @@
+{
+	"name": "jdwx/web",
+	"autoload": {
+		"psr-4": {
+			"JDWX\\Web\\": "src/"
+		}
+	},
+	"require-dev": {
+		"jetbrains/phpstorm-attributes": "^1.0",
+		"phpunit/phpunit": "^9"
+	},
+	"require": {
+		"jdwx/param": "^1.0",
+		"psr/log": "^3.0"
+	}
+}

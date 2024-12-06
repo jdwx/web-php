@@ -44,8 +44,10 @@ class StaticShim {
 
     protected bool $bAuthoritative = false;
 
+    protected HttpError $error;
 
-    public function __construct( ?string $i_nstDocumentRoot = null ) {
+
+    public function __construct( ?string $i_nstDocumentRoot = null, ?HttpError $i_error = null ) {
         $this->stDocumentRoot = $i_nstDocumentRoot ?? $_SERVER[ 'DOCUMENT_ROOT' ];
         if ( ! str_ends_with( $this->stDocumentRoot, '/' ) ) {
             $this->stDocumentRoot .= '/';
@@ -53,6 +55,7 @@ class StaticShim {
         $this->rStaticMaps = [
             '/' => $this->stDocumentRoot,
         ];
+        $this->error = $i_error ?? new HttpError();
     }
 
 
@@ -103,7 +106,7 @@ class StaticShim {
             return true;
         }
         if ( $this->bAuthoritative ) {
-            $this->handle404();
+            $this->error->show( 404 );
             return true;
         }
         return false;
@@ -121,39 +124,6 @@ class StaticShim {
             $_SERVER[ 'PATH_INFO' ] = '';
         }
         return false;
-    }
-
-
-    protected function draw403() : void {
-        echo "<html lang=\"en\"><head><title>403 Forbidden</title></head><body><h1>403 Forbidden</h1></body></html>";
-    }
-
-
-    protected function draw404() : void {
-        echo "<html lang=\"en\"><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1></body></html>";
-    }
-
-
-    protected function draw500() : void {
-        echo "<html lang=\"en\"><head><title>500 Internal Server Error</title></head><body><h1>500 Internal Server Error</h1></body></html>";
-    }
-
-
-    protected function handle403() : void {
-        http_response_code( 403 );
-        $this->draw403();
-    }
-
-
-    protected function handle404() : void {
-        http_response_code( 404 );
-        $this->draw404();
-    }
-
-
-    protected function handle500() : void {
-        http_response_code( 500 );
-        $this->draw500();
     }
 
 
@@ -187,7 +157,7 @@ class StaticShim {
 
         if ( is_dir( $pathName ) ) {
             if ( $this->bAuthoritative ) {
-                $this->handle403();
+                $this->error->show( 403 );
                 return true;
             }
             return false;

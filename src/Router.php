@@ -28,7 +28,7 @@ abstract class Router implements IRouter {
     }
 
 
-    /** @deprecated Use $this->error->error() */
+    /** @deprecated Use $this->error->show() */
     protected function error( int     $i_uHTTPStatus, ?string $i_nstErrorName = null,
                               ?string $i_nstErrorText = null ) : void {
         $this->error->show( $i_uHTTPStatus, $i_nstErrorName, $i_nstErrorText );

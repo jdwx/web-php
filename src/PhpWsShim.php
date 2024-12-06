@@ -21,9 +21,12 @@ class PhpWsShim extends StaticShim {
     /** @var array<string, callable> */
     protected array $rExactHooks = [];
 
+    protected HttpError $error;
 
-    public function __construct( private readonly string $stRouterPath, ?string $i_nstDocumentRoot = null ) {
-        parent::__construct( $i_nstDocumentRoot );
+
+    public function __construct( private readonly string $stRouterPath, ?string $i_nstDocumentRoot = null,
+                                 ?HttpError              $i_error = null ) {
+        parent::__construct( $i_nstDocumentRoot, $i_error );
     }
 
 

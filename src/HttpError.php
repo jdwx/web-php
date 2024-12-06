@@ -37,6 +37,9 @@ class HttpError {
     ];
 
 
+    public function __construct( protected ?string $nstErrorPath = null ) {}
+
+
     public function errorName( int $i_uHTTPStatus, ?string $i_nstErrorName = null ) : string {
         if ( is_string( $i_nstErrorName ) ) {
             return $i_nstErrorName;
@@ -61,7 +64,7 @@ class HttpError {
 
         # If there is an error page for this error, use it.
         $path = $this->errorPath( $i_uHTTPStatus );
-        if ( is_string( $path ) && file_exists( $path ) ) {
+        if ( is_string( $path ) ) {
             require $path;
             return;
         }
@@ -78,10 +81,14 @@ class HttpError {
     }
 
 
-    /** @noinspection PhpUnusedParameterInspection */
-
-
     protected function errorPath( int $i_uHTTPStatus ) : ?string {
+        if ( ! is_string( $this->nstErrorPath ) ) {
+            return null;
+        }
+        $stPath = str_replace( '%d', (string) $i_uHTTPStatus, $this->nstErrorPath );
+        if ( file_exists( $stPath ) ) {
+            return $stPath;
+        }
         return null;
     }
 

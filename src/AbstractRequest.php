@@ -25,8 +25,8 @@ abstract class AbstractRequest implements IRequest {
     protected FilesHandler $files;
 
 
-    public function COOKIE( string $i_stName ) : ?IParameter {
-        return $this->setCookie->get( $i_stName );
+    public function COOKIE( string $i_stName, mixed $i_xDefault = null ) : ?IParameter {
+        return $this->setCookie->get( $i_stName, $i_xDefault );
     }
 
 
@@ -35,13 +35,13 @@ abstract class AbstractRequest implements IRequest {
     }
 
 
-    public function GET( string $i_stName ) : ?IParameter {
-        return $this->setGet->get( $i_stName );
+    public function GET( string $i_stName, mixed $i_xDefault = null ) : ?IParameter {
+        return $this->setGet->get( $i_stName, $i_xDefault );
     }
 
 
-    public function POST( string $i_stName ) : ?IParameter {
-        return $this->setPost->get( $i_stName );
+    public function POST( string $i_stName, mixed $i_xDefault = null ) : ?IParameter {
+        return $this->setPost->get( $i_stName, $i_xDefault );
     }
 
 

@@ -75,8 +75,8 @@ abstract class AbstractRequest implements IRequest {
     }
 
 
-    public function getEx( string $i_stName ) : IParameter {
-        $np = $this->GET( $i_stName );
+    public function getEx( string $i_stName, mixed $i_xDefault = null ) : IParameter {
+        $np = $this->GET( $i_stName, $i_xDefault );
         if ( $np instanceof IParameter ) {
             return $np;
         }
@@ -90,7 +90,7 @@ abstract class AbstractRequest implements IRequest {
     }
 
 
-    public function postEx( string $i_stName ) : IParameter {
+    public function postEx( string $i_stName, mixed $i_xDefault = null ) : IParameter {
         $np = $this->POST( $i_stName );
         if ( $np instanceof IParameter ) {
             return $np;

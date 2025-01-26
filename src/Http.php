@@ -16,6 +16,11 @@ class Http {
     private static ?HttpBackendInterface $backend = null;
 
 
+    public static function clear() : void {
+        self::$backend = null;
+    }
+
+
     public static function init( HttpBackendInterface $i_backend ) : void {
         self::$backend = $i_backend;
     }
@@ -31,7 +36,7 @@ class Http {
     }
 
 
-    private static function backend() : HttpBackendInterface {
+    protected static function backend() : HttpBackendInterface {
         if ( ! self::$backend ) {
             self::init( new Backends\PHPHttpBackend() );
         }

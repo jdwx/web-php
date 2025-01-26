@@ -124,6 +124,7 @@ class StaticShim {
 
     public function handleStatic() : bool {
 
+        $this->bAuthoritative = false;
         $stURI = $this->request->path();
 
         if ( $this->rExcludePaths ) {

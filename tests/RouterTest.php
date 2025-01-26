@@ -8,12 +8,10 @@ use JDWX\Log\BufferLogger;
 use JDWX\Web\Framework\Exceptions\BadRequestException;
 use JDWX\Web\Framework\Exceptions\InternalServerException;
 use JDWX\Web\Request;
-use Shims\MyHttpError;
 use Shims\MyRouter;
 use Shims\MyTestCase;
 
 
-require_once __DIR__ . '/Shims/MyHttpError.php';
 require_once __DIR__ . '/Shims/MyRouter.php';
 require_once __DIR__ . '/Shims/MyTestCase.php';
 
@@ -71,8 +69,7 @@ final class RouterTest extends MyTestCase {
     public function testRunForNotFound() : void {
         $req = Request::synthetic( i_nstMethod: 'GET', i_nstUri: '/foo/bar' );
         $logger = new BufferLogger();
-        $error = new MyHttpError();
-        $router = new MyRouter( $logger, $error, i_req: $req );
+        $router = new MyRouter( $logger, i_req: $req );
         $router->bReturn = false;
         ob_start();
         $router->run();

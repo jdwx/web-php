@@ -20,6 +20,9 @@ use Psr\Log\LoggerInterface;
 abstract class AbstractRouter implements IRouter {
 
 
+    use HttpTrait;
+
+
     protected HttpError $error;
 
     protected LoggerInterface $logger;

@@ -4,11 +4,14 @@
 declare( strict_types = 1 );
 
 
-use PHPUnit\Framework\TestCase;
 use Shims\MyHttpError;
+use Shims\MyTestCase;
 
 
-final class HttpErrorTest extends TestCase {
+require_once __DIR__ . '/Shims/MyTestCase.php';
+
+
+final class HttpErrorTest extends MyTestCase {
 
 
     public function testCustomError() : void {

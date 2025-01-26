@@ -72,7 +72,7 @@ class SessionTest extends TestCase {
 
 
             public static function sessionCheck() : ISessionBackend {
-                return static::session();
+                return static::backend();
             }
 
 

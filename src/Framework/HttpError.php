@@ -14,6 +14,9 @@ use JDWX\Web\SimpleHtmlPage;
 class HttpError {
 
 
+    use HttpTrait;
+
+
     /** @var array<int, string> */
     protected const ERROR_NAMES = [
         400 => 'Bad Request',
@@ -100,24 +103,6 @@ class HttpError {
             return $stPath;
         }
         return null;
-    }
-
-
-    /**
-     * Can't be tested.
-     * @codeCoverageIgnore
-     */
-    protected function sendHeader( string $i_stHeader ) : void {
-        header( $i_stHeader );
-    }
-
-
-    /**
-     * Can't be tested.
-     * @codeCoverageIgnore
-     */
-    protected function setResponseCode( int $i_status ) : void {
-        http_response_code( $i_status );
     }
 
 

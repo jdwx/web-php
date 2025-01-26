@@ -5,14 +5,15 @@ declare( strict_types = 1 );
 
 
 use JDWX\Web\Request;
-use PHPUnit\Framework\TestCase;
 use Shims\MyStaticShim;
+use Shims\MyTestCase;
 
 
 require_once __DIR__ . '/Shims/MyStaticShim.php';
+require_once __DIR__ . '/Shims/MyTestCase.php';
 
 
-final class StaticShimTest extends TestCase {
+final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForBogus() : void {
@@ -50,7 +51,7 @@ final class StaticShimTest extends TestCase {
         $bResult = $shim->run();
         $st = ob_get_clean();
         self::assertTrue( $bResult );
-        self::assertSame( 403, $shim->errorStatus() );
+        self::assertSame( 403, $this->http->iStatus );
         self::assertStringContainsString( '403', $st );
         self::assertStringContainsString( 'Access Denied', $st );
     }
@@ -141,7 +142,7 @@ final class StaticShimTest extends TestCase {
         $bResult = $shim->run();
         $st = ob_get_clean();
         self::assertTrue( $bResult );
-        self::assertSame( 200, $shim->errorStatus() );
+        self::assertSame( 200, $this->http->iStatus );
         self::assertStringContainsString( 'text file', $st );
     }
 

@@ -24,6 +24,9 @@ use JDWX\Web\Server;
 class StaticShim {
 
 
+    use HttpTrait;
+
+
     /** @var array<string, string> */
     protected array $rContentTypes = [
         'html' => 'text/html',
@@ -234,15 +237,6 @@ class StaticShim {
         readfile( $pathName );
         return true;
 
-    }
-
-
-    /**
-     * Can't be tested.
-     * @codeCoverageIgnore
-     */
-    protected function sendHeader( string $i_stHeader ) : void {
-        header( $i_stHeader );
     }
 
 

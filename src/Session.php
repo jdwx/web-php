@@ -31,23 +31,23 @@ class Session {
 
 
     public static function abort() : void {
-        static::session()->abortEx();
+        static::backend()->abortEx();
     }
 
 
     public static function active() : bool {
-        return static::session()->status() == PHP_SESSION_ACTIVE;
+        return static::backend()->status() == PHP_SESSION_ACTIVE;
     }
 
 
     public static function cacheLimiter( ?string $i_nstCacheLimiter = null ) : string {
-        return static::session()->cacheLimiterEx( $i_nstCacheLimiter );
+        return static::backend()->cacheLimiterEx( $i_nstCacheLimiter );
     }
 
 
     public static function clear( string $i_stKey ) : void {
         static::checkActive();
-        static::session()->clear( $i_stKey );
+        static::backend()->clear( $i_stKey );
     }
 
 
@@ -55,20 +55,20 @@ class Session {
         if ( ! $i_req ) {
             $i_req = Request::getGlobal();
         }
-        return $i_req->cookieHas( static::session()->name() );
+        return $i_req->cookieHas( static::backend()->name() );
     }
 
 
     public static function destroy() : void {
         static::checkActive();
-        static::session()->destroyEx();
+        static::backend()->destroyEx();
     }
 
 
     public static function flush() : void {
         static::checkActive();
         $ntmExpire = static::getIntOrNull( 'tmExpire' );
-        static::session()->unsetEx();
+        static::backend()->unsetEx();
         if ( is_int( $ntmExpire ) ) {
             static::set( 'tmExpire', $ntmExpire );
         }
@@ -81,7 +81,7 @@ class Session {
             return null;
         }
 
-        return static::session()->get( $i_stKey );
+        return static::backend()->get( $i_stKey );
 
     }
 
@@ -136,13 +136,13 @@ class Session {
 
     public static function has( string $i_stKey ) : bool {
         static::checkActive();
-        return static::session()->has( $i_stKey );
+        return static::backend()->has( $i_stKey );
     }
 
 
     public static function id() : string {
         static::checkActive();
-        return static::session()->idEx();
+        return static::backend()->idEx();
     }
 
 
@@ -151,7 +151,7 @@ class Session {
         if ( ! static::has( $i_stKey ) ) {
             static::set( $i_stKey, $i_nValue );
         } else {
-            static::session()->set( $i_stKey, static::session()->get( $i_stKey ) + $i_nValue );
+            static::backend()->set( $i_stKey, static::backend()->get( $i_stKey ) + $i_nValue );
         }
     }
 
@@ -164,7 +164,7 @@ class Session {
     /** @return array<string, string|list<string>> */
     public static function list() : array {
         static::checkActive();
-        return static::session()->list();
+        return static::backend()->list();
     }
 
 
@@ -173,7 +173,7 @@ class Session {
         if ( ! static::nestedHas( $i_stKey, $i_stKey2 ) ) {
             return;
         }
-        static::session()->clear2( $i_stKey, $i_stKey2 );
+        static::backend()->clear2( $i_stKey, $i_stKey2 );
     }
 
 
@@ -181,7 +181,7 @@ class Session {
         if ( ! static::nestedHas( $i_stKey1, $i_stKey2 ) ) {
             return null;
         }
-        return static::session()->get2( $i_stKey1, $i_stKey2 );
+        return static::backend()->get2( $i_stKey1, $i_stKey2 );
     }
 
 
@@ -235,7 +235,7 @@ class Session {
 
     public static function nestedHas( string $i_stKey1, string $i_stKey2 ) : bool {
         static::checkActive();
-        return static::session()->has2( $i_stKey1, $i_stKey2 );
+        return static::backend()->has2( $i_stKey1, $i_stKey2 );
     }
 
 
@@ -244,9 +244,9 @@ class Session {
         if ( ! static::nestedHas( $i_stKey1, $i_stKey2 ) ) {
             static::nestedSet( $i_stKey1, $i_stKey2, $i_nValue );
         } else {
-            static::session()->set2(
+            static::backend()->set2(
                 $i_stKey1, $i_stKey2,
-                static::session()->get2( $i_stKey1, $i_stKey2 ) + $i_nValue
+                static::backend()->get2( $i_stKey1, $i_stKey2 ) + $i_nValue
             );
         }
     }
@@ -255,30 +255,30 @@ class Session {
     public static function nestedSet( string $i_stKey1, string $i_stKey2, mixed $i_xValue ) : void {
         static::checkActive();
         if ( ! static::has( $i_stKey1 ) ) {
-            static::session()->set( $i_stKey1, [] );
+            static::backend()->set( $i_stKey1, [] );
         }
-        static::session()->set2( $i_stKey1, $i_stKey2, $i_xValue );
+        static::backend()->set2( $i_stKey1, $i_stKey2, $i_xValue );
     }
 
 
     /** @return array<string, string|list<string>> */
     public static function peek() : array {
-        static::session()->start();
-        $a = static::session()->list();
-        static::session()->abortEx();
+        static::backend()->start();
+        $a = static::backend()->list();
+        static::backend()->abortEx();
         return $a;
     }
 
 
     public static function regenerate( bool $i_bDeleteOld = false ) : void {
         static::checkActive();
-        static::session()->regenerateIdEx( $i_bDeleteOld );
+        static::backend()->regenerateIdEx( $i_bDeleteOld );
     }
 
 
     public static function set( string $i_stKey, mixed $i_xValue ) : void {
         static::checkActive();
-        static::session()->set( $i_stKey, $i_xValue );
+        static::backend()->set( $i_stKey, $i_xValue );
     }
 
 
@@ -286,9 +286,9 @@ class Session {
                                   ?Request         $i_req = null ) : bool {
         if ( is_string( $i_stSessionName ) ) {
             $stSessionName = $i_stSessionName;
-            static::session()->name( $stSessionName );
+            static::backend()->name( $stSessionName );
         } else {
-            $stSessionName = static::session()->name();
+            $stSessionName = static::backend()->name();
         }
 
         if ( ! $i_req ) {
@@ -310,7 +310,7 @@ class Session {
             throw new LogicException( 'Session already started.' );
         }
 
-        static::session()->startEx();
+        static::backend()->startEx();
 
         $ntmExpire = static::getIntOrNull( 'tmExpire' );
         // error_log( ( $ntmExpire ?? 0 ) . " <?< " . time()
@@ -340,13 +340,21 @@ class Session {
 
     public static function unset() : void {
         static::checkActive();
-        static::session()->unsetEx();
+        static::backend()->unsetEx();
     }
 
 
     public static function writeClose() : void {
         static::checkActive();
-        static::session()->writeCloseEx();
+        static::backend()->writeCloseEx();
+    }
+
+
+    protected static function backend() : ISessionBackend {
+        if ( ! static::$backend instanceof ISessionBackend ) {
+            static::init( new PHPSessionBackend() );
+        }
+        return static::$backend;
     }
 
 
@@ -354,14 +362,6 @@ class Session {
         if ( ! static::active() ) {
             throw new LogicException( 'Session not started.' );
         }
-    }
-
-
-    protected static function session() : ISessionBackend {
-        if ( ! static::$backend instanceof ISessionBackend ) {
-            static::init( new PHPSessionBackend() );
-        }
-        return static::$backend;
     }
 
 

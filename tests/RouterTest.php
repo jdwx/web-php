@@ -8,16 +8,17 @@ use JDWX\Log\BufferLogger;
 use JDWX\Web\Framework\Exceptions\BadRequestException;
 use JDWX\Web\Framework\Exceptions\InternalServerException;
 use JDWX\Web\Request;
-use PHPUnit\Framework\TestCase;
 use Shims\MyHttpError;
 use Shims\MyRouter;
+use Shims\MyTestCase;
 
 
 require_once __DIR__ . '/Shims/MyHttpError.php';
 require_once __DIR__ . '/Shims/MyRouter.php';
+require_once __DIR__ . '/Shims/MyTestCase.php';
 
 
-final class RouterTest extends TestCase {
+final class RouterTest extends MyTestCase {
 
 
     public function testAssertGETAndPOSTForGET() : void {
@@ -52,8 +53,7 @@ final class RouterTest extends TestCase {
     public function testRunForInternalServerError() : void {
         $req = Request::synthetic( i_nstMethod: 'GET', i_nstUri: '/foo/bar' );
         $logger = new BufferLogger();
-        $error = new MyHttpError();
-        $router = new MyRouter( $logger, $error, $req );
+        $router = new MyRouter( $logger, i_req: $req );
         $router->fnRoute = function () {
             throw new InternalServerException( 'TEST_EXCEPTION' );
         };
@@ -62,7 +62,7 @@ final class RouterTest extends TestCase {
         $st = ob_get_clean();
         self::assertStringContainsString( '500', $st );
         self::assertStringContainsString( 'Internal Server Error', $st );
-        self::assertSame( 500, $error->iStatus );
+        self::assertSame( 500, $this->http->iStatus );
         $log = $logger->shiftLog();
         self::assertStringContainsString( 'TEST_EXCEPTION', $log->message );
     }

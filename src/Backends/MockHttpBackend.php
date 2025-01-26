@@ -4,10 +4,10 @@
 declare( strict_types = 1 );
 
 
-namespace Shims;
+namespace JDWX\Web\Backends;
 
 
-trait HttpTesterTrait {
+class MockHttpBackend extends AbstractHttpBackend {
 
 
     public int $iStatus = 200;
@@ -16,12 +16,12 @@ trait HttpTesterTrait {
     public array $rHeaders = [];
 
 
-    protected function sendHeader( string $i_stHeader ) : void {
+    public function sendHeader( string $i_stHeader ) : void {
         $this->rHeaders[] = $i_stHeader;
     }
 
 
-    protected function setResponseCode( int $i_status ) : void {
+    public function setResponseCode( int $i_status ) : void {
         $this->iStatus = $i_status;
     }
 

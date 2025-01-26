@@ -30,9 +30,9 @@ abstract class AbstractRouter implements IRouter {
     private IRequest $request;
 
 
-    final public function __construct( ?LoggerInterface $i_logger = null,
-                                       ?HttpError       $i_error = null,
-                                       ?IRequest        $i_req = null ) {
+    public function __construct( ?LoggerInterface $i_logger = null,
+                                 ?HttpError       $i_error = null,
+                                 ?IRequest        $i_req = null ) {
         $this->error = $i_error ?? new HttpError();
         $this->logger = $i_logger ?? new StderrLogger();
         $this->request = $i_req ?? Request::getGlobal();

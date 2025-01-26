@@ -70,11 +70,11 @@ class Url {
         }
 
         if ( isset( $rUri[ 'path' ] ) ) {
-            self::splitPath( $parts, $rUri[ 'path' ] );
+            static::splitPath( $parts, $rUri[ 'path' ] );
         }
 
         if ( isset( $rUri[ 'query' ] ) ) {
-            self::splitQuery( $parts, $rUri[ 'query' ] );
+            static::splitQuery( $parts, $rUri[ 'query' ] );
         }
 
         return $parts;
@@ -82,7 +82,7 @@ class Url {
 
 
     public static function splitEx( string $i_stUri ) : UrlParts {
-        $parts = self::split( $i_stUri );
+        $parts = static::split( $i_stUri );
         if ( $parts instanceof UrlParts ) {
             return $parts;
         }

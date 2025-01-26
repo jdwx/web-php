@@ -31,7 +31,6 @@ class ExampleRouter extends AbstractRouter {
     private function add() : void {
         $this->assertPOST();
         $req = $this->request();
-        error_log( print_r( $req->_POST(), true ) );
         $num1 = $req->postEx( 'num1' )->asFloat();
         $num2 = $req->postEx( 'num2' )->asFloat();
         $sum = $num1 + $num2;

@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Backends;
 
 
-interface IFilesBackend {
+interface FilesBackendInterface {
 
 
     public function fileExists( string $i_stPath ) : bool;

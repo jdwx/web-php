@@ -7,6 +7,11 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Backends;
 
 
+/**
+ * Use the real PHP functions needed for session handling.
+ *
+ * @codeCoverageIgnore
+ */
 class PHPSessionBackend extends AbstractSessionBackend {
 
 

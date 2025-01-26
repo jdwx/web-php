@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpLackOfCohesionInspection */
 
 
 declare( strict_types = 1 );
@@ -60,6 +60,7 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
+    /** @codeCoverageIgnore */
     public function cacheExpire( ?int $value = null ) : int|false {
         throw new LogicException( 'Not implemented.' );
     }
@@ -89,11 +90,13 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
+    /** @codeCoverageIgnore */
     public function createId( string $prefix = '' ) : string|false {
         throw new LogicException( 'Not implemented.' );
     }
 
 
+    /** @codeCoverageIgnore */
     public function decode( string $data ) : bool {
         throw new LogicException( 'Not implemented.' );
     }
@@ -108,11 +111,13 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
+    /** @codeCoverageIgnore */
     public function encode() : string|false {
         throw new LogicException( 'Not implemented.' );
     }
 
 
+    /** @codeCoverageIgnore */
     public function gc() : int|false {
         throw new LogicException( 'Not implemented.' );
     }
@@ -128,7 +133,10 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @return array<string, int|bool|string> */
+    /**
+     * @return array<string, int|bool|string>
+     * @codeCoverageIgnore
+     */
     public function getCookieParams() : array {
         throw new LogicException( 'Not implemented.' );
     }
@@ -165,6 +173,7 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
+    /** @codeCoverageIgnore */
     public function moduleName() : string|false {
         throw new LogicException( 'Not implemented.' );
     }
@@ -187,16 +196,19 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
+    /** @codeCoverageIgnore */
     public function registerShutdown() : void {
         throw new LogicException( 'Not implemented.' );
     }
 
 
+    /** @codeCoverageIgnore */
     public function reset() : bool {
         throw new LogicException( 'Not implemented.' );
     }
 
 
+    /** @codeCoverageIgnore */
     public function savePath( ?string $value = null ) : string|false {
         throw new LogicException( 'Not implemented.' );
     }
@@ -212,12 +224,14 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
+    /** @codeCoverageIgnore */
     public function setCookieParams( int  $lifetime, string $path = '', string $domain = '',
                                      bool $secure = false, bool $httponly = false ) : bool {
         throw new LogicException( 'Not implemented.' );
     }
 
 
+    /** @codeCoverageIgnore */
     public function setSaveHandler( callable  $open, callable $close, callable $read, callable $write,
                                     callable  $destroy, callable $gc, ?callable $create_sid = null,
                                     ?callable $validate_sid = null, ?callable $update_timestamp = null ) : bool {

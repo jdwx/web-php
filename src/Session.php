@@ -7,8 +7,8 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-use JDWX\Web\Backends\ISessionBackend;
 use JDWX\Web\Backends\PHPSessionBackend;
+use JDWX\Web\Backends\SessionBackendInterface;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -27,7 +27,7 @@ class Session {
 
     private const LIFETIME_SECONDS = 14400;
 
-    protected static ?ISessionBackend $backend = null;
+    protected static ?SessionBackendInterface $backend = null;
 
 
     public static function abort() : void {
@@ -156,7 +156,7 @@ class Session {
     }
 
 
-    public static function init( ISessionBackend $i_backend ) : void {
+    public static function init( SessionBackendInterface $i_backend ) : void {
         static::$backend = $i_backend;
     }
 
@@ -350,8 +350,8 @@ class Session {
     }
 
 
-    protected static function backend() : ISessionBackend {
-        if ( ! static::$backend instanceof ISessionBackend ) {
+    protected static function backend() : SessionBackendInterface {
+        if ( ! static::$backend instanceof SessionBackendInterface ) {
             static::init( new PHPSessionBackend() );
         }
         return static::$backend;

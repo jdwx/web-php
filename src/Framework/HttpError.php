@@ -74,7 +74,7 @@ class HttpError {
         $stErrorText = $this->errorText( $i_uHTTPStatus, $i_nstErrorText );
 
         # As a last-ditch effort, build a simple error page.
-        $this->sendHeader( 'Content-Type: text/html' );
+        $this->setHeader( 'Content-Type: text/html' );
         $page = new SimpleHtmlPage();
         $page->setTitle( "{$i_uHTTPStatus} {$stErrorName}" );
         $page->addContent( "<h1>{$i_uHTTPStatus} {$stErrorName}</h1>" );

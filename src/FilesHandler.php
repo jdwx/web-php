@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-use JDWX\Web\Backends\IFilesBackend;
+use JDWX\Web\Backends\FilesBackendInterface;
 use JDWX\Web\Backends\PHPFilesBackend;
 use RuntimeException;
 
@@ -15,12 +15,12 @@ use RuntimeException;
 readonly class FilesHandler {
 
 
-    private IFilesBackend $be;
+    private FilesBackendInterface $be;
 
 
     /** @param mixed[] $rFiles */
-    public function __construct( private array $rFiles, ?IFilesBackend $i_be = null ) {
-        if ( ! $i_be instanceof IFilesBackend ) {
+    public function __construct( private array $rFiles, ?FilesBackendInterface $i_be = null ) {
+        if ( ! $i_be instanceof FilesBackendInterface ) {
             $i_be = new PHPFilesBackend();
         }
         $this->be = $i_be;

@@ -13,8 +13,8 @@ use JDWX\Web\Http;
 trait HttpTrait {
 
 
-    protected function sendHeader( string $i_stHeader ) : void {
-        Http::sendHeader( $i_stHeader );
+    protected function setHeader( string $i_stHeader ) : void {
+        Http::setHeader( $i_stHeader );
     }
 
 

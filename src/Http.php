@@ -21,13 +21,23 @@ class Http {
     }
 
 
+    public static function getResponseCode() : int {
+        return self::backend()->getResponseCode();
+    }
+
+
+    public static function headersSent() : bool {
+        return self::backend()->headersSent();
+    }
+
+
     public static function init( HttpBackendInterface $i_backend ) : void {
         self::$backend = $i_backend;
     }
 
 
-    public static function sendHeader( string $i_stHeader ) : void {
-        self::backend()->sendHeader( $i_stHeader );
+    public static function setHeader( string $i_stHeader ) : void {
+        self::backend()->setHeader( $i_stHeader );
     }
 
 

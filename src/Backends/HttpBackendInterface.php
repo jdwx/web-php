@@ -10,7 +10,13 @@ namespace JDWX\Web\Backends;
 interface HttpBackendInterface {
 
 
-    public function sendHeader( string $i_stHeader ) : void;
+    public function getResponseCode() : int;
+
+
+    public function headersSent() : bool;
+
+
+    public function setHeader( string $i_stHeader ) : void;
 
 
     public function setResponseCode( int $i_status ) : void;

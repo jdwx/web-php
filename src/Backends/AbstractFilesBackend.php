@@ -10,7 +10,7 @@ namespace JDWX\Web\Backends;
 use RuntimeException;
 
 
-abstract class AbstractFilesBackend implements IFilesBackend {
+abstract class AbstractFilesBackend implements FilesBackendInterface {
 
 
     final public function fileGetContentsEx( string $i_stPath ) : string {

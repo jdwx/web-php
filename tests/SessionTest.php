@@ -4,9 +4,9 @@
 declare( strict_types = 1 );
 
 
-use JDWX\Web\Backends\ISessionBackend;
 use JDWX\Web\Backends\MockSessionBackend;
 use JDWX\Web\Backends\PHPSessionBackend;
+use JDWX\Web\Backends\SessionBackendInterface;
 use JDWX\Web\Request;
 use JDWX\Web\Session;
 use PHPUnit\Framework\TestCase;
@@ -71,7 +71,7 @@ class SessionTest extends TestCase {
         $ses = new class() extends Session {
 
 
-            public static function sessionCheck() : ISessionBackend {
+            public static function sessionCheck() : SessionBackendInterface {
                 return static::backend();
             }
 

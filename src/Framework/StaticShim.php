@@ -229,12 +229,12 @@ class StaticShim {
         }
 
         if ( array_key_exists( $ext, $this->rContentTypes ) ) {
-            $this->sendHeader( 'Content-Type: ' . $this->rContentTypes[ $ext ] );
+            $this->setHeader( 'Content-Type: ' . $this->rContentTypes[ $ext ] );
             readfile( $pathName );
             return true;
         }
 
-        $this->sendHeader( 'Content-Type: text/plain' );
+        $this->setHeader( 'Content-Type: text/plain' );
         readfile( $pathName );
         return true;
 

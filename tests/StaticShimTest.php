@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 
 
 use JDWX\Web\Framework\StaticShim;
+use JDWX\Web\Http;
 use JDWX\Web\Request;
 use Shims\MyStaticShim;
 use Shims\MyTestCase;
@@ -26,7 +27,7 @@ final class StaticShimTest extends MyTestCase {
         $bResult = $shim->handleStatic();
         ob_end_clean();
         self::assertTrue( $bResult );
-        self::assertSame( 404, $this->http->iStatus );
+        self::assertSame( 404, Http::getResponseCode() );
     }
 
 
@@ -65,7 +66,7 @@ final class StaticShimTest extends MyTestCase {
         $bResult = $shim->run();
         $st = ob_get_clean();
         self::assertTrue( $bResult );
-        self::assertSame( 403, $this->http->iStatus );
+        self::assertSame( 403, Http::getResponseCode() );
         self::assertStringContainsString( '403', $st );
         self::assertStringContainsString( 'Access Denied', $st );
     }
@@ -156,7 +157,7 @@ final class StaticShimTest extends MyTestCase {
         $bResult = $shim->run();
         $st = ob_get_clean();
         self::assertTrue( $bResult );
-        self::assertSame( 200, $this->http->iStatus );
+        self::assertSame( 200, Http::getResponseCode() );
         self::assertStringContainsString( 'text file', $st );
     }
 

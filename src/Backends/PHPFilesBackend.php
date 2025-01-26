@@ -7,6 +7,11 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Backends;
 
 
+/**
+ * Use the real PHP functions needed for handing uploaded files.
+ *
+ * @codeCoverageIgnore
+ */
 class PHPFilesBackend extends AbstractFilesBackend {
 
 

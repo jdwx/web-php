@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 use JDWX\Log\BufferLogger;
 use JDWX\Web\Framework\Exceptions\BadRequestException;
 use JDWX\Web\Framework\Exceptions\InternalServerException;
+use JDWX\Web\Http;
 use JDWX\Web\Request;
 use Shims\MyRouter;
 use Shims\MyTestCase;
@@ -60,7 +61,7 @@ final class RouterTest extends MyTestCase {
         $st = ob_get_clean();
         self::assertStringContainsString( '500', $st );
         self::assertStringContainsString( 'Internal Server Error', $st );
-        self::assertSame( 500, $this->http->iStatus );
+        self::assertSame( 500, Http::getResponseCode() );
         $log = $logger->shiftLog();
         self::assertStringContainsString( 'TEST_EXCEPTION', $log->message );
     }

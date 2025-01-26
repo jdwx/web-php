@@ -8,7 +8,7 @@ namespace JDWX\Web;
 
 
 use JDWX\Param\ParameterSet;
-use JDWX\Web\Backends\IFilesBackend;
+use JDWX\Web\Backends\FilesBackendInterface;
 use LogicException;
 
 
@@ -29,11 +29,11 @@ class Request extends AbstractRequest {
      * @param array<string, string>|null $i_COOKIE
      * @param mixed[]|null $i_FILES
      */
-    protected function __construct( ?array         $i_GET = null, ?array $i_POST = null,
-                                    ?array         $i_COOKIE = null, ?array $i_FILES = null,
-                                    ?string        $i_nstMethod = null,
-                                    ?string        $i_nstUri = null,
-                                    ?IFilesBackend $i_filesBackend = null ) {
+    protected function __construct( ?array                 $i_GET = null, ?array $i_POST = null,
+                                    ?array                 $i_COOKIE = null, ?array $i_FILES = null,
+                                    ?string                $i_nstMethod = null,
+                                    ?string                $i_nstUri = null,
+                                    ?FilesBackendInterface $i_filesBackend = null ) {
         $this->setGet = new ParameterSet( $i_GET ?? $_GET );
         $this->setPost = new ParameterSet( $i_POST ?? $_POST );
         $this->setCookie = new ParameterSet( $i_COOKIE ?? $_COOKIE );
@@ -89,11 +89,11 @@ class Request extends AbstractRequest {
      * This is public so it can be used for testing and mocking objects. If you subclass
      * Request, you'll need to override this method to return an instance of your subclass.
      */
-    public static function synthetic( ?array         $i_GET = null, ?array $i_POST = null,
-                                      ?array         $i_COOKIE = null, ?array $i_FILES = null,
-                                      ?string        $i_nstMethod = null,
-                                      ?string        $i_nstUri = null,
-                                      ?IFilesBackend $i_filesBackend = null ) : self {
+    public static function synthetic( ?array                 $i_GET = null, ?array $i_POST = null,
+                                      ?array                 $i_COOKIE = null, ?array $i_FILES = null,
+                                      ?string                $i_nstMethod = null,
+                                      ?string                $i_nstUri = null,
+                                      ?FilesBackendInterface $i_filesBackend = null ) : self {
         return new self( $i_GET, $i_POST, $i_COOKIE, $i_FILES, $i_nstMethod, $i_nstUri, $i_filesBackend );
     }
 

@@ -10,7 +10,7 @@ namespace JDWX\Web\Backends;
 use RuntimeException;
 
 
-abstract class AbstractSessionBackend implements ISessionBackend {
+abstract class AbstractSessionBackend implements SessionBackendInterface {
 
 
     public function abortEx() : void {

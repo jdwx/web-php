@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Backends;
 
 
-interface ISessionBackend {
+interface SessionBackendInterface {
 
 
     public function abort() : bool;

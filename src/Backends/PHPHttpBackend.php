@@ -7,10 +7,27 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Backends;
 
 
+/**
+ *
+ * This is the HTTP stuff that PHP provides that cannot be tested
+ * from unit tests.
+ *
+ * @codeCoverageIgnore
+ */
 class PHPHttpBackend extends AbstractHttpBackend {
 
 
-    public function sendHeader( string $i_stHeader ) : void {
+    public function getResponseCode() : int {
+        return http_response_code();
+    }
+
+
+    public function headersSent() : bool {
+        return headers_sent();
+    }
+
+
+    public function setHeader( string $i_stHeader ) : void {
         header( $i_stHeader );
     }
 

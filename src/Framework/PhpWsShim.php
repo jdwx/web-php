@@ -4,13 +4,17 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web;
+namespace JDWX\Web\Framework;
 
 
 /**
  * This class extends StaticShim and also does whatever minimal fix-ups
  * are necessary to make the PHP built-in web server work with the router
  * script. (I.e. make requests resemble FastCGI as much as possible.)
+ *
+ * In production, static files should be served by a real web server
+ * and PHP requests should come in via FastCGI. If you are using this
+ * in production, you are doing it wrong.
  */
 class PhpWsShim extends StaticShim {
 
@@ -24,13 +28,18 @@ class PhpWsShim extends StaticShim {
     protected HttpError $error;
 
 
-    public function __construct( private readonly string $stRouterPath, ?string $i_nstDocumentRoot = null,
-                                 ?HttpError              $i_error = null ) {
+    public function __construct( private readonly IRouter $router, ?string $i_nstDocumentRoot = null,
+                                 ?HttpError               $i_error = null ) {
         parent::__construct( $i_nstDocumentRoot, $i_error );
     }
 
 
-    /** @param bool $i_bExact If true, requires exact match. If false (default) receives anything underneath as well. */
+    /**
+     * Add a hook to be called when the URI matches the given string.
+     *
+     * @param bool $i_bExact If true, requires exact match. If false (default) receives
+     *                       anything underneath as well.
+     */
     public function addHook( string $i_stURI, callable $i_fnCallBack, bool $i_bExact = false ) : void {
         if ( $i_bExact ) {
             $this->rExactHooks[ $i_stURI ] = $i_fnCallBack;
@@ -46,10 +55,16 @@ class PhpWsShim extends StaticShim {
             return true;
         }
 
-        $scriptName = $_SERVER[ 'REQUEST_URI' ];
+        # These are fixups to make the PHP built-in web server look more like FastCGI
+        # for older code that hasn't been updated to look at the request instead of
+        # the environment.
+        $scriptName = $this->request->uri();
         $scriptName = preg_replace( '#\?.*$#', '', $scriptName );
         $_SERVER[ 'SCRIPT_NAME' ] = $scriptName;
         $_SERVER[ 'PATH_INFO' ] = $scriptName;
+        if ( ! array_key_exists( 'QUERY_STRING', $_SERVER ) ) {
+            $_SERVER[ 'QUERY_STRING' ] = '';
+        }
 
         foreach ( $this->rExactHooks as $stURI => $fnCallBack ) {
             if ( $scriptName === $stURI ) {
@@ -65,8 +80,7 @@ class PhpWsShim extends StaticShim {
             }
         }
 
-        require $this->stRouterPath;
-
+        $this->router->run();
         return true;
     }
 

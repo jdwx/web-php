@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web;
+namespace JDWX\Web\Backends;
 
 
 class PHPFilesBackend extends AbstractFilesBackend {

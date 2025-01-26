@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMethodNamingConventionInspection */
 
 
 declare( strict_types = 1 );
@@ -55,11 +55,23 @@ interface IRequest {
     public function isPOST() : bool;
 
 
+    public function method() : string;
+
+
+    public function path() : string;
+
+
     public function postEx( string $i_stName ) : IParameter;
 
 
     /** @param string ...$i_rstNames */
     public function postHas( ...$i_rstNames ) : bool;
+
+
+    public function uri() : string;
+
+
+    public function uriParts() : UrlParts;
 
 
 }

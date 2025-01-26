@@ -43,7 +43,11 @@ There are many unit tests for this module which provide additional examples of u
 
 ## Stability
 
-This module is considered stable and is extensively used in production code, handling millions of requests per day. The test coverage is very good but not complete. Some web-related functionality is difficult to test in a unit test.
+This bulk of this module (include functionality related to requests, sessions, server values, and files) is considered stable and is extensively used in production code, handling millions of requests per day.
+
+The IRouter interface and derivatives should be considered unstable and subject to change.
+
+The test coverage is very good but not complete. Some web-related functionality is difficult to test in a unit test.
 
 ## History
 

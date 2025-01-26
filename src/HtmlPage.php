@@ -7,6 +7,13 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+/**
+ *  Class HtmlPage
+ *
+ * This class is a base class for generating very simple HTML pages.
+ * It's designed to be used for simple server-generated pages like
+ * error pages.
+ */
 abstract class HtmlPage {
 
 
@@ -29,8 +36,8 @@ abstract class HtmlPage {
     }
 
 
-    public function render() : string {
-        return $this->docType() . $this->html() . $this->head() . $this->body() . '</html>';
+    public function render( ?string $i_nstLanguage = null ) : string {
+        return $this->docType() . $this->html( $i_nstLanguage ) . $this->head() . $this->body() . '</html>';
     }
 
 
@@ -77,8 +84,8 @@ abstract class HtmlPage {
     }
 
 
-    protected function html( string $i_stLang = 'en' ) : string {
-        return "<html lang=\"{$i_stLang}\">\n";
+    protected function html( ?string $i_nstLanguage = null ) : string {
+        return "<html lang=\"" . ( $i_nstLanguage ?? 'en' ) . "\">\n";
     }
 
 

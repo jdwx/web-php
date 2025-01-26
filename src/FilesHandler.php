@@ -7,6 +7,8 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Web\Backends\IFilesBackend;
+use JDWX\Web\Backends\PHPFilesBackend;
 use RuntimeException;
 
 

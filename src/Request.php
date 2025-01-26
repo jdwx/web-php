@@ -8,6 +8,7 @@ namespace JDWX\Web;
 
 
 use JDWX\Param\ParameterSet;
+use JDWX\Web\Backends\IFilesBackend;
 use LogicException;
 
 
@@ -30,12 +31,15 @@ class Request extends AbstractRequest {
      */
     protected function __construct( ?array         $i_GET = null, ?array $i_POST = null,
                                     ?array         $i_COOKIE = null, ?array $i_FILES = null,
+                                    ?string        $i_nstMethod = null,
+                                    ?string        $i_nstUri = null,
                                     ?IFilesBackend $i_filesBackend = null ) {
         $this->setGet = new ParameterSet( $i_GET ?? $_GET );
         $this->setPost = new ParameterSet( $i_POST ?? $_POST );
         $this->setCookie = new ParameterSet( $i_COOKIE ?? $_COOKIE );
         $this->files = new FilesHandler( $i_FILES ?? $_FILES, $i_filesBackend );
-
+        $this->stMethod = $i_nstMethod ?? Server::requestMethod();
+        $this->stUri = $i_nstUri ?? Server::requestUri();
     }
 
 
@@ -46,7 +50,7 @@ class Request extends AbstractRequest {
      * whether it has been initialized already. As such, this is the most
      * common way to get a Request object in a live web request.
      */
-    public static function getGlobal() : Request {
+    public static function getGlobal() : self {
         $x = static::$req;
         if ( ! $x instanceof Request ) {
             return static::init();
@@ -61,15 +65,17 @@ class Request extends AbstractRequest {
      * @param array<string, string>|null $i_COOKIE
      * @param mixed[]|null $i_FILES
      *
-     * This is used to initialize the Request singleton one time with specific values,
-     * mostly for testing purposes.
+     * This is used to initialize the Request singleton one time with specific values.
+     * It is separated from getGlobal() for testing purposes.
      */
-    public static function init( ?array $i_GET = null, ?array $i_POST = null,
-                                 ?array $i_COOKIE = null, ?array $i_FILES = null ) : Request {
-        if ( static::$req instanceof Request ) {
+    public static function init( ?array  $i_GET = null, ?array $i_POST = null,
+                                 ?array  $i_COOKIE = null, ?array $i_FILES = null,
+                                 ?string $i_nstMethod = null,
+                                 ?string $i_nstUri = null ) : self {
+        if ( static::$req instanceof self ) {
             throw new LogicException( 'Request already initialized.' );
         }
-        static::$req = static::synthetic( $i_GET, $i_POST, $i_COOKIE, $i_FILES );
+        static::$req = static::synthetic( $i_GET, $i_POST, $i_COOKIE, $i_FILES, $i_nstMethod, $i_nstUri );
         return static::$req;
     }
 
@@ -80,22 +86,15 @@ class Request extends AbstractRequest {
      * @param array<string, string>|null $i_COOKIE
      * @param mixed[]|null $i_FILES
      *
-     * This is public so it can be used for testing and mocking objects.
+     * This is public so it can be used for testing and mocking objects. If you subclass
+     * Request, you'll need to override this method to return an instance of your subclass.
      */
     public static function synthetic( ?array         $i_GET = null, ?array $i_POST = null,
                                       ?array         $i_COOKIE = null, ?array $i_FILES = null,
-                                      ?IFilesBackend $i_filesBackend = null ) : Request {
-        return new Request( $i_GET, $i_POST, $i_COOKIE, $i_FILES, $i_filesBackend );
-    }
-
-
-    public function isGET() : bool {
-        return 'GET' == Server::requestMethod();
-    }
-
-
-    public function isPOST() : bool {
-        return 'POST' == Server::requestMethod();
+                                      ?string        $i_nstMethod = null,
+                                      ?string        $i_nstUri = null,
+                                      ?IFilesBackend $i_filesBackend = null ) : self {
+        return new self( $i_GET, $i_POST, $i_COOKIE, $i_FILES, $i_nstMethod, $i_nstUri, $i_filesBackend );
     }
 
 

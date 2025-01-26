@@ -4,14 +4,22 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web;
+namespace JDWX\Web\Framework;
+
+
+use JDWX\Web\IRequest;
+use JDWX\Web\Request;
+use JDWX\Web\Server;
 
 
 /**
  * This shim provides basic static file handling to help test a site
- * with the PHP built-in webserver.  (In production, static files should
- * be served by the real web server and PHP requests should come in via
- * FastCGI.)
+ * with the PHP built-in webserver.
+ *
+ * In production, static files should be served by a real web server
+ * and PHP requests should come in via FastCGI. If you are using this
+ * in production, you are doing it wrong.
+ *
  */
 class StaticShim {
 
@@ -46,9 +54,12 @@ class StaticShim {
 
     protected HttpError $error;
 
+    protected IRequest $request;
 
-    public function __construct( ?string $i_nstDocumentRoot = null, ?HttpError $i_error = null ) {
-        $this->stDocumentRoot = $i_nstDocumentRoot ?? $_SERVER[ 'DOCUMENT_ROOT' ];
+
+    public function __construct( ?string   $i_nstDocumentRoot = null, ?HttpError $i_error = null,
+                                 ?IRequest $i_req = null ) {
+        $this->stDocumentRoot = $i_nstDocumentRoot ?? Server::documentRoot();
         if ( ! str_ends_with( $this->stDocumentRoot, '/' ) ) {
             $this->stDocumentRoot .= '/';
         }
@@ -56,20 +67,53 @@ class StaticShim {
             '/' => $this->stDocumentRoot,
         ];
         $this->error = $i_error ?? new HttpError();
+        $this->request = $i_req ?? Request::getGlobal();
     }
 
 
-    public function addStaticMap( string $i_stFrom, string $i_stTo ) : void {
-        $this->addStaticPath( $i_stFrom );
-        $this->rStaticMaps[ $i_stFrom ] = $i_stTo;
+    /**
+     * Maps a path to another path. This is useful if your static content is
+     * in a /static/ folder but your URLs don't have /static/ in them, or if
+     * you need to map in static content from multiple locations.
+     *
+     * Note that this calls addStaticUri(), and so it invokes the behavior
+     * change described there. (I.e., the minute you map one static path,
+     * you have to map or explicitly allow all static paths.)
+     *
+     * @param string $i_stFromUri URI path to map from.
+     * @param string $i_stToDirectory Filesystem directory to map to.
+     */
+    public function addStaticMap( string $i_stFromUri, string $i_stToDirectory ) : void {
+        $this->addStaticUri( $i_stFromUri );
+        $this->rStaticMaps[ $i_stFromUri ] = $i_stToDirectory;
     }
 
 
-    public function addStaticPath( string $i_stPath ) : void {
-        $this->rStaticPaths[] = $i_stPath;
+    /**
+     * Add a URI to the list of URIs that are considered static. This means
+     * that the static shim will treat itself as authoritative for these paths.
+     *
+     * By default, the shim will consider any URI to be potentially static,
+     * which is suitable when .php files coexist with static files in the
+     * same directory. But if you add even one path here, then only paths in
+     * this list will be considered static.
+     *
+     * Keep in mind that you will need to add static URIs for things like
+     * /robots.txt and /favicon.ico once you start down this road.
+     *
+     * @param string $i_stStaticUri URI path to treat as authoritatively static.
+     */
+    public function addStaticUri( string $i_stStaticUri ) : void {
+        $this->rStaticPaths[] = $i_stStaticUri;
     }
 
 
+    /**
+     * Exclude a path from static handling. Like .git for example. (But
+     * don't put .git in your document root, that's a bad idea.)
+     *
+     * @param string $i_stPath URI path to exclude from static handling.
+     */
     public function excludeStaticPath( string $i_stPath ) : void {
         $this->rExcludePaths[] = $i_stPath;
     }
@@ -77,7 +121,7 @@ class StaticShim {
 
     public function handleStatic() : bool {
 
-        $stURI = $_SERVER[ 'REQUEST_URI' ];
+        $stURI = $this->request->path();
 
         if ( $this->rExcludePaths ) {
             foreach ( $this->rExcludePaths as $path ) {
@@ -117,12 +161,6 @@ class StaticShim {
         if ( $this->handleStatic() ) {
             return true;
         }
-        if ( ! array_key_exists( 'QUERY_STRING', $_SERVER ) ) {
-            $_SERVER[ 'QUERY_STRING' ] = '';
-        }
-        if ( ! array_key_exists( 'PATH_INFO', $_SERVER ) ) {
-            $_SERVER[ 'PATH_INFO' ] = '';
-        }
         return false;
     }
 
@@ -144,13 +182,14 @@ class StaticShim {
         $pathName = $stPrefix . substr( $i_stURI, $longest );
         $pathName = str_replace( '//', '/', $pathName );
 
-        if ( str_contains( $pathName, '?' ) ) {
-            $pathName = preg_replace( '#\?.*$#', '', $pathName );
-        }
-
         $path = pathinfo( $pathName );
         if ( ! is_file( $pathName ) ) {
+            # If an extension was provided and the file doesn't exist, we're done.
             if ( array_key_exists( 'extension', $path ) && $path[ 'extension' ] != '' ) {
+                if ( $this->bAuthoritative ) {
+                    $this->error->show( 404 );
+                    return true;
+                }
                 return false;
             }
         }
@@ -186,15 +225,24 @@ class StaticShim {
         }
 
         if ( array_key_exists( $ext, $this->rContentTypes ) ) {
-            header( 'Content-Type: ' . $this->rContentTypes[ $ext ] );
+            $this->sendHeader( 'Content-Type: ' . $this->rContentTypes[ $ext ] );
             readfile( $pathName );
             return true;
         }
 
-        header( 'Content-Type: text/plain' );
+        $this->sendHeader( 'Content-Type: text/plain' );
         readfile( $pathName );
         return true;
 
+    }
+
+
+    /**
+     * Can't be tested.
+     * @codeCoverageIgnore
+     */
+    protected function sendHeader( string $i_stHeader ) : void {
+        header( $i_stHeader );
     }
 
 

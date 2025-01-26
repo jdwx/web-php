@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMethodNamingConventionInspection */
 
 
 declare( strict_types = 1 );
@@ -23,6 +23,10 @@ abstract class AbstractRequest implements IRequest {
     protected ParameterSet $setPost;
 
     protected FilesHandler $files;
+
+    protected string $stMethod;
+
+    protected string $stUri;
 
 
     public function COOKIE( string $i_stName, mixed $i_xDefault = null ) : ?IParameter {
@@ -90,6 +94,26 @@ abstract class AbstractRequest implements IRequest {
     }
 
 
+    public function isGET() : bool {
+        return 'GET' == $this->stMethod;
+    }
+
+
+    public function isPOST() : bool {
+        return 'POST' == $this->stMethod;
+    }
+
+
+    public function method() : string {
+        return $this->stMethod;
+    }
+
+
+    public function path() : string {
+        return $this->uriParts()->path();
+    }
+
+
     public function postEx( string $i_stName, mixed $i_xDefault = null ) : IParameter {
         $np = $this->POST( $i_stName );
         if ( $np instanceof IParameter ) {
@@ -102,6 +126,16 @@ abstract class AbstractRequest implements IRequest {
     /** @param string ...$i_rstNames */
     public function postHas( ...$i_rstNames ) : bool {
         return $this->setPost->has( ...$i_rstNames );
+    }
+
+
+    public function uri() : string {
+        return $this->stUri;
+    }
+
+
+    public function uriParts() : UrlParts {
+        return Url::splitEx( $this->uri() );
     }
 
 

@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-use JDWX\Web\MockFilesBackend;
+use JDWX\Web\Backends\MockFilesBackend;
 use PHPUnit\Framework\TestCase;
 
 

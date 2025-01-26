@@ -4,9 +4,9 @@
 declare( strict_types = 1 );
 
 
-use JDWX\Web\ISessionBackend;
-use JDWX\Web\MockSessionBackend;
-use JDWX\Web\PHPSessionBackend;
+use JDWX\Web\Backends\ISessionBackend;
+use JDWX\Web\Backends\MockSessionBackend;
+use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Request;
 use JDWX\Web\Session;
 use PHPUnit\Framework\TestCase;

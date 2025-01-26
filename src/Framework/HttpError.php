@@ -4,7 +4,11 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web;
+namespace JDWX\Web\Framework;
+
+
+use JDWX\Web\Framework\Exceptions\HttpStatusException;
+use JDWX\Web\SimpleHtmlPage;
 
 
 class HttpError {
@@ -14,7 +18,7 @@ class HttpError {
     protected const ERROR_NAMES = [
         400 => 'Bad Request',
         401 => 'Authorization Required',
-        403 => 'AccessDenied',
+        403 => 'Access Denied',
         404 => 'Not Found',
         405 => 'Method Not Allowed',
         406 => 'Not Acceptable',
@@ -41,43 +45,49 @@ class HttpError {
 
 
     public function errorName( int $i_uHTTPStatus, ?string $i_nstErrorName = null ) : string {
-        if ( is_string( $i_nstErrorName ) ) {
-            return $i_nstErrorName;
-        }
-        return self::ERROR_NAMES[ $i_uHTTPStatus ] ?? 'Unknown Error';
+        return $i_nstErrorName ?? self::ERROR_NAMES[ $i_uHTTPStatus ] ?? 'Unknown Error';
     }
 
 
-    public function errorText( int $i_uHTTPStatus, ?string $i_nstErrorName = null ) : string {
-        if ( is_string( $i_nstErrorName ) ) {
-            return $i_nstErrorName;
-        }
-        return self::ERROR_TEXT[ $i_uHTTPStatus ] ?? '';
+    public function errorText( int $i_uHTTPStatus, ?string $i_nstErrorText = null ) : string {
+        return $i_nstErrorText ?? self::ERROR_TEXT[ $i_uHTTPStatus ] ?? '';
     }
 
 
-    public function show( int     $i_uHTTPStatus, ?string $i_nstErrorName = null,
-                          ?string $i_nstErrorText = null ) : void {
-
+    public function render( int     $i_uHTTPStatus, ?string $i_nstErrorName = null,
+                            ?string $i_nstErrorText = null ) : string {
         # Set the HTTP status
-        http_response_code( $i_uHTTPStatus );
+        $this->setResponseCode( $i_uHTTPStatus );
 
         # If there is an error page for this error, use it.
         $path = $this->errorPath( $i_uHTTPStatus );
         if ( is_string( $path ) ) {
+            ob_start();
             require $path;
-            return;
+            return ob_get_clean();
         }
 
         $stErrorName = $this->errorName( $i_uHTTPStatus, $i_nstErrorName );
         $stErrorText = $this->errorText( $i_uHTTPStatus, $i_nstErrorText );
 
         # As a last-ditch effort, build a simple error page.
-        header( 'Content-Type: text/html' );
-        echo '<!DOCTYPE html>';
-        echo "<html lang=\"en_US\">";
-        echo "<head><title>{$i_uHTTPStatus} {$stErrorName}</title></head>";
-        echo "<body><h1>{$i_uHTTPStatus} {$stErrorName}</h1><p>{$stErrorText}</p></body></html>";
+        $this->sendHeader( 'Content-Type: text/html' );
+        $page = new SimpleHtmlPage();
+        $page->setTitle( "{$i_uHTTPStatus} {$stErrorName}" );
+        $page->addContent( "<h1>{$i_uHTTPStatus} {$stErrorName}</h1>" );
+        $page->addContent( "<p>{$stErrorText}</p>" );
+        return $page->render();
+    }
+
+
+    public function show( int     $i_uHTTPStatus, ?string $i_nstErrorName = null,
+                          ?string $i_nstErrorText = null ) : void {
+        echo $this->render( $i_uHTTPStatus, $i_nstErrorName, $i_nstErrorText );
+    }
+
+
+    public function showException( HttpStatusException $i_e ) : void {
+        $this->show( $i_e->getCode(), $i_e->display() );
     }
 
 
@@ -90,6 +100,24 @@ class HttpError {
             return $stPath;
         }
         return null;
+    }
+
+
+    /**
+     * Can't be tested.
+     * @codeCoverageIgnore
+     */
+    protected function sendHeader( string $i_stHeader ) : void {
+        header( $i_stHeader );
+    }
+
+
+    /**
+     * Can't be tested.
+     * @codeCoverageIgnore
+     */
+    protected function setResponseCode( int $i_status ) : void {
+        http_response_code( $i_status );
     }
 
 

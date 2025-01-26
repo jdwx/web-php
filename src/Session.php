@@ -7,6 +7,8 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Web\Backends\ISessionBackend;
+use JDWX\Web\Backends\PHPSessionBackend;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;

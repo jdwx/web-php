@@ -70,11 +70,11 @@ class Url {
         }
 
         if ( isset( $rUri[ 'path' ] ) ) {
-            static::splitPath( $parts, $rUri[ 'path' ] );
+            self::splitPath( $parts, $rUri[ 'path' ] );
         }
 
         if ( isset( $rUri[ 'query' ] ) ) {
-            static::splitQuery( $parts, $rUri[ 'query' ] );
+            self::splitQuery( $parts, $rUri[ 'query' ] );
         }
 
         return $parts;

@@ -10,6 +10,9 @@ namespace JDWX\Web\Framework;
 interface IRouter {
 
 
+    public function getHttpError() : HttpError;
+
+
     /**
      * Use the route() entry point to handle the request from a
      * higher-level handler that might be trying multiple ways

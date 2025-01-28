@@ -5,8 +5,8 @@ declare( strict_types = 1 );
 
 
 use JDWX\Log\BufferLogger;
-use JDWX\Web\Framework\Exceptions\BadRequestException;
 use JDWX\Web\Framework\Exceptions\InternalServerException;
+use JDWX\Web\Framework\Exceptions\MethodNotAllowed;
 use JDWX\Web\Http;
 use JDWX\Web\Request;
 use Shims\MyRouter;
@@ -24,7 +24,7 @@ final class RouterTest extends MyTestCase {
         $req = Request::synthetic( i_nstMethod: 'GET', i_nstUri: '/foo/bar' );
         $router = new MyRouter( i_req: $req );
         $router->assertGET();
-        self::expectException( BadRequestException::class );
+        self::expectException( MethodNotAllowed::class );
         $router->assertPOST();
     }
 
@@ -33,7 +33,7 @@ final class RouterTest extends MyTestCase {
         $req = Request::synthetic( i_nstMethod: 'POST', i_nstUri: '/foo/bar' );
         $router = new MyRouter( i_req: $req );
         $router->assertPOST();
-        self::expectException( BadRequestException::class );
+        self::expectException( MethodNotAllowed::class );
         $router->assertGET();
     }
 

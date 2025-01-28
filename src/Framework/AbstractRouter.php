@@ -8,8 +8,8 @@ namespace JDWX\Web\Framework;
 
 
 use JDWX\Log\StderrLogger;
-use JDWX\Web\Framework\Exceptions\BadRequestException;
 use JDWX\Web\Framework\Exceptions\HttpStatusException;
+use JDWX\Web\Framework\Exceptions\MethodNotAllowed;
 use JDWX\Web\Framework\Exceptions\NotFoundException;
 use JDWX\Web\IRequest;
 use JDWX\Web\Request;
@@ -43,7 +43,7 @@ abstract class AbstractRouter implements IRouter {
         if ( $this->request->isGET() ) {
             return;
         }
-        throw new BadRequestException( $i_nstText ?? 'GET required' );
+        throw new MethodNotAllowed( $i_nstText ?? 'GET required' );
     }
 
 
@@ -51,7 +51,12 @@ abstract class AbstractRouter implements IRouter {
         if ( $this->request->isPOST() ) {
             return;
         }
-        throw new BadRequestException( $i_nstText ?? 'POST required' );
+        throw new MethodNotAllowed( $i_nstText ?? 'POST required' );
+    }
+
+
+    public function getHttpError() : HttpError {
+        return $this->error;
     }
 
 

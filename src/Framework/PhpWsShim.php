@@ -28,9 +28,8 @@ class PhpWsShim extends StaticShim {
     protected HttpError $error;
 
 
-    public function __construct( private readonly IRouter $router, ?string $i_nstDocumentRoot = null,
-                                 ?HttpError               $i_error = null ) {
-        parent::__construct( $i_nstDocumentRoot, $i_error );
+    public function __construct( private readonly IRouter $router, ?string $i_nstDocumentRoot = null ) {
+        parent::__construct( $i_nstDocumentRoot, $router->getHttpError() );
     }
 
 

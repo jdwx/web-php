@@ -14,6 +14,8 @@ class Url {
 
     private const ALLOWED_SUB_DELIMITERS = '!$&\'()*+,;=';
 
+    private const ALLOWED_ENCODE         = '%';
+
     /** @noinspection SpellCheckingInspection */
     private const ALLOWED_UNRESERVED_ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
@@ -29,6 +31,7 @@ class Url {
     private const ALLOWED_CHARACTERS       =
         self::ALLOWED_GEN_DELIMITERS
         . self::ALLOWED_SUB_DELIMITERS
+        . self::ALLOWED_ENCODE
         . self::ALLOWED_UNRESERVED;
 
 

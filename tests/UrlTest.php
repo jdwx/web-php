@@ -74,6 +74,13 @@ final class UrlTest extends TestCase {
     }
 
 
+    public function testSplitForEscaped() : void {
+        $parts = Url::split( '/foo/bar?baz=qux%20quux' );
+        self::assertInstanceOf( UrlParts::class, $parts );
+        self::assertSame( 'qux quux', $parts[ 'baz' ] );
+    }
+
+
     public function testSplitForInvalid() : void {
         self::assertNull( Url::split( '\\absolute-nonsense\\' ) );
         self::assertNull( Url::split( 'https://example.com,http://http' ) );

@@ -9,15 +9,15 @@ namespace JDWX\Web\Framework;
 
 use JDWX\Log\StderrLogger;
 use JDWX\Web\Framework\Exceptions\HttpStatusException;
-use JDWX\Web\Framework\Exceptions\MethodNotAllowed;
+use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotFoundException;
-use JDWX\Web\IRequest;
 use JDWX\Web\Request;
+use JDWX\Web\RequestInterface;
 use JDWX\Web\UrlParts;
 use Psr\Log\LoggerInterface;
 
 
-abstract class AbstractRouter implements IRouter {
+abstract class AbstractRouter implements RouterInterface {
 
 
     use HttpTrait;
@@ -27,12 +27,12 @@ abstract class AbstractRouter implements IRouter {
 
     protected LoggerInterface $logger;
 
-    private IRequest $request;
+    private RequestInterface $request;
 
 
-    public function __construct( ?LoggerInterface $i_logger = null,
-                                 ?HttpError       $i_error = null,
-                                 ?IRequest        $i_req = null ) {
+    public function __construct( ?LoggerInterface  $i_logger = null,
+                                 ?HttpError        $i_error = null,
+                                 ?RequestInterface $i_req = null ) {
         $this->error = $i_error ?? new HttpError();
         $this->logger = $i_logger ?? new StderrLogger();
         $this->request = $i_req ?? Request::getGlobal();
@@ -43,7 +43,7 @@ abstract class AbstractRouter implements IRouter {
         if ( $this->request->isGET() ) {
             return;
         }
-        throw new MethodNotAllowed( $i_nstText ?? 'GET required' );
+        throw new MethodNotAllowedException( $i_nstText ?? 'GET required' );
     }
 
 
@@ -51,12 +51,17 @@ abstract class AbstractRouter implements IRouter {
         if ( $this->request->isPOST() ) {
             return;
         }
-        throw new MethodNotAllowed( $i_nstText ?? 'POST required' );
+        throw new MethodNotAllowedException( $i_nstText ?? 'POST required' );
     }
 
 
     public function getHttpError() : HttpError {
         return $this->error;
+    }
+
+
+    public function request() : RequestInterface {
+        return $this->request;
     }
 
 
@@ -80,11 +85,6 @@ abstract class AbstractRouter implements IRouter {
 
     protected function path() : string {
         return $this->uriParts()->path();
-    }
-
-
-    protected function request() : IRequest {
-        return $this->request;
     }
 
 

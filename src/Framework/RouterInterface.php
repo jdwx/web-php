@@ -7,11 +7,18 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Framework;
 
 
-interface IRouter {
+use JDWX\Web\RequestInterface;
+
+
+interface RouterInterface {
 
 
     public function getHttpError() : HttpError;
 
+    /**
+     * Retrieve the Request object this router is using.
+     */
+    public function request() : RequestInterface;
 
     /**
      * Use the route() entry point to handle the request from a
@@ -21,7 +28,6 @@ interface IRouter {
      * @return bool True if this handled the request, otherwise false.
      */
     public function route() : bool;
-
 
     /**
      * Use the run() entry point to handle the request if you're eating

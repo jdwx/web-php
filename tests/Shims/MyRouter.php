@@ -8,7 +8,7 @@ namespace Shims;
 
 
 use JDWX\Web\Framework\AbstractRouter;
-use JDWX\Web\IRequest;
+use JDWX\Web\RequestInterface;
 use JDWX\Web\UrlParts;
 
 
@@ -27,7 +27,7 @@ class MyRouter extends AbstractRouter {
 
     public string $stUriCheck;
 
-    public IRequest $requestCheck;
+    public RequestInterface $requestCheck;
 
 
     public function route() : bool {

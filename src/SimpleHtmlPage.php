@@ -19,6 +19,11 @@ class SimpleHtmlPage extends HtmlPage {
     }
 
 
+    public function getContent() : ?string {
+        return $this->nstContent;
+    }
+
+
     public function setContent( string $i_stContent ) : static {
         $this->nstContent = $i_stContent;
         return $this;

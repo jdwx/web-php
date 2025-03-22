@@ -4,6 +4,7 @@
 declare( strict_types = 1 );
 
 
+use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\StaticShim;
 use JDWX\Web\Http;
 use JDWX\Web\Request;
@@ -15,11 +16,12 @@ require_once __DIR__ . '/Shims/MyStaticShim.php';
 require_once __DIR__ . '/Shims/MyTestCase.php';
 
 
+/** @covers \JDWX\Web\Framework\StaticShim */
 final class StaticShimTest extends MyTestCase {
 
 
     public function testAddStaticUriForAuthoritative() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/example.nope' );
+        $req = $this->newRequest( '/example.nope' );
         $shim = new MyStaticShim( __DIR__, i_req: $req );
         self::assertFalse( $shim->handleStatic() );
         $shim->addStaticUri( '/' );
@@ -32,14 +34,14 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForBogus() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/no/such/file' );
+        $req = $this->newRequest( '/no/such/file' );
         $shim = new StaticShim( __DIR__, i_req: $req );
         self::assertFalse( $shim->run() );
     }
 
 
     public function testRunForBogusAuthoritative() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/no/such/file' );
+        $req = $this->newRequest( '/no/such/file' );
         $shim = new StaticShim( __DIR__, i_req: $req );
         $shim->addStaticUri( '/' );
         ob_start();
@@ -52,14 +54,14 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForDirectory() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/' );
-        $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
+        $req = $this->newRequest( '/static' );
+        $shim = new StaticShim( __DIR__ . '/../example/', i_req: $req );
         self::assertFalse( $shim->run() );
     }
 
 
     public function testRunForDirectoryAuthoritative() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/static' );
+        $req = $this->newRequest( '/static' );
         $shim = new StaticShim( __DIR__ . '/../example/', i_req: $req );
         $shim->addStaticUri( '/' );
         ob_start();
@@ -73,7 +75,7 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForExcludedDirectory() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/exclude/exclude.txt' );
+        $req = $this->newRequest( '/exclude/exclude.txt' );
         $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
         self::assertTrue( $shim->run() );
         $shim->excludeStaticPath( '/exclude' );
@@ -81,8 +83,19 @@ final class StaticShimTest extends MyTestCase {
     }
 
 
+    public function testRunForInferredDocumentRoot() : void {
+        $req = $this->newRequest( '/example.txt', __DIR__ . '/../example/static/' );
+        $shim = new StaticShim( i_req: $req );
+        ob_start();
+        $bResult = $shim->run();
+        $st = ob_get_clean();
+        self::assertTrue( $bResult );
+        self::assertStringContainsString( 'This is a test.', $st );
+    }
+
+
     public function testRunForMappedUri() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/decoy/alias.txt' );
+        $req = $this->newRequest( '/decoy/alias.txt' );
         $shim = new StaticShim( __DIR__ . '/../example/', i_req: $req );
         $shim->addStaticMap( '/decoy/', __DIR__ . '/../example/static/alias/' );
         ob_start();
@@ -94,7 +107,7 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForMultiViews() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/example2' );
+        $req = $this->newRequest( '/example2' );
         $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
         ob_start();
         $bResult = $shim->run();
@@ -105,14 +118,14 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForNotFound() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/example.exe' );
+        $req = $this->newRequest( '/example.exe' );
         $shim = new StaticShim( __DIR__, i_req: $req );
         self::assertFalse( $shim->run() );
     }
 
 
     public function testRunForNotFoundAuthoritative() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/example.exe' );
+        $req = $this->newRequest( '/example.exe' );
         $shim = new StaticShim( __DIR__, i_req: $req );
         $shim->addStaticUri( '/' );
         ob_start();
@@ -125,7 +138,7 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForOutsideStatic() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/exclude/exclude.txt' );
+        $req = $this->newRequest( '/exclude/exclude.txt' );
         $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
         $shim->addStaticUri( '/alias/' );
         self::assertFalse( $shim->run() );
@@ -133,14 +146,14 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForPHP() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/example.php' );
+        $req = $this->newRequest( '/example.php' );
         $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
         self::assertFalse( $shim->run() );
     }
 
 
     public function testRunForSuccess() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/example.txt' );
+        $req = $this->newRequest( '/example.txt' );
         $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
         ob_start();
         $bResult = $shim->run();
@@ -151,7 +164,7 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForUnknownType() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/example3.wtf' );
+        $req = $this->newRequest( '/example3.wtf' );
         $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
         ob_start();
         $bResult = $shim->run();
@@ -159,6 +172,15 @@ final class StaticShimTest extends MyTestCase {
         self::assertTrue( $bResult );
         self::assertSame( 200, Http::getResponseCode() );
         self::assertStringContainsString( 'text file', $st );
+    }
+
+
+    private function newRequest( string $i_stUri, ?string $i_nstDocumentRoot = null ) : Request {
+        $srv = new MockServer( 'GET', $i_stUri );
+        if ( is_string( $i_nstDocumentRoot ) ) {
+            $srv->stDocumentRoot = $i_nstDocumentRoot;
+        }
+        return Request::synthetic( [], [], [], [], $srv );
     }
 
 

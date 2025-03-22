@@ -4,13 +4,16 @@
 declare( strict_types = 1 );
 
 
+use JDWX\Web\Framework\Exceptions\NotFoundException;
 use JDWX\Web\Framework\HttpError;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Shims\MyTestCase;
 
 
 require_once __DIR__ . '/Shims/MyTestCase.php';
 
 
+#[CoversClass( HttpError::class )]
 final class HttpErrorTest extends MyTestCase {
 
 
@@ -41,6 +44,24 @@ final class HttpErrorTest extends MyTestCase {
             $error->errorText( 404 ) );
         self::assertSame( 'TEST_TEXT', $error->errorText( 404, 'TEST_TEXT' ) );
         self::assertSame( '', $error->errorText( 12345 ) );
+    }
+
+
+    public function testShow() : void {
+        $error = new HttpError();
+        ob_start();
+        $error->show( 404 );
+        $result = ob_get_clean();
+        self::assertStringContainsString( 'Not Found', $result );
+    }
+
+
+    public function testShowException() : void {
+        $error = new HttpError();
+        ob_start();
+        $error->showException( new NotFoundException( i_nstDisplay: 'TEST_EXCEPTION' ) );
+        $result = ob_get_clean();
+        self::assertStringContainsString( 'TEST_EXCEPTION', $result );
     }
 
 

@@ -6,9 +6,11 @@ declare( strict_types = 1 );
 
 use JDWX\Web\Backends\HttpBackendInterface;
 use JDWX\Web\Backends\MockHttpBackend;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( JDWX\Web\Http::class )]
 final class HttpTest extends TestCase {
 
 
@@ -26,6 +28,21 @@ final class HttpTest extends TestCase {
         $http::clear();
         /** @noinspection PhpAccessStaticViaInstanceInspection */
         self::assertInstanceOf( JDWX\Web\Backends\PHPHttpBackend::class, $http::peekBackend() );
+    }
+
+
+    public function testGetResponseCode() : void {
+        $backend = new JDWX\Web\Backends\MockHttpBackend();
+        JDWX\Web\Http::init( $backend );
+
+        $backend->setResponseCode( 200 );
+        self::assertSame( 200, JDWX\Web\Http::getResponseCode() );
+
+        $backend->setResponseCode( 12345 );
+        self::assertSame( 12345, JDWX\Web\Http::getResponseCode() );
+
+        $backend->setResponseCode( 500 );
+        self::assertSame( 500, JDWX\Web\Http::getResponseCode() );
     }
 
 

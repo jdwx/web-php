@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 
 
 use JDWX\Web\Backends\MockFilesBackend;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
@@ -12,8 +13,11 @@ use PHPUnit\Framework\TestCase;
  * We really can't guarantee that the live PHPFilesBackend class will do what
  * we want, but we can be darn sure that the mockup behaves as we expect so
  * that any discrepancies observed in the wild should be easier to detect.
+ *
+ *
  */
-class MockFilesBackendTest extends TestCase {
+#[CoversClass( MockFilesBackend::class )]
+final class MockFilesBackendTest extends TestCase {
 
 
     public function testFileExists() : void {
@@ -37,16 +41,16 @@ class MockFilesBackendTest extends TestCase {
         $be = new MockFilesBackend();
         $be->addUploadedFile( '/tmp/foo.txt', 'test-foo' );
         $be->addUploadedFile( '/tmp/bar.txt', 'test-bar' );
-        static::assertSame( 'test-foo', $be->fileGetContents( '/tmp/foo.txt' ) );
-        static::assertSame( 'test-bar', $be->fileGetContents( '/tmp/bar.txt' ) );
+        self::assertSame( 'test-foo', $be->fileGetContents( '/tmp/foo.txt' ) );
+        self::assertSame( 'test-bar', $be->fileGetContents( '/tmp/bar.txt' ) );
         $be->moveUploadedFile( '/tmp/bar.txt', '/tmp/bar-moved.txt' );
-        static::assertSame( 'test-foo', $be->fileGetContents( '/tmp/foo.txt' ) );
-        static::assertFalse( $be->fileGetContents( '/tmp/bar.txt' ) );
-        static::assertSame( 'test-bar', $be->fileGetContents( '/tmp/bar-moved.txt' ) );
-        static::assertFalse( $be->fileGetContents( '/tmp/baz.txt' ) );
+        self::assertSame( 'test-foo', $be->fileGetContents( '/tmp/foo.txt' ) );
+        self::assertFalse( $be->fileGetContents( '/tmp/bar.txt' ) );
+        self::assertSame( 'test-bar', $be->fileGetContents( '/tmp/bar-moved.txt' ) );
+        self::assertFalse( $be->fileGetContents( '/tmp/baz.txt' ) );
 
         $be->bFailToReadFile = true;
-        static::assertFalse( $be->fileGetContents( '/tmp/foo.txt' ) );
+        self::assertFalse( $be->fileGetContents( '/tmp/foo.txt' ) );
     }
 
 
@@ -54,12 +58,12 @@ class MockFilesBackendTest extends TestCase {
         $be = new MockFilesBackend();
         $be->addUploadedFile( '/tmp/foo.txt', 'test-foo' );
         $be->addUploadedFile( '/tmp/bar.txt', 'test-bar' );
-        static::assertTrue( $be->isUploadedFile( '/tmp/foo.txt' ) );
-        static::assertTrue( $be->isUploadedFile( '/tmp/bar.txt' ) );
-        static::assertFalse( $be->isUploadedFile( '/tmp/baz.txt' ) );
+        self::assertTrue( $be->isUploadedFile( '/tmp/foo.txt' ) );
+        self::assertTrue( $be->isUploadedFile( '/tmp/bar.txt' ) );
+        self::assertFalse( $be->isUploadedFile( '/tmp/baz.txt' ) );
         $be->removeFile( '/tmp/bar.txt' );
-        static::assertTrue( $be->isUploadedFile( '/tmp/foo.txt' ) );
-        static::assertFalse( $be->isUploadedFile( '/tmp/bar.txt' ) );
+        self::assertTrue( $be->isUploadedFile( '/tmp/foo.txt' ) );
+        self::assertFalse( $be->isUploadedFile( '/tmp/bar.txt' ) );
     }
 
 

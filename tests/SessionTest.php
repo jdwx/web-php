@@ -9,32 +9,34 @@ use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use JDWX\Web\Request;
 use JDWX\Web\Session;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
-class SessionTest extends TestCase {
+#[CoversClass( Session::class )]
+final class SessionTest extends TestCase {
 
 
     public function testAbort() : void {
         $ses = $this->initSession();
         $ses->bFailAbort = true;
-        static::expectException( RuntimeException::class );
+        self::expectException( RuntimeException::class );
         Session::abort();
     }
 
 
     public function testActive() : void {
         $this->initSession();
-        static::assertFalse( Session::active() );
+        self::assertFalse( Session::active() );
     }
 
 
     public function testCacheLimiter() : void {
         $this->initSession();
-        static::assertEquals( 'nocache', Session::cacheLimiter() );
+        self::assertEquals( 'nocache', Session::cacheLimiter() );
         Session::cacheLimiter( 'public' );
-        static::assertEquals( 'public', Session::cacheLimiter() );
-        static::expectException( InvalidArgumentException::class );
+        self::assertEquals( 'public', Session::cacheLimiter() );
+        self::expectException( InvalidArgumentException::class );
         Session::cacheLimiter( 'BLOWUP' );
     }
 
@@ -42,7 +44,7 @@ class SessionTest extends TestCase {
     public function testCacheLimiterForFailure() : void {
         $ses = $this->initSession();
         $ses->bFailCacheLimiter = true;
-        static::expectException( RuntimeException::class );
+        self::expectException( RuntimeException::class );
         Session::cacheLimiter( 'public' );
     }
 
@@ -51,19 +53,19 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::set( 'foo', 'bar' );
-        static::assertEquals( 'bar', Session::get( 'foo' ) );
+        self::assertEquals( 'bar', Session::get( 'foo' ) );
         Session::clear( 'foo' );
-        static::assertNull( Session::get( 'foo' ) );
+        self::assertNull( Session::get( 'foo' ) );
     }
 
 
     public function testCookieInRequest() : void {
         $be = $this->initSession();
         $req = Request::synthetic( [], [], [], [] );
-        static::assertFalse( Session::cookieInRequest( $req ) );
+        self::assertFalse( Session::cookieInRequest( $req ) );
         $req = Request::synthetic( [], [], [ $be->stName => $be->stID ], [] );
-        static::assertTrue( Session::cookieInRequest( $req ) );
-        static::assertFalse( Session::cookieInRequest() );
+        self::assertTrue( Session::cookieInRequest( $req ) );
+        self::assertFalse( Session::cookieInRequest() );
     }
 
 
@@ -72,12 +74,12 @@ class SessionTest extends TestCase {
 
 
             public static function sessionCheck() : SessionBackendInterface {
-                return static::backend();
+                return self::backend();
             }
 
 
             public static function whack() : void {
-                static::$backend = null;
+                self::$backend = null;
             }
 
 
@@ -86,7 +88,7 @@ class SessionTest extends TestCase {
         $ses::whack();
         /** @noinspection PhpAccessStaticViaInstanceInspection */
         $be = $ses::sessionCheck();
-        static::assertInstanceOf( PHPSessionBackend::class, $be );
+        self::assertInstanceOf( PHPSessionBackend::class, $be );
     }
 
 
@@ -94,9 +96,9 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::set( 'foo', 'bar' );
-        static::assertEquals( 'bar', Session::get( 'foo' ) );
+        self::assertEquals( 'bar', Session::get( 'foo' ) );
         Session::destroy();
-        static::expectException( LogicException::class );
+        self::expectException( LogicException::class );
         Session::get( 'foo' );
     }
 
@@ -105,7 +107,7 @@ class SessionTest extends TestCase {
         $ses = $this->initSession();
         $ses->bFailDestroy = true;
         Session::start();
-        static::expectException( RuntimeException::class );
+        self::expectException( RuntimeException::class );
         Session::destroy();
     }
 
@@ -115,10 +117,10 @@ class SessionTest extends TestCase {
         Session::start();
         Session::set( 'foo', 'bar' );
         $tmExpire = Session::get( 'tmExpire' );
-        static::assertSame( 'bar', Session::get( 'foo' ) );
+        self::assertSame( 'bar', Session::get( 'foo' ) );
         Session::flush();
-        static::assertNull( Session::get( 'foo' ) );
-        static::assertSame( $tmExpire, Session::get( 'tmExpire' ) );
+        self::assertNull( Session::get( 'foo' ) );
+        self::assertSame( $tmExpire, Session::get( 'tmExpire' ) );
     }
 
 
@@ -126,10 +128,10 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::set( 'foo', 123 );
-        static::assertSame( 123, Session::getInt( 'foo' ) );
-        static::assertSame( 123, Session::getInt( 'foo', 456 ) );
-        static::assertSame( 456, Session::getInt( 'bar', 456 ) );
-        static::expectException( RuntimeException::class );
+        self::assertSame( 123, Session::getInt( 'foo' ) );
+        self::assertSame( 123, Session::getInt( 'foo', 456 ) );
+        self::assertSame( 456, Session::getInt( 'bar', 456 ) );
+        self::expectException( RuntimeException::class );
         Session::getInt( 'bar' );
     }
 
@@ -137,11 +139,11 @@ class SessionTest extends TestCase {
     public function testGetIntOrNull() : void {
         $this->initSession();
         Session::start();
-        static::assertNull( Session::getIntOrNull( 'foo' ) );
+        self::assertNull( Session::getIntOrNull( 'foo' ) );
         Session::set( 'foo', 123 );
-        static::assertSame( 123, Session::getIntOrNull( 'foo' ) );
+        self::assertSame( 123, Session::getIntOrNull( 'foo' ) );
         Session::set( 'foo', 'bar' );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         Session::getIntOrNull( 'foo' );
     }
 
@@ -150,9 +152,9 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::set( 'foo', 'bar' );
-        static::assertSame( 'bar', Session::getString( 'foo' ) );
-        static::assertSame( 'baz', Session::getString( 'bar', 'baz' ) );
-        static::expectException( RuntimeException::class );
+        self::assertSame( 'bar', Session::getString( 'foo' ) );
+        self::assertSame( 'baz', Session::getString( 'bar', 'baz' ) );
+        self::expectException( RuntimeException::class );
         Session::getString( 'bar' );
     }
 
@@ -160,11 +162,11 @@ class SessionTest extends TestCase {
     public function testGetStringOrNull() : void {
         $this->initSession();
         Session::start();
-        static::assertNull( Session::getStringOrNull( 'foo' ) );
+        self::assertNull( Session::getStringOrNull( 'foo' ) );
         Session::set( 'foo', 'bar' );
-        static::assertSame( 'bar', Session::getStringOrNull( 'foo' ) );
+        self::assertSame( 'bar', Session::getStringOrNull( 'foo' ) );
         Session::set( 'foo', 123 );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         Session::getStringOrNull( 'foo' );
     }
 
@@ -172,9 +174,9 @@ class SessionTest extends TestCase {
     public function testId() : void {
         $ses = $this->initSession();
         Session::start();
-        static::assertSame( 'test-id', Session::id() );
+        self::assertSame( 'test-id', Session::id() );
         $ses->bFailId = true;
-        static::expectException( RuntimeException::class );
+        self::expectException( RuntimeException::class );
         Session::id();
     }
 
@@ -184,9 +186,9 @@ class SessionTest extends TestCase {
         Session::start();
         Session::set( 'foo', 123 );
         Session::increment( 'foo' );
-        static::assertSame( 124, Session::getInt( 'foo' ) );
+        self::assertSame( 124, Session::getInt( 'foo' ) );
         Session::increment( 'bar', 5 );
-        static::assertSame( 5, Session::getInt( 'bar' ) );
+        self::assertSame( 5, Session::getInt( 'bar' ) );
     }
 
 
@@ -198,7 +200,7 @@ class SessionTest extends TestCase {
         Session::set( 'foo', 123 );
         Session::set( 'bar', 456 );
         $x = Session::list();
-        static::assertSame( [ 'foo' => 123, 'bar' => 456 ], $x );
+        self::assertSame( [ 'foo' => 123, 'bar' => 456 ], $x );
     }
 
 
@@ -207,12 +209,12 @@ class SessionTest extends TestCase {
         Session::start();
         Session::nestedSet( 'foo', 'bar', 'baz' );
         Session::nestedSet( 'foo', 'qux', 'quux' );
-        static::assertSame( 'baz', Session::nestedGet( 'foo', 'bar' ) );
-        static::assertSame( 'quux', Session::nestedGet( 'foo', 'qux' ) );
+        self::assertSame( 'baz', Session::nestedGet( 'foo', 'bar' ) );
+        self::assertSame( 'quux', Session::nestedGet( 'foo', 'qux' ) );
         Session::nestedClear( 'foo', 'bar' );
-        static::assertSame( 'quux', Session::nestedGet( 'foo', 'qux' ) );
+        self::assertSame( 'quux', Session::nestedGet( 'foo', 'qux' ) );
         Session::nestedClear( 'foo', 'bar' );
-        static::assertNull( Session::nestedGet( 'foo', 'bar' ) );
+        self::assertNull( Session::nestedGet( 'foo', 'bar' ) );
     }
 
 
@@ -220,10 +222,10 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 123 );
-        static::assertSame( 123, Session::nestedGetInt( 'foo', 'bar' ) );
-        static::assertSame( 123, Session::nestedGetInt( 'foo', 'bar', 456 ) );
-        static::assertSame( 456, Session::nestedGetInt( 'foo', 'baz', 456 ) );
-        static::expectException( RuntimeException::class );
+        self::assertSame( 123, Session::nestedGetInt( 'foo', 'bar' ) );
+        self::assertSame( 123, Session::nestedGetInt( 'foo', 'bar', 456 ) );
+        self::assertSame( 456, Session::nestedGetInt( 'foo', 'baz', 456 ) );
+        self::expectException( RuntimeException::class );
         Session::nestedGetInt( 'foo', 'baz' );
     }
 
@@ -231,11 +233,11 @@ class SessionTest extends TestCase {
     public function testNestedGetIntOrNull() : void {
         $this->initSession();
         Session::start();
-        static::assertNull( Session::nestedGetIntOrNull( 'foo', 'bar' ) );
+        self::assertNull( Session::nestedGetIntOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 123 );
-        static::assertSame( 123, Session::nestedGetIntOrNull( 'foo', 'bar' ) );
+        self::assertSame( 123, Session::nestedGetIntOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 'baz' );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         Session::nestedGetIntOrNull( 'foo', 'bar' );
     }
 
@@ -244,9 +246,9 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 'baz' );
-        static::assertSame( 'baz', Session::nestedGetString( 'foo', 'bar' ) );
-        static::assertSame( 'qux', Session::nestedGetString( 'foo', 'quux', 'qux' ) );
-        static::expectException( RuntimeException::class );
+        self::assertSame( 'baz', Session::nestedGetString( 'foo', 'bar' ) );
+        self::assertSame( 'qux', Session::nestedGetString( 'foo', 'quux', 'qux' ) );
+        self::expectException( RuntimeException::class );
         Session::nestedGetString( 'foo', 'quux' );
     }
 
@@ -254,11 +256,11 @@ class SessionTest extends TestCase {
     public function testNestedGetStringOrNull() : void {
         $this->initSession();
         Session::start();
-        static::assertNull( Session::nestedGetStringOrNull( 'foo', 'bar' ) );
+        self::assertNull( Session::nestedGetStringOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 'baz' );
-        static::assertSame( 'baz', Session::nestedGetStringOrNull( 'foo', 'bar' ) );
+        self::assertSame( 'baz', Session::nestedGetStringOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 123 );
-        static::expectException( TypeError::class );
+        self::expectException( TypeError::class );
         Session::nestedGetStringOrNull( 'foo', 'bar' );
     }
 
@@ -268,16 +270,16 @@ class SessionTest extends TestCase {
         Session::start();
         Session::nestedSet( 'foo', 'bar', 123 );
         Session::nestedIncrement( 'foo', 'bar' );
-        static::assertSame( 124, Session::nestedGetInt( 'foo', 'bar' ) );
+        self::assertSame( 124, Session::nestedGetInt( 'foo', 'bar' ) );
         Session::nestedIncrement( 'foo', 'baz', 5 );
-        static::assertSame( 5, Session::nestedGetInt( 'foo', 'baz' ) );
+        self::assertSame( 5, Session::nestedGetInt( 'foo', 'baz' ) );
     }
 
 
     public function testPeek() : void {
         $this->initSession( [ 'foo' => 'bar', 'baz' => 'qux' ] );
         $peek = Session::peek();
-        static::assertSame( [ 'foo' => 'bar', 'baz' => 'qux' ], $peek );
+        self::assertSame( [ 'foo' => 'bar', 'baz' => 'qux' ], $peek );
     }
 
 
@@ -286,9 +288,9 @@ class SessionTest extends TestCase {
         Session::start();
         $stID = Session::id();
         Session::regenerate();
-        static::assertNotSame( $stID, Session::id() );
+        self::assertNotSame( $stID, Session::id() );
         $ses->bFailRegenerate = true;
-        static::expectException( RuntimeException::class );
+        self::expectException( RuntimeException::class );
         Session::regenerate();
     }
 
@@ -296,10 +298,10 @@ class SessionTest extends TestCase {
     public function testStart() : void {
         $be = $this->initSession();
         Session::start( i_stSessionName: 'alt-session-name' );
-        static::assertSame( 'alt-session-name', $be->stName );
+        self::assertSame( 'alt-session-name', $be->stName );
         Session::destroy();
         $be->bFailStart = true;
-        static::expectException( RuntimeException::class );
+        self::expectException( RuntimeException::class );
         Session::start( i_stSessionName: 'alt-session-name-2' );
     }
 
@@ -307,12 +309,12 @@ class SessionTest extends TestCase {
     public function testStart2() : void {
         $this->initSession();
         $req = Request::synthetic( [], [], [ 'baz' => 'foo|bar' ], [] );
-        static::assertFalse( Session::start( i_stSessionName: 'baz', i_req: $req ) );
+        self::assertFalse( Session::start( i_stSessionName: 'baz', i_req: $req ) );
         $req = Request::synthetic( [], [], [ 'baz' => str_repeat( '01234567890', 10 ) ], [] );
-        static::assertFalse( Session::start( i_stSessionName: 'baz', i_req: $req ) );
+        self::assertFalse( Session::start( i_stSessionName: 'baz', i_req: $req ) );
 
-        static::assertTrue( Session::start() );
-        static::expectException( LogicException::class );
+        self::assertTrue( Session::start() );
+        self::expectException( LogicException::class );
         Session::start();
 
     }
@@ -320,8 +322,8 @@ class SessionTest extends TestCase {
 
     public function testStart3() : void {
         $this->initSession( [ 'tmExpire' => time() - 3600, 'foo' => 'bar' ] );
-        static::assertTrue( Session::start() );
-        static::assertNull( Session::get( 'foo' ) );
+        self::assertTrue( Session::start() );
+        self::assertNull( Session::get( 'foo' ) );
     }
 
 
@@ -329,10 +331,10 @@ class SessionTest extends TestCase {
         $be = $this->initSession();
         Session::start();
         Session::set( 'foo', 'bar' );
-        static::assertSame( 'bar', Session::get( 'foo' ) );
+        self::assertSame( 'bar', Session::get( 'foo' ) );
         Session::unset();
-        static::assertFalse( Session::has( 'foo' ) );
-        static::expectException( RuntimeException::class );
+        self::assertFalse( Session::has( 'foo' ) );
+        self::expectException( RuntimeException::class );
         $be->bFailUnset = true;
         Session::unset();
     }
@@ -342,9 +344,9 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::set( 'foo', 'bar' );
-        static::assertSame( 'bar', Session::get( 'foo' ) );
+        self::assertSame( 'bar', Session::get( 'foo' ) );
         Session::writeClose();
-        static::expectException( LogicException::class );
+        self::expectException( LogicException::class );
         Session::get( 'foo' );
     }
 
@@ -353,7 +355,7 @@ class SessionTest extends TestCase {
         $be = $this->initSession();
         Session::start();
         $be->bFailWriteClose = true;
-        static::expectException( RuntimeException::class );
+        self::expectException( RuntimeException::class );
         Session::writeClose();
     }
 
@@ -362,10 +364,10 @@ class SessionTest extends TestCase {
         $this->initSession();
         Session::start();
         Session::set( 'foo', 'bar' );
-        static::assertSame( 'bar', Session::get( 'foo' ) );
+        self::assertSame( 'bar', Session::get( 'foo' ) );
         Session::writeClose();
         Session::start();
-        static::assertSame( 'bar', Session::get( 'foo' ) );
+        self::assertSame( 'bar', Session::get( 'foo' ) );
     }
 
 

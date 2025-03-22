@@ -14,7 +14,7 @@ namespace JDWX\Web;
  * It's designed to be used for simple server-generated pages like
  * error pages.
  */
-abstract class HtmlPage {
+abstract class HtmlPage implements \Stringable {
 
 
     /** @var list<string> */
@@ -23,6 +23,11 @@ abstract class HtmlPage {
     private ?string $nstTitle = null;
 
     private ?string $nstCharset = 'UTF-8';
+
+
+    public function __toString() : string {
+        return $this->render();
+    }
 
 
     public function addCSS( string $i_stCSSFile ) : static {

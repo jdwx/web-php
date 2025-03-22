@@ -41,6 +41,7 @@ class SimpleHtmlPageTest extends TestCase {
     public function testRender() : void {
         $page = new SimpleHtmlPage();
         $page->setContent( 'TEST_CONTENT' );
+        $page->setTitle( 'TEST_TITLE' );
 
         # Test for doctype.
         self::assertStringContainsString( '<!DOCTYPE html>', $page->render() );
@@ -50,6 +51,15 @@ class SimpleHtmlPageTest extends TestCase {
 
         # Test for viewport.
         self::assertStringContainsString( 'width=device-width', $page->render() );
+
+        # Test for title.
+        self::assertStringContainsString( '<title>TEST_TITLE</title>', $page->render() );
+
+        # Test for charset.
+        self::assertStringContainsString( '<meta charset="UTF-8">', $page->render() );
+
+        # Test for content.
+        self::assertStringContainsString( 'TEST_CONTENT', $page->render() );
 
     }
 
@@ -72,6 +82,13 @@ class SimpleHtmlPageTest extends TestCase {
         $page = new SimpleHtmlPage();
         $page->setTitle( 'TEST_TITLE' );
         self::assertStringContainsString( '<title>TEST_TITLE</title>', $page->render() );
+    }
+
+
+    public function testToString() : void {
+        $page = new SimpleHtmlPage();
+        $page->setContent( 'TEST_CONTENT' );
+        self::assertSame( $page->render(), strval( $page ) );
     }
 
 

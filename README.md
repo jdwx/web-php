@@ -14,7 +14,7 @@ Or download the source from GitHub: https://github.com/jdwx/web-php.git
 
 ## Requirements
 
-This module requires PHP 8.2 or later.
+This module requires PHP 8.3 or later.
 
 ## Usage
 

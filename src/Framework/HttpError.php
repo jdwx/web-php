@@ -18,7 +18,7 @@ class HttpError {
 
 
     /** @var array<int, string> */
-    protected const ERROR_NAMES = [
+    protected const array ERROR_NAMES = [
         400 => 'Bad Request',
         401 => 'Authorization Required',
         403 => 'Access Denied',
@@ -32,7 +32,7 @@ class HttpError {
 
 
     /** @var array<int, string> */
-    protected const ERROR_TEXT = [
+    protected const array ERROR_TEXT = [
         401 => 'You must be logged in to access this resource.',
         403 => 'The file you requested could not be accessed.',
         404 => 'The file or resource you requested was not found.',

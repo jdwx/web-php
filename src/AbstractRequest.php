@@ -13,20 +13,12 @@ use JDWX\Param\ParameterSet;
 use OutOfBoundsException;
 
 
-abstract class AbstractRequest implements IRequest {
+abstract readonly class AbstractRequest implements RequestInterface {
 
 
-    protected ParameterSet $setCookie;
-
-    protected ParameterSet $setGet;
-
-    protected ParameterSet $setPost;
-
-    protected FilesHandler $files;
-
-    protected string $stMethod;
-
-    protected string $stUri;
+    public function __construct( private ParameterSet    $setGet, private ParameterSet $setPost,
+                                 private ParameterSet    $setCookie, private FilesHandler $files,
+                                 private ServerInterface $server ) {}
 
 
     public function COOKIE( string $i_stName, mixed $i_xDefault = null ) : ?IParameter {
@@ -95,17 +87,17 @@ abstract class AbstractRequest implements IRequest {
 
 
     public function isGET() : bool {
-        return 'GET' == $this->stMethod;
+        return 'GET' === $this->method();
     }
 
 
     public function isPOST() : bool {
-        return 'POST' == $this->stMethod;
+        return 'POST' === $this->method();
     }
 
 
     public function method() : string {
-        return $this->stMethod;
+        return $this->server->requestMethod();
     }
 
 
@@ -129,8 +121,13 @@ abstract class AbstractRequest implements IRequest {
     }
 
 
+    public function server() : ServerInterface {
+        return $this->server;
+    }
+
+
     public function uri() : string {
-        return $this->stUri;
+        return $this->server->requestUri();
     }
 
 

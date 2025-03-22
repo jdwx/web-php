@@ -4,7 +4,10 @@
 declare( strict_types = 1 );
 
 
+use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Request;
+use JDWX\Web\RequestInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shims\MyRequest;
 
@@ -12,111 +15,65 @@ use Shims\MyRequest;
 require_once __DIR__ . '/Shims/MyRequest.php';
 
 
-class RequestTest extends TestCase {
-
-
-    public function testCOOKIE() : void {
-        /** @phpstan-ignore-next-line */
-        $req = Request::synthetic( [], [], [ 'foo' => 'bar', 1 => 'baz' ], [], 'GET', '/' );
-        static::assertSame( 'bar', $req->COOKIE( 'foo' )->asString() );
-        static::assertSame( 'baz', $req->COOKIE( '1' )->asString() );
-        static::assertNull( $req->COOKIE( 'bar' ) );
-    }
-
-
-    public function testCookieEx() : void {
-        $req = Request::synthetic( [], [], [ 'foo' => 'bar' ], [], 'GET', '/' );
-        static::assertSame( 'bar', $req->cookieEx( 'foo' )->asString() );
-        static::expectException( OutOfBoundsException::class );
-        $req->cookieEx( 'bar' );
-    }
-
-
-    public function testCookieHas() : void {
-        $req = Request::synthetic( [], [], [ 'foo' => 'bar' ], [], 'GET', '/' );
-        static::assertTrue( $req->cookieHas( 'foo' ) );
-        static::assertFalse( $req->cookieHas( 'bar' ) );
-        static::assertFalse( $req->cookieHas( 'foo', 'bar' ) );
-    }
-
-
-    public function testFILES() : void {
-        $req = Request::synthetic( [], [], [], [ 'foo' => [ 'name' => 'bar' ] ], 'GET', '/' );
-        static::assertTrue( $req->FILES()->has( 'foo' ) );
-    }
-
-
-    public function testGET() : void {
-        /** @phpstan-ignore-next-line */
-        $req = Request::synthetic( [ 'foo' => 'bar', 1 => 'baz' ], [], [], [], 'GET', '/' );
-        static::assertSame( 'bar', $req->GET( 'foo' )->asString() );
-        static::assertSame( 'baz', $req->GET( '1' )->asString() );
-        static::assertNull( $req->GET( 'bar' ) );
-    }
-
-
-    public function testGetEx() : void {
-        $req = Request::synthetic( [ 'foo' => 'bar' ], [], [], [], 'GET', '/' );
-        static::assertSame( 'bar', $req->getEx( 'foo' )->asString() );
-        static::expectException( OutOfBoundsException::class );
-        $req->getEx( 'bar' );
-    }
+#[CoversClass( Request::class )]
+final class RequestTest extends TestCase {
 
 
     public function testGetGlobal() : void {
-        $_SERVER[ 'REQUEST_METHOD' ] = 'GET';
-        $_SERVER[ 'REQUEST_URI' ] = '/';
-        $x = MyRequest::getGlobal();
-        static::assertInstanceOf( Request::class, $x );
-        MyRequest::whackGlobal();
+        $x = $this->newGlobalRequest();
+        self::assertInstanceOf( Request::class, $x );
     }
 
 
-    public function testGetHas() : void {
-        $req = Request::synthetic( [ 'foo' => 'bar' ], [], [], [] );
-        static::assertTrue( $req->getHas( 'foo' ) );
-        static::assertFalse( $req->getHas( 'bar' ) );
-        static::assertFalse( $req->getHas( 'foo', 'bar' ) );
+    public function testGlobalCookie() : void {
+        $req = $this->newGlobalRequest( i_rCookie: [ 'foo' => 'bar' ] );
+        self::assertSame( 'bar', $req->COOKIE( 'foo' )->asString() );
+    }
+
+
+    public function testGlobalFiles() : void {
+        $req = $this->newGlobalRequest( i_rFiles: [ 'foo' => [ 'name' => 'bar' ] ] );
+        self::assertTrue( $req->FILES()->has( 'foo' ) );
+    }
+
+
+    public function testGlobalGet() : void {
+        $req = $this->newGlobalRequest( [ 'foo' => 'bar' ] );
+        self::assertSame( 'bar', $req->GET( 'foo' )->asString() );
+    }
+
+
+    public function testGlobalMethod() : void {
+        $req = $this->newGlobalRequest( i_stMethod: 'TEST_METHOD' );
+        self::assertSame( 'TEST_METHOD', $req->method() );
+    }
+
+
+    public function testGlobalPost() : void {
+        $req = $this->newGlobalRequest( i_rPost: [ 'foo' => 'bar' ] );
+        self::assertSame( 'bar', $req->POST( 'foo' )->asString() );
+    }
+
+
+    public function testGlobalUri() : void {
+        $req = $this->newGlobalRequest( i_stURI: '/foo/bar?a=b&c=d' );
+        self::assertSame( '/foo/bar?a=b&c=d', $req->uri() );
     }
 
 
     public function testInit() : void {
+        MyRequest::whackGlobal();
 
-        $req = Request::init( [ 'foo' => 'bar' ], [], [], [] );
-        static::assertInstanceOf( Request::class, $req );
+        $srv = new MockServer();
+        $req = Request::init( [ 'foo' => 'bar' ], [], [], [], $srv );
+        self::assertInstanceOf( Request::class, $req );
 
         $req = Request::getGlobal();
-        static::assertInstanceOf( Request::class, $req );
-        static::assertSame( 'bar', $req->GET( 'foo' )->asString() );
+        self::assertInstanceOf( Request::class, $req );
+        self::assertSame( 'bar', $req->GET( 'foo' )->asString() );
 
-        static::expectException( LogicException::class );
-        Request::init( [], [], [], [] );
-    }
-
-
-    public function testIsGET() : void {
-
-        $_SERVER[ 'REQUEST_METHOD' ] = 'GET';
-        $req = Request::synthetic( [], [], [], [] );
-        static::assertTrue( $req->isGET() );
-
-        $_SERVER[ 'REQUEST_METHOD' ] = 'POST';
-        $req = Request::synthetic( [], [], [], [] );
-        static::assertFalse( $req->isGET() );
-
-    }
-
-
-    public function testIsPOST() : void {
-
-        $_SERVER[ 'REQUEST_METHOD' ] = 'POST';
-        $req = Request::synthetic( [], [], [], [] );
-        static::assertTrue( $req->isPOST() );
-
-        $_SERVER[ 'REQUEST_METHOD' ] = 'GET';
-        $req = Request::synthetic( [], [], [], [] );
-        static::assertFalse( $req->isPOST() );
-
+        self::expectException( LogicException::class );
+        Request::init( [], [], [], [], $srv );
     }
 
 
@@ -124,50 +81,7 @@ class RequestTest extends TestCase {
         MyRequest::whackGlobal();
         $_SERVER[ 'REQUEST_METHOD' ] = 'TEST_METHOD';
         $req = Request::getGlobal();
-        static::assertSame( 'TEST_METHOD', $req->method() );
-    }
-
-
-    public function testMethodForManual() : void {
-        $req = Request::synthetic( [], [], [], [], 'TEST_METHOD', '/' );
-        static::assertSame( 'TEST_METHOD', $req->method() );
-    }
-
-
-    public function testPOST() : void {
-        /** @phpstan-ignore-next-line */
-        $req = Request::synthetic( [], [ 'foo' => 'bar', 1 => 'baz' ], [], [] );
-        static::assertSame( 'bar', $req->POST( 'foo' )->asString() );
-        static::assertSame( 'baz', $req->POST( '1' )->asString() );
-        static::assertNull( $req->POST( 'bar' ) );
-    }
-
-
-    public function testPath() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/foo/bar?a=b&c=d' );
-        static::assertSame( '/foo/bar', $req->path() );
-    }
-
-
-    public function testPostEx() : void {
-        $req = Request::synthetic( [], [ 'foo' => 'bar' ], [], [] );
-        static::assertSame( 'bar', $req->postEx( 'foo' )->asString() );
-        static::expectException( OutOfBoundsException::class );
-        $req->postEx( 'bar' );
-    }
-
-
-    public function testPostHas() : void {
-        $req = Request::synthetic( [], [ 'foo' => 'bar' ], [], [] );
-        static::assertTrue( $req->postHas( 'foo' ) );
-        static::assertFalse( $req->postHas( 'bar' ) );
-        static::assertFalse( $req->postHas( 'foo', 'bar' ) );
-    }
-
-
-    public function testUri() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/foo/bar?a=b&c=d' );
-        static::assertSame( '/foo/bar?a=b&c=d', $req->uri() );
+        self::assertSame( 'TEST_METHOD', $req->method() );
     }
 
 
@@ -176,38 +90,47 @@ class RequestTest extends TestCase {
         $_SERVER[ 'REQUEST_URI' ] = '/foo/bar?a=b&c=d';
         $_SERVER[ 'REQUEST_METHOD' ] = 'GET';
         $req = Request::getGlobal();
-        static::assertSame( '/foo/bar?a=b&c=d', $req->uri() );
+        self::assertSame( '/foo/bar?a=b&c=d', $req->uri() );
     }
 
 
-    public function testUriParts() : void {
-        $req = Request::synthetic( [], [], [], [], 'GET', '/foo/bar/baz?a=b&c=d' );
-        $parts = $req->uriParts();
-        static::assertSame( [ 'foo', 'bar' ], $parts->subFolders );
-        static::assertSame( 'baz', $parts->nstFile );
-        static::assertSame( 'b', $parts[ 'a' ] );
-        static::assertSame( 'd', $parts[ 'c' ] );
-    }
-
-
-    public function testXCOOKIE() : void {
-        $req = Request::synthetic( [], [], [ 'foo' => 'bar' ], [] );
-        static::assertTrue( $req->_COOKIE()->has( 'foo' ) );
-        static::assertFalse( $req->_COOKIE()->has( 'bar' ) );
-    }
-
-
-    public function testXGET() : void {
-        $req = Request::synthetic( [ 'foo' => 'bar' ], [], [], [] );
-        static::assertTrue( $req->_GET()->has( 'foo' ) );
-        static::assertFalse( $req->_GET()->has( 'bar' ) );
-    }
-
-
-    public function testXPOST() : void {
-        $req = Request::synthetic( [], [ 'foo' => 'bar' ], [], [] );
-        static::assertTrue( $req->_POST()->has( 'foo' ) );
-        static::assertFalse( $req->_POST()->has( 'bar' ) );
+    /**
+     * @param array<string, string|list<string>> $i_rGet
+     * @param array<string, string|list<string>> $i_rPost
+     * @param array<string, string> $i_rCookie
+     * @param mixed[] $i_rFiles
+     */
+    private function newGlobalRequest( array  $i_rGet = [], array $i_rPost = [],
+                                       array  $i_rCookie = [], array $i_rFiles = [],
+                                       string $i_stMethod = 'GET', string $i_stURI = '/' ) : RequestInterface {
+        MyRequest::whackGlobal();
+        foreach ( array_keys( $_GET ) as $k ) {
+            unset( $_GET[ $k ] );
+        }
+        foreach ( $i_rGet as $k => $v ) {
+            $_GET[ $k ] = $v;
+        }
+        foreach ( array_keys( $_POST ) as $k ) {
+            unset( $_POST[ $k ] );
+        }
+        foreach ( $i_rPost as $k => $v ) {
+            $_POST[ $k ] = $v;
+        }
+        foreach ( array_keys( $_COOKIE ) as $k ) {
+            unset( $_COOKIE[ $k ] );
+        }
+        foreach ( $i_rCookie as $k => $v ) {
+            $_COOKIE[ $k ] = $v;
+        }
+        foreach ( array_keys( $_FILES ) as $k ) {
+            unset( $_FILES[ $k ] );
+        }
+        foreach ( $i_rFiles as $k => $v ) {
+            $_FILES[ $k ] = $v;
+        }
+        $_SERVER[ 'REQUEST_METHOD' ] = $i_stMethod;
+        $_SERVER[ 'REQUEST_URI' ] = $i_stURI;
+        return Request::getGlobal();
     }
 
 

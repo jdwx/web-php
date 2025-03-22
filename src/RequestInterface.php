@@ -11,7 +11,7 @@ use JDWX\Param\IParameter;
 use JDWX\Param\IParameterSet;
 
 
-interface IRequest {
+interface RequestInterface {
 
 
     public function COOKIE( string $i_stName ) : ?IParameter;
@@ -66,6 +66,9 @@ interface IRequest {
 
     /** @param string ...$i_rstNames */
     public function postHas( ...$i_rstNames ) : bool;
+
+
+    public function server() : ServerInterface;
 
 
     public function uri() : string;

@@ -10,11 +10,11 @@ namespace Shims;
 use JDWX\Web\Request;
 
 
-class MyRequest extends Request {
+readonly class MyRequest extends Request {
 
 
     public static function whackGlobal() : void {
-        static::$req = null;
+        static::req( null, true );
     }
 
 

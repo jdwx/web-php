@@ -10,25 +10,25 @@ namespace JDWX\Web;
 class Url {
 
 
-    private const ALLOWED_GEN_DELIMITERS = ':/?#[]@';
+    private const string ALLOWED_GEN_DELIMITERS = ':/?#[]@';
 
-    private const ALLOWED_SUB_DELIMITERS = '!$&\'()*+,;=';
+    private const string ALLOWED_SUB_DELIMITERS = '!$&\'()*+,;=';
 
-    private const ALLOWED_ENCODE         = '%';
+    private const string ALLOWED_ENCODE         = '%';
 
     /** @noinspection SpellCheckingInspection */
-    private const ALLOWED_UNRESERVED_ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    private const string ALLOWED_UNRESERVED_ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-    private const ALLOWED_UNRESERVED_DIGIT = '0123456789';
+    private const string ALLOWED_UNRESERVED_DIGIT = '0123456789';
 
-    private const ALLOWED_UNRESERVED_MISC  = '-._~';
+    private const string ALLOWED_UNRESERVED_MISC  = '-._~';
 
-    private const ALLOWED_UNRESERVED       =
+    private const string ALLOWED_UNRESERVED       =
         self::ALLOWED_UNRESERVED_ALPHA
         . self::ALLOWED_UNRESERVED_DIGIT
         . self::ALLOWED_UNRESERVED_MISC;
 
-    private const ALLOWED_CHARACTERS       =
+    private const string ALLOWED_CHARACTERS       =
         self::ALLOWED_GEN_DELIMITERS
         . self::ALLOWED_SUB_DELIMITERS
         . self::ALLOWED_ENCODE
@@ -78,6 +78,10 @@ class Url {
 
         if ( isset( $rUri[ 'query' ] ) ) {
             self::splitQuery( $parts, $rUri[ 'query' ] );
+        }
+
+        if ( isset( $rUri[ 'fragment' ] ) ) {
+            $parts->nstFragment = $rUri[ 'fragment' ];
         }
 
         return $parts;

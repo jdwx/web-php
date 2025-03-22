@@ -6,9 +6,11 @@ declare( strict_types = 1 );
 
 use JDWX\Web\Url;
 use JDWX\Web\UrlParts;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( Url::class )]
 final class UrlTest extends TestCase {
 
 
@@ -78,6 +80,13 @@ final class UrlTest extends TestCase {
         $parts = Url::split( '/foo/bar?baz=qux%20quux' );
         self::assertInstanceOf( UrlParts::class, $parts );
         self::assertSame( 'qux quux', $parts[ 'baz' ] );
+    }
+
+
+    public function testSplitForFragment() : void {
+        $parts = Url::split( '/a/b#fragment' );
+        self::assertInstanceOf( UrlParts::class, $parts );
+        self::assertSame( 'fragment', $parts->nstFragment );
     }
 
 

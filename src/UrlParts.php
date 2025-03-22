@@ -29,6 +29,8 @@ class UrlParts implements \ArrayAccess {
     /** @var array<string, string|list<string>> */
     public array $rQuery = [];
 
+    public ?string $nstFragment = null;
+
 
     /** @param ?string $offset */
     public function offsetExists( mixed $offset ) : bool {

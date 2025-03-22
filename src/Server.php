@@ -8,80 +8,80 @@ namespace JDWX\Web;
 
 
 /** This class encapsulates the $_SERVER superglobal to allow type & error checking. */
-class Server {
+class Server implements ServerInterface {
 
 
-    public static function documentRoot() : string {
+    public function documentRoot() : string {
         return $_SERVER[ 'DOCUMENT_ROOT' ];
     }
 
 
-    public static function httpHost() : string {
+    public function httpHost() : string {
         return $_SERVER[ 'HTTP_HOST' ];
     }
 
 
-    public static function httpReferer() : string {
+    public function httpReferer() : string {
         return $_SERVER[ 'HTTP_REFERER' ];
     }
 
 
-    public static function httpUserAgent() : string {
+    public function httpUserAgent() : string {
         return $_SERVER[ 'HTTP_USER_AGENT' ];
     }
 
 
-    public static function https() : bool {
+    public function https() : bool {
         return $_SERVER[ 'HTTPS' ] == 'on';
     }
 
 
-    public static function pathInfo() : string {
+    public function pathInfo() : string {
         return $_SERVER[ 'PATH_INFO' ];
     }
 
 
-    public static function phpSelf() : string {
+    public function phpSelf() : string {
         return $_SERVER[ 'PHP_SELF' ];
     }
 
 
-    public static function remotePort() : int {
+    public function remotePort() : int {
         return (int) $_SERVER[ 'REMOTE_PORT' ];
     }
 
 
-    public static function requestMethod() : string {
+    public function requestMethod() : string {
         return $_SERVER[ 'REQUEST_METHOD' ];
     }
 
 
-    public static function requestScheme() : string {
+    public function requestScheme() : string {
         return $_SERVER[ 'REQUEST_SCHEME' ];
     }
 
 
-    public static function requestUri() : string {
+    public function requestUri() : string {
         return $_SERVER[ 'REQUEST_URI' ];
     }
 
 
-    public static function scriptFilename() : string {
+    public function scriptFilename() : string {
         return $_SERVER[ 'SCRIPT_FILENAME' ];
     }
 
 
-    public static function scriptName() : string {
+    public function scriptName() : string {
         return $_SERVER[ 'SCRIPT_NAME' ];
     }
 
 
-    public static function serverAddr() : string {
+    public function serverAddr() : string {
         return $_SERVER[ 'SERVER_ADDR' ];
     }
 
 
-    public static function serverName() : string {
+    public function serverName() : string {
         return $_SERVER[ 'SERVER_NAME' ];
     }
 

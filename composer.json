@@ -8,9 +8,10 @@
 	},
 	"require-dev": {
 		"jetbrains/phpstorm-attributes": "^1.0",
-		"phpunit/phpunit": "^9"
+		"phpunit/phpunit": "^10"
 	},
 	"require": {
+		"php": ">=8.3.0",
 		"jdwx/log": "^1.0",
 		"jdwx/param": "^1.0",
 		"psr/log": "^3.0"

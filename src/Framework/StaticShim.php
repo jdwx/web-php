@@ -7,9 +7,8 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Framework;
 
 
-use JDWX\Web\IRequest;
 use JDWX\Web\Request;
-use JDWX\Web\Server;
+use JDWX\Web\RequestInterface;
 
 
 /**
@@ -57,20 +56,20 @@ class StaticShim {
 
     protected HttpError $error;
 
-    protected IRequest $request;
+    protected RequestInterface $request;
 
 
-    public function __construct( ?string   $i_nstDocumentRoot = null, ?HttpError $i_error = null,
-                                 ?IRequest $i_req = null ) {
-        $this->stDocumentRoot = $i_nstDocumentRoot ?? Server::documentRoot();
+    public function __construct( ?string           $i_nstDocumentRoot = null, ?HttpError $i_error = null,
+                                 ?RequestInterface $i_req = null ) {
+        $this->error = $i_error ?? new HttpError();
+        $this->request = $i_req ?? Request::getGlobal();
+        $this->stDocumentRoot = $i_nstDocumentRoot ?? $this->request->server()->documentRoot();
         if ( ! str_ends_with( $this->stDocumentRoot, '/' ) ) {
             $this->stDocumentRoot .= '/';
         }
         $this->rStaticMaps = [
             '/' => $this->stDocumentRoot,
         ];
-        $this->error = $i_error ?? new HttpError();
-        $this->request = $i_req ?? Request::getGlobal();
     }
 
 

@@ -30,7 +30,7 @@ class JsonPage extends AbstractPage {
 
 
     public function stream() : Generator {
-        yield $this->stContent;
+        yield $this->stContent . "\n";
     }
 
 

@@ -10,7 +10,9 @@ namespace JDWX\Web;
 class SimpleHtmlPage extends HtmlPage {
 
 
-    private ?string $nstContent = null;
+    public function __construct( private ?string $nstContent = null, ?string $i_nstLanguage = null ) {
+        parent::__construct( $i_nstLanguage );
+    }
 
 
     public function addContent( string $i_stContent ) : static {

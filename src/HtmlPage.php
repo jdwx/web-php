@@ -24,13 +24,13 @@ abstract class HtmlPage extends AbstractPage {
 
     private ?string $nstCharset = 'UTF-8';
 
-    private string $stDefaultLanguage = 'en';
+    private string $stLanguage = 'en';
 
 
-    public function __construct( ?string $i_nstDefaultLanguage = null ) {
+    public function __construct( ?string $i_nstLanguage = null ) {
         parent::__construct( 'text/html' );
-        if ( is_string( $i_nstDefaultLanguage ) ) {
-            $this->stDefaultLanguage = $i_nstDefaultLanguage;
+        if ( is_string( $i_nstLanguage ) ) {
+            $this->stLanguage = $i_nstLanguage;
         }
     }
 
@@ -47,7 +47,7 @@ abstract class HtmlPage extends AbstractPage {
 
 
     public function getDefaultLanguage() : string {
-        return $this->stDefaultLanguage;
+        return $this->stLanguage;
     }
 
 
@@ -69,7 +69,7 @@ abstract class HtmlPage extends AbstractPage {
 
 
     public function setDefaultLanguage( string $i_stLanguage ) : static {
-        $this->stDefaultLanguage = $i_stLanguage;
+        $this->stLanguage = $i_stLanguage;
         return $this;
     }
 
@@ -81,9 +81,9 @@ abstract class HtmlPage extends AbstractPage {
 
 
     /** @return \Generator<string> */
-    public function stream( ?string $i_nstLanguage = null ) : \Generator {
+    public function stream() : \Generator {
         yield $this->docType();
-        yield $this->html( $i_nstLanguage );
+        yield $this->html();
         yield $this->head();
         # Don't do "yield from" because it messes up the keys.
         foreach ( $this->body() as $stChunk ) {
@@ -147,8 +147,8 @@ abstract class HtmlPage extends AbstractPage {
     }
 
 
-    protected function html( ?string $i_nstLanguage = null ) : string {
-        return "<html lang=\"" . ( $i_nstLanguage ?? $this->stDefaultLanguage ) . "\">\n";
+    protected function html() : string {
+        return "<html lang=\"{$this->stLanguage}\">\n";
     }
 
 

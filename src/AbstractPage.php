@@ -30,8 +30,8 @@ abstract class AbstractPage implements PageInterface {
     }
 
 
-    public function render( ?string $i_nstLanguage = null ) : string {
-        return implode( '', iterator_to_array( $this->stream( $i_nstLanguage ), false ) );
+    public function render() : string {
+        return implode( '', iterator_to_array( $this->stream(), false ) );
     }
 
 

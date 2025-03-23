@@ -28,7 +28,7 @@ final class HtmlPageTest extends TestCase {
     public function testGetDefaultLanguage() : void {
         $page = $this->newHtmlPage();
         self::assertSame( 'en', $page->getDefaultLanguage() );
-        $page->setDefaultLanguage( 'foo' );
+        $page->setLanguage( 'foo' );
         self::assertSame( 'foo', $page->getDefaultLanguage() );
 
         $page = $this->newHtmlPage( '', 'bar' );

@@ -68,7 +68,7 @@ abstract class HtmlPage extends AbstractPage {
     }
 
 
-    public function setDefaultLanguage( string $i_stLanguage ) : static {
+    public function setLanguage( string $i_stLanguage ) : static {
         $this->stLanguage = $i_stLanguage;
         return $this;
     }

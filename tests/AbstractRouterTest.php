@@ -27,6 +27,48 @@ require_once __DIR__ . '/Shims/MyTestCase.php';
 final class AbstractRouterTest extends MyTestCase {
 
 
+    public function testAddHeaderForCombined() : void {
+        $http = new MockHttpBackend();
+        Http::init( $http );
+        $req = $this->newRequest();
+        $router = new class( i_req: $req ) extends AbstractRouter {
+
+
+            public function route() : bool {
+                $this->addHeader( 'X-Foo: Bar' );
+                return $this->respondText( 'OK' );
+            }
+
+
+        };
+        ob_start();
+        $router->run();
+        ob_end_clean();
+        self::assertSame( 'Bar', $http->getHeader( 'X-Foo' ) );
+    }
+
+
+    public function testAddHeaderForSeparate() : void {
+        $http = new MockHttpBackend();
+        Http::init( $http );
+        $req = $this->newRequest();
+        $router = new class( i_req: $req ) extends AbstractRouter {
+
+
+            public function route() : bool {
+                $this->addHeader( 'X-Foo', 'Bar' );
+                return $this->respondText( 'OK' );
+            }
+
+
+        };
+        ob_start();
+        $router->run();
+        ob_end_clean();
+        self::assertSame( 'Bar', $http->getHeader( 'X-Foo' ) );
+    }
+
+
     public function testAssertGETAndPOSTForGET() : void {
         $req = $this->newRequest( 'GET', '/foo/bar' );
         $router = new MyRouter( i_req: $req );
@@ -64,15 +106,62 @@ final class AbstractRouterTest extends MyTestCase {
     }
 
 
-    public function testRespond() : void {
+    public function testRespondHtml() : void {
         $http = new MockHttpBackend();
         Http::init( $http );
         $req = $this->newRequest();
         $router = new class( i_req: $req ) extends AbstractRouter {
+
+
             public function route() : bool {
-                $this->respond( new TextPage( 'TEST_CONTENT' ) );
+                $this->respondHtml( '<html lang="en"><body>TEST_HTML</body></html>' );
                 return true;
             }
+
+
+        };
+        ob_start();
+        $router->run();
+        $result = ob_get_clean();
+        self::assertStringContainsString( 'TEST_HTML', $result );
+    }
+
+
+    public function testRespondJson() : void {
+        $http = new MockHttpBackend();
+        Http::init( $http );
+        $req = $this->newRequest();
+        $router = new class( i_req: $req ) extends AbstractRouter {
+
+
+            public function route() : bool {
+                return $this->respondJson( [ 'foo' => 'bar' ] );
+            }
+
+
+        };
+        ob_start();
+        $router->run();
+        $result = ob_get_clean();
+        self::assertSame( 200, $http->getResponseCode() );
+        self::assertSame( 'application/json', $http->getHeader( 'Content-Type' ) );
+        self::assertStringContainsString( '"foo":"bar"', $result );
+    }
+
+
+    public function testRespondPage() : void {
+        $http = new MockHttpBackend();
+        Http::init( $http );
+        $req = $this->newRequest();
+        $router = new class( i_req: $req ) extends AbstractRouter {
+
+
+            public function route() : bool {
+                $this->respondPage( new TextPage( 'TEST_CONTENT' ) );
+                return true;
+            }
+
+
         };
         ob_start();
         $router->run();
@@ -83,21 +172,24 @@ final class AbstractRouterTest extends MyTestCase {
     }
 
 
-    public function testRespondJson() : void {
+    public function testRespondText() : void {
         $http = new MockHttpBackend();
         Http::init( $http );
         $req = $this->newRequest();
-        $router = new class(i_req: $req) extends AbstractRouter {
+        $router = new class( i_req: $req ) extends AbstractRouter {
+
+
             public function route() : bool {
-                return $this->respondJson( [ 'foo' => 'bar' ] );
+                $this->respondText( 'TEST_CONTENT' );
+                return true;
             }
+
+
         };
         ob_start();
         $router->run();
         $result = ob_get_clean();
-        self::assertSame( 200, $http->getResponseCode() );
-        self::assertSame( 'application/json', $http->getHeader( 'Content-Type' ) );
-        self::assertStringContainsString( '"foo":"bar"', $result );
+        self::assertSame( 'TEST_CONTENT', $result );
     }
 
 

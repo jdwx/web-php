@@ -12,6 +12,7 @@
 	},
 	"require": {
 		"php": ">=8.3.0",
+		"jdwx/json-php": "^1.0",
 		"jdwx/log": "^1.0",
 		"jdwx/param": "^1.0",
 		"psr/log": "^3.0"

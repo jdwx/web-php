@@ -7,52 +7,22 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Example;
 
 
-use JDWX\Web\Framework\AbstractRouter;
-use JDWX\Web\SimpleHtmlPage;
+use JDWX\Web\Framework\HttpError;
+use JDWX\Web\Framework\Router;
 
 
-class ExampleRouter extends AbstractRouter {
+require_once __DIR__ . '/ExampleRouteAdd.php';
+require_once __DIR__ . '/ExampleRouteHome.php';
 
 
-    public function route() : bool {
-        switch ( $this->path() ) {
-            case '/':
-                $this->home();
-                return true;
-            case '/add':
-                $this->add();
-                return true;
-
-        }
-        return false;
-    }
+class ExampleRouter extends Router {
 
 
-    private function add() : void {
-        $this->assertPOST();
-        $req = $this->request();
-        $num1 = $req->postEx( 'num1' )->asFloat();
-        $num2 = $req->postEx( 'num2' )->asFloat();
-        $sum = $num1 + $num2;
-        echo $sum;
-    }
-
-
-    private function home() : void {
-        $this->assertGET();
-        $page = new SimpleHtmlPage();
-        $page->addCSS( '/example.css' );
-        $page->setTitle( 'Example Web Application' );
-        $page->setContent(
-            "<p>Hello, world!</p>\n"
-            . "<p></p><input type=\"number\" id=\"num1\" value=\"0\"> + \n"
-            . "<input type=\"number\" id=\"num2\" value=\"0\"> = \n"
-            . "<span id=\"sum\">???</span></p>\n"
-            . "<button id=\"add\">Add</button>\n"
-            . "<script src=\"/example.js\"></script>\n"
-            . "</body>\n"
-        );
-        echo $page->render();
+    public function __construct() {
+        $error = new HttpError( __DIR__ . '/../errors/error%d.php' );
+        parent::__construct( i_error: $error );
+        $this->addRoute( '/', ExampleRouteHome::class );
+        $this->addRoute( '/add', ExampleRouteAdd::class );
     }
 
 

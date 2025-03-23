@@ -44,6 +44,14 @@ class Http {
     }
 
 
+    /** @param iterable<string> $i_rHeaders */
+    public static function setHeaders( iterable $i_rHeaders ) : void {
+        foreach ( $i_rHeaders as $header ) {
+            self::setHeader( $header );
+        }
+    }
+
+
     public static function setResponseCode( int $i_status ) : void {
         self::backend()->setResponseCode( $i_status );
     }

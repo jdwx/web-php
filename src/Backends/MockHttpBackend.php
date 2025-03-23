@@ -18,6 +18,22 @@ class MockHttpBackend extends AbstractHttpBackend {
     private int $iStatus = 200;
 
 
+    /** @return string|list<string> */
+    public function getHeader( string $i_stHeader ) : string|array {
+        $r = [];
+        $i_stHeader = strtolower( $i_stHeader ) . ':';
+        foreach ( $this->rHeaders as $stHeader ) {
+            if ( str_starts_with( strtolower( $stHeader ), $i_stHeader ) ) {
+                $r[] = trim( substr( $stHeader, strlen( $i_stHeader ) ) );
+            }
+        }
+        if ( 1 === count( $r ) ) {
+            return $r[0];
+        }
+        return $r;
+    }
+
+
     public function getResponseCode() : int {
         return $this->iStatus;
     }

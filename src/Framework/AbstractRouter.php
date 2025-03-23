@@ -11,6 +11,8 @@ use JDWX\Log\StderrLogger;
 use JDWX\Web\Framework\Exceptions\HttpStatusException;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotFoundException;
+use JDWX\Web\Http;
+use JDWX\Web\PageInterface;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
 use JDWX\Web\UrlParts;
@@ -62,6 +64,13 @@ abstract class AbstractRouter implements RouterInterface {
 
     public function request() : RequestInterface {
         return $this->request;
+    }
+
+
+    protected function respond( PageInterface $i_page, int $i_uStatus = 200 ) : void {
+        Http::setResponseCode( $i_uStatus );
+        Http::setHeader( 'Content-Type', $i_page->getContentType() );
+        $i_page->echo();
     }
 
 

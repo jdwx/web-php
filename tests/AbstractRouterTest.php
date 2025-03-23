@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 
 
 use JDWX\Log\BufferLogger;
+use JDWX\Web\Backends\MockHttpBackend;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\AbstractRouter;
 use JDWX\Web\Framework\Exceptions\InternalServerException;
@@ -12,6 +13,7 @@ use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\HttpError;
 use JDWX\Web\Http;
 use JDWX\Web\Request;
+use JDWX\Web\TextPage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Shims\MyRouter;
 use Shims\MyTestCase;
@@ -59,6 +61,21 @@ final class AbstractRouterTest extends MyTestCase {
         self::assertSame( '/foo/bar?baz=qux', $router->stUriCheck );
         self::assertSame( 'qux', $router->uriPartsCheck[ 'baz' ] );
         self::assertSame( $req, $router->requestCheck );
+    }
+
+
+    public function testRespond() : void {
+        $http = new MockHttpBackend();
+        Http::init( $http );
+        $page = new TextPage( 'TEST_CONTENT' );
+        $req = $this->newRequest();
+        $router = new MyRouter( i_req: $req );
+        ob_start();
+        $router->respond( $page );
+        $result = ob_get_clean();
+        self::assertSame( 'TEST_CONTENT', $result );
+        self::assertSame( 200, $http->getResponseCode() );
+        self::assertSame( 'text/plain', $http->getHeader( 'Content-Type' ) );
     }
 
 

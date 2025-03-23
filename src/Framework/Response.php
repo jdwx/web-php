@@ -8,6 +8,7 @@ namespace JDWX\Web\Framework;
 
 
 use JDWX\Web\JsonPage;
+use JDWX\Web\PageInterface;
 use JDWX\Web\SimpleHtmlPage;
 use JDWX\Web\TextPage;
 
@@ -23,19 +24,25 @@ readonly class Response extends AbstractResponse {
 
     /** @param ?iterable<string> $i_rHeaders */
     public static function html( string $i_stContent, int $i_uStatusCode = 200, ?iterable $i_rHeaders = null ) : self {
-        return new self( new SimpleHtmlPage( $i_stContent ), $i_uStatusCode, $i_rHeaders );
+        return static::page( new SimpleHtmlPage( $i_stContent ), $i_uStatusCode, $i_rHeaders );
     }
 
 
     /** @param ?iterable<string> $i_rHeaders */
     public static function json( mixed $i_rContent, int $i_uStatusCode = 200, ?iterable $i_rHeaders = null ) : self {
-        return new self( new JsonPage( $i_rContent ), $i_uStatusCode, $i_rHeaders );
+        return static::page( new JsonPage( $i_rContent ), $i_uStatusCode, $i_rHeaders );
+    }
+
+
+    /** @param ?iterable<string> $i_rHeaders */
+    public static function page( PageInterface $i_page, int $i_uStatusCode = 200, ?iterable $i_rHeaders = null ) : self {
+        return new self( $i_page, $i_uStatusCode, $i_rHeaders );
     }
 
 
     /** @param ?iterable<string> $i_rHeaders */
     public static function text( string $i_stContent, int $i_uStatusCode = 200, ?iterable $i_rHeaders = null ) : self {
-        return new self( new TextPage( $i_stContent ), $i_uStatusCode, $i_rHeaders );
+        return static::page( new TextPage( $i_stContent ), $i_uStatusCode, $i_rHeaders );
     }
 
 

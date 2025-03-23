@@ -7,43 +7,36 @@ declare( strict_types = 1 );
 namespace Shims;
 
 
-use JDWX\Web\Framework\AbstractRouter;
-use JDWX\Web\RequestInterface;
-use JDWX\Web\UrlParts;
+use JDWX\Web\Framework\RouteInterface;
+use JDWX\Web\Framework\Router;
 
 
-class MyRouter extends AbstractRouter {
+class MyRouter extends Router {
 
 
-    /** @var ?callable */
-    public $fnRoute = null;
-
-    public bool $bReturn = true;
-
-
-    public UrlParts $uriPartsCheck;
-
-    public string $stPathCheck;
-
-    public string $stUriCheck;
-
-    public RequestInterface $requestCheck;
-
-
-    public function route() : bool {
-        $fnRoute = $this->fnRoute;
-        if ( $fnRoute ) {
-            $fnRoute();
-        }
-        return $this->bReturn;
+    public function addRoutePub( string $i_stUri, string|RouteInterface $i_route ) : void {
+        parent::addRoute( $i_stUri, $i_route );
     }
 
 
-    public function save() : void {
-        $this->uriPartsCheck = $this->uriParts();
-        $this->stPathCheck = $this->path();
-        $this->stUriCheck = $this->uri();
-        $this->requestCheck = $this->request();
+    public function routeOutput() : ?string {
+        ob_start();
+        $b = $this->route();
+        $st = ob_get_clean();
+        return $b ? $st : null;
+    }
+
+
+    public function routeQuiet() : bool {
+        ob_start();
+        $b = $this->route();
+        ob_end_clean();
+        return $b;
+    }
+
+
+    public function setRootIsPrefixPub() : void {
+        parent::setRootIsPrefix( true );
     }
 
 

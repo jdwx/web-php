@@ -90,7 +90,7 @@ final class AbstractRequestTest extends TestCase {
 
     public function testMethod() : void {
         $req = $this->newAbstractRequest( i_server: new MockServer( 'TEST_METHOD' ) );
-        self::assertSame( 'TEST_METHOD', $req->method() );
+        self::assertSame( 'test_method', $req->method() );
     }
 
 

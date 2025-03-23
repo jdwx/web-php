@@ -13,7 +13,7 @@ use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shims\MyRouter;
+use Shims\MyAbstractRouter;
 
 
 #[CoversClass( PhpWsShim::class )]
@@ -22,7 +22,7 @@ final class PhpWsShimTest extends TestCase {
 
     public function testRunForExactHook() : void {
         $req = $this->newRequest( '/exact' );
-        $router = new MyRouter( i_req: $req );
+        $router = new MyAbstractRouter( i_req: $req );
         $shim = new PhpWsShim( $router );
         $shim->addHook( '/exact', function () {
             echo 'Hello, world!';
@@ -36,7 +36,7 @@ final class PhpWsShimTest extends TestCase {
 
     public function testRunForHook() : void {
         $req = $this->newRequest( '/hook/example' );
-        $router = new MyRouter( i_req: $req );
+        $router = new MyAbstractRouter( i_req: $req );
         $shim = new PhpWsShim( $router );
         $shim->addHook( '/hook/', function () {
             echo 'Hello, world!';
@@ -50,7 +50,7 @@ final class PhpWsShimTest extends TestCase {
 
     public function testRunForRouter() : void {
         $req = $this->newRequest();
-        $router = new MyRouter( i_req: $req );
+        $router = new MyAbstractRouter( i_req: $req );
         $router->fnRoute = function () {
             echo 'Hello, world!';
         };
@@ -64,7 +64,7 @@ final class PhpWsShimTest extends TestCase {
 
     public function testRunForStatic() : void {
         $req = $this->newRequest( '/example.txt' );
-        $router = new MyRouter( i_req: $req );
+        $router = new MyAbstractRouter( i_req: $req );
         $shim = new PhpWsShim( $router );
         $shim->addStaticUri( '/' );
         ob_start();

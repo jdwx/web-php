@@ -45,7 +45,7 @@ final class RequestTest extends TestCase {
 
     public function testGlobalMethod() : void {
         $req = $this->newGlobalRequest( i_stMethod: 'TEST_METHOD' );
-        self::assertSame( 'TEST_METHOD', $req->method() );
+        self::assertSame( 'test_method', $req->method() );
     }
 
 
@@ -81,16 +81,17 @@ final class RequestTest extends TestCase {
         MyRequest::whackGlobal();
         $_SERVER[ 'REQUEST_METHOD' ] = 'TEST_METHOD';
         $req = Request::getGlobal();
-        self::assertSame( 'TEST_METHOD', $req->method() );
+        self::assertSame( 'test_method', $req->method() );
     }
 
 
     public function testUriForGlobal() : void {
         MyRequest::whackGlobal();
         $_SERVER[ 'REQUEST_URI' ] = '/foo/bar?a=b&c=d';
-        $_SERVER[ 'REQUEST_METHOD' ] = 'GET';
+        $_SERVER[ 'REQUEST_METHOD' ] = 'POST';
         $req = Request::getGlobal();
         self::assertSame( '/foo/bar?a=b&c=d', $req->uri() );
+        self::assertSame( 'post', $req->method() );
     }
 
 

@@ -87,17 +87,17 @@ abstract readonly class AbstractRequest implements RequestInterface {
 
 
     public function isGET() : bool {
-        return 'GET' === $this->method();
+        return 'get' === $this->method();
     }
 
 
     public function isPOST() : bool {
-        return 'POST' === $this->method();
+        return 'post' === $this->method();
     }
 
 
     public function method() : string {
-        return $this->server->requestMethod();
+        return strtolower( trim( $this->server->requestMethod() ) );
     }
 
 

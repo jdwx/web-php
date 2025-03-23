@@ -14,7 +14,7 @@ namespace JDWX\Web;
  * It's designed to be used for simple server-generated pages like
  * error pages.
  */
-abstract class HtmlPage implements \Stringable {
+abstract class HtmlPage extends AbstractPage {
 
 
     /** @var list<string> */
@@ -28,27 +28,16 @@ abstract class HtmlPage implements \Stringable {
 
 
     public function __construct( ?string $i_nstDefaultLanguage = null ) {
+        parent::__construct( 'text/html' );
         if ( is_string( $i_nstDefaultLanguage ) ) {
             $this->stDefaultLanguage = $i_nstDefaultLanguage;
         }
     }
 
 
-    public function __toString() : string {
-        return $this->render();
-    }
-
-
     public function addCSS( string $i_stCSSFile ) : static {
         $this->rstCSSFiles[] = $i_stCSSFile;
         return $this;
-    }
-
-
-    public function echo() : void {
-        foreach ( $this->stream() as $stChunk ) {
-            echo $stChunk;
-        }
     }
 
 
@@ -70,11 +59,6 @@ abstract class HtmlPage implements \Stringable {
     /** @return list<string> */
     public function listCSS() : array {
         return $this->rstCSSFiles;
-    }
-
-
-    public function render( ?string $i_nstLanguage = null ) : string {
-        return implode( '', iterator_to_array( $this->stream( $i_nstLanguage ), false ) );
     }
 
 

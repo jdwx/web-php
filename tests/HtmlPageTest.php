@@ -13,15 +13,6 @@ use PHPUnit\Framework\TestCase;
 final class HtmlPageTest extends TestCase {
 
 
-    public function testEcho() : void {
-        $page = $this->newHtmlPage( 'TEST_CONTENT' );
-        ob_start();
-        $page->echo();
-        $result = ob_get_clean();
-        self::assertSame( $page->render(), $result );
-    }
-
-
     public function testGetCharset() : void {
         $page = $this->newHtmlPage();
         self::assertSame( 'UTF-8', $page->getCharset() );
@@ -108,12 +99,6 @@ final class HtmlPageTest extends TestCase {
         $page = $this->newHtmlPage( 'TEST_CONTENT' );
         $st = implode( '', iterator_to_array( $page->stream() ) );
         self::assertSame( $page->render(), $st );
-    }
-
-
-    public function testToString() : void {
-        $page = $this->newHtmlPage( 'TEST_CONTENT' );
-        self::assertSame( $page->render(), strval( $page ) );
     }
 
 

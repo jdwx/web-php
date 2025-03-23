@@ -60,11 +60,13 @@ final class HttpTest extends TestCase {
     }
 
 
-    public function testSendHeader() : void {
+    public function testSetHeader() : void {
         $backend = new JDWX\Web\Backends\MockHttpBackend();
         JDWX\Web\Http::init( $backend );
         JDWX\Web\Http::setHeader( 'test' );
+        JDWX\Web\Http::setHeader( 'foo', 'bar' );
         self::assertSame( 'test', $backend->rHeaders[ 0 ] );
+        self::assertSame( 'foo: bar', $backend->rHeaders[ 1 ] );
     }
 
 

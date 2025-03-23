@@ -36,7 +36,10 @@ class Http {
     }
 
 
-    public static function setHeader( string $i_stHeader ) : void {
+    public static function setHeader( string $i_stHeader, ?string $i_nstValue = null ) : void {
+        if ( is_string( $i_nstValue ) ) {
+            $i_stHeader .= ": {$i_nstValue}";
+        }
         self::backend()->setHeader( $i_stHeader );
     }
 

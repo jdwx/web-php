@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
-#[CoversClass(AbstractPage::class)]
+#[CoversClass( AbstractPage::class )]
 final class AbstractPageTest extends TestCase {
 
 
@@ -34,9 +34,12 @@ final class AbstractPageTest extends TestCase {
     }
 
 
+    /** @param string|iterable<string> $i_content */
     private function newAbstractPage( string $i_stContentType, string|iterable $i_content = '' ) : AbstractPage {
         return new class ( $i_stContentType, $i_content ) extends AbstractPage {
 
+
+            /** @param string|iterable<string> $content */
             public function __construct( string $i_stContentType, private readonly string|iterable $content ) {
                 parent::__construct( $i_stContentType );
             }
@@ -51,6 +54,8 @@ final class AbstractPageTest extends TestCase {
                     yield $stChunk;
                 }
             }
+
+
         };
 
     }

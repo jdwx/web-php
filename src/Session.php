@@ -25,7 +25,7 @@ use TypeError;
 class Session {
 
 
-    private const LIFETIME_SECONDS = 14400;
+    private const int LIFETIME_SECONDS = 14400;
 
     protected static ?SessionBackendInterface $backend = null;
 

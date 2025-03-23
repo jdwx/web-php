@@ -67,15 +67,37 @@ final class AbstractRouterTest extends MyTestCase {
     public function testRespond() : void {
         $http = new MockHttpBackend();
         Http::init( $http );
-        $page = new TextPage( 'TEST_CONTENT' );
         $req = $this->newRequest();
-        $router = new MyRouter( i_req: $req );
+        $router = new class( i_req: $req ) extends AbstractRouter {
+            public function route() : bool {
+                $this->respond( new TextPage( 'TEST_CONTENT' ) );
+                return true;
+            }
+        };
         ob_start();
-        $router->respond( $page );
+        $router->run();
         $result = ob_get_clean();
         self::assertSame( 'TEST_CONTENT', $result );
         self::assertSame( 200, $http->getResponseCode() );
         self::assertSame( 'text/plain', $http->getHeader( 'Content-Type' ) );
+    }
+
+
+    public function testRespondJson() : void {
+        $http = new MockHttpBackend();
+        Http::init( $http );
+        $req = $this->newRequest();
+        $router = new class(i_req: $req) extends AbstractRouter {
+            public function route() : bool {
+                return $this->respondJson( [ 'foo' => 'bar' ] );
+            }
+        };
+        ob_start();
+        $router->run();
+        $result = ob_get_clean();
+        self::assertSame( 200, $http->getResponseCode() );
+        self::assertSame( 'application/json', $http->getHeader( 'Content-Type' ) );
+        self::assertStringContainsString( '"foo":"bar"', $result );
     }
 
 

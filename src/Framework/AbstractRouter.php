@@ -12,10 +12,12 @@ use JDWX\Web\Framework\Exceptions\HttpStatusException;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotFoundException;
 use JDWX\Web\Http;
+use JDWX\Web\JsonPage;
 use JDWX\Web\PageInterface;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
 use JDWX\Web\UrlParts;
+use JsonSerializable;
 use Psr\Log\LoggerInterface;
 
 
@@ -67,10 +69,19 @@ abstract class AbstractRouter implements RouterInterface {
     }
 
 
-    protected function respond( PageInterface $i_page, int $i_uStatus = 200 ) : void {
+    protected function respond( PageInterface $i_page, int $i_uStatus = 200 ) : true {
         Http::setResponseCode( $i_uStatus );
         Http::setHeader( 'Content-Type', $i_page->getContentType() );
         $i_page->echo();
+        return true;
+    }
+
+
+    protected function respondJson( int|array|string|float|bool|null|JsonSerializable $i_content,
+                                    int                                               $i_uStatus = 200,
+                                    bool                                              $i_bPretty = false ) : true {
+        $page = new JsonPage( $i_content, $i_bPretty );
+        return $this->respond( $page, $i_uStatus );
     }
 
 

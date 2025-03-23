@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace Framework;
+
+
 use JDWX\Web\Framework\AbstractResponse;
 use JDWX\Web\PageInterface;
 use JDWX\Web\TextPage;

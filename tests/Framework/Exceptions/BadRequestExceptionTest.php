@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace Framework\Exceptions;
+
+
 use JDWX\Web\Framework\Exceptions\BadRequestException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

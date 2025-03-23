@@ -4,13 +4,16 @@
 declare( strict_types = 1 );
 
 
+namespace Framework;
+
+
 use JDWX\Web\Framework\Exceptions\NotFoundException;
 use JDWX\Web\Framework\HttpError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Shims\MyTestCase;
 
 
-require_once __DIR__ . '/Shims/MyTestCase.php';
+require_once __DIR__ . '/../Shims/MyTestCase.php';
 
 
 #[CoversClass( HttpError::class )]
@@ -18,7 +21,7 @@ final class HttpErrorTest extends MyTestCase {
 
 
     public function testCustomError() : void {
-        $error = new HttpError( __DIR__ . '/../example/errors/error%d.php' );
+        $error = new HttpError( __DIR__ . '/../../example/errors/error%d.php' );
         $st = $error->render( 404 );
         self::assertStringContainsString( 'This is an example 404 error page.', $st );
     }

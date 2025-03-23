@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace Framework;
+
+
 use JDWX\Web\Framework\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

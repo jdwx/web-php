@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace Framework;
+
+
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\PhpWsShim;
 use JDWX\Web\Request;
@@ -73,7 +76,7 @@ final class PhpWsShimTest extends TestCase {
 
     private function newRequest( string $i_stUri = '/' ) : RequestInterface {
         $srv = new MockServer( 'GET', $i_stUri );
-        $srv->stDocumentRoot = __DIR__ . '/../example/static';
+        $srv->stDocumentRoot = __DIR__ . '/../../example/static';
         return Request::synthetic( [], [], [], [], $srv );
     }
 

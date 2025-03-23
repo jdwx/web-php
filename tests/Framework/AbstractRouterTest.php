@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace Framework;
+
+
 use JDWX\Log\BufferLogger;
 use JDWX\Web\Backends\MockHttpBackend;
 use JDWX\Web\Backends\MockServer;
@@ -19,8 +22,8 @@ use Shims\MyRouter;
 use Shims\MyTestCase;
 
 
-require_once __DIR__ . '/Shims/MyRouter.php';
-require_once __DIR__ . '/Shims/MyTestCase.php';
+require_once __DIR__ . '/../Shims/MyRouter.php';
+require_once __DIR__ . '/../Shims/MyTestCase.php';
 
 
 #[CoversClass( AbstractRouter::class )]

@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace Framework;
+
+
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\StaticShim;
 use JDWX\Web\Http;
@@ -12,8 +15,8 @@ use Shims\MyStaticShim;
 use Shims\MyTestCase;
 
 
-require_once __DIR__ . '/Shims/MyStaticShim.php';
-require_once __DIR__ . '/Shims/MyTestCase.php';
+require_once __DIR__ . '/../Shims/MyStaticShim.php';
+require_once __DIR__ . '/../Shims/MyTestCase.php';
 
 
 /** @covers \JDWX\Web\Framework\StaticShim */
@@ -55,14 +58,14 @@ final class StaticShimTest extends MyTestCase {
 
     public function testRunForDirectory() : void {
         $req = $this->newRequest( '/static' );
-        $shim = new StaticShim( __DIR__ . '/../example/', i_req: $req );
+        $shim = new StaticShim( __DIR__ . '/../../example/', i_req: $req );
         self::assertFalse( $shim->run() );
     }
 
 
     public function testRunForDirectoryAuthoritative() : void {
         $req = $this->newRequest( '/static' );
-        $shim = new StaticShim( __DIR__ . '/../example/', i_req: $req );
+        $shim = new StaticShim( __DIR__ . '/../../example/', i_req: $req );
         $shim->addStaticUri( '/' );
         ob_start();
         $bResult = $shim->run();
@@ -76,7 +79,7 @@ final class StaticShimTest extends MyTestCase {
 
     public function testRunForExcludedDirectory() : void {
         $req = $this->newRequest( '/exclude/exclude.txt' );
-        $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
+        $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
         self::assertTrue( $shim->run() );
         $shim->excludeStaticPath( '/exclude' );
         self::assertFalse( $shim->run() );
@@ -84,7 +87,7 @@ final class StaticShimTest extends MyTestCase {
 
 
     public function testRunForInferredDocumentRoot() : void {
-        $req = $this->newRequest( '/example.txt', __DIR__ . '/../example/static/' );
+        $req = $this->newRequest( '/example.txt', __DIR__ . '/../../example/static/' );
         $shim = new StaticShim( i_req: $req );
         ob_start();
         $bResult = $shim->run();
@@ -96,8 +99,8 @@ final class StaticShimTest extends MyTestCase {
 
     public function testRunForMappedUri() : void {
         $req = $this->newRequest( '/decoy/alias.txt' );
-        $shim = new StaticShim( __DIR__ . '/../example/', i_req: $req );
-        $shim->addStaticMap( '/decoy/', __DIR__ . '/../example/static/alias/' );
+        $shim = new StaticShim( __DIR__ . '/../../example/', i_req: $req );
+        $shim->addStaticMap( '/decoy/', __DIR__ . '/../../example/static/alias/' );
         ob_start();
         $bResult = $shim->run();
         $st = ob_get_clean();
@@ -108,7 +111,7 @@ final class StaticShimTest extends MyTestCase {
 
     public function testRunForMultiViews() : void {
         $req = $this->newRequest( '/example2' );
-        $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
+        $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
         ob_start();
         $bResult = $shim->run();
         $st = ob_get_clean();
@@ -147,14 +150,14 @@ final class StaticShimTest extends MyTestCase {
 
     public function testRunForPHP() : void {
         $req = $this->newRequest( '/example.php' );
-        $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
+        $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
         self::assertFalse( $shim->run() );
     }
 
 
     public function testRunForSuccess() : void {
         $req = $this->newRequest( '/example.txt' );
-        $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
+        $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
         ob_start();
         $bResult = $shim->run();
         $st = ob_get_clean();
@@ -165,7 +168,7 @@ final class StaticShimTest extends MyTestCase {
 
     public function testRunForUnknownType() : void {
         $req = $this->newRequest( '/example3.wtf' );
-        $shim = new StaticShim( __DIR__ . '/../example/static/', i_req: $req );
+        $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
         ob_start();
         $bResult = $shim->run();
         $st = ob_get_clean();

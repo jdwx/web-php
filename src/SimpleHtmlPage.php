@@ -40,19 +40,25 @@ class SimpleHtmlPage extends HtmlPage {
 
     /** @return string|iterable<string> */
     protected function content() : string|iterable {
-        yield $this->prefix();
+        $nst = $this->prefix();
+        if ( is_string( $nst ) ) {
+            yield $nst;
+        }
         yield $this->nstContent ?? '';
-        yield $this->suffix();
+        $nst = $this->suffix();
+        if ( is_string( $nst ) ) {
+            yield $nst;
+        }
     }
 
 
-    protected function prefix() : string {
-        return '';
+    protected function prefix() : ?string {
+        return null;
     }
 
 
-    protected function suffix() : string {
-        return '';
+    protected function suffix() : ?string {
+        return null;
     }
 
 

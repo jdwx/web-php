@@ -13,6 +13,7 @@ use JDWX\Web\Framework\Router;
 
 require_once __DIR__ . '/ExampleRouteAdd.php';
 require_once __DIR__ . '/ExampleRouteHome.php';
+require_once __DIR__ . '/ExampleRouteRedirect.php';
 
 
 class ExampleRouter extends Router {
@@ -23,6 +24,7 @@ class ExampleRouter extends Router {
         parent::__construct( i_error: $error );
         $this->addRoute( '/', ExampleRouteHome::class );
         $this->addRoute( '/add', ExampleRouteAdd::class );
+        $this->addRoute( '/redirect', ExampleRouteRedirect::class );
     }
 
 

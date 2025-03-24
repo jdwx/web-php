@@ -32,6 +32,34 @@ final class ResponseTest extends TestCase {
     }
 
 
+    public function testRedirectPermanentWithGet() : void {
+        $response = Response::redirectPermanentWithGet( '/foo/bar' );
+        self::assertSame( 301, $response->getStatusCode() );
+        self::assertSame( [ 'Location: /foo/bar' ], $response->getHeaders()->toArray() );
+    }
+
+
+    public function testRedirectPermanentWithSameMethod() : void {
+        $response = Response::redirectPermanentWithSameMethod( '/foo/bar' );
+        self::assertSame( 308, $response->getStatusCode() );
+        self::assertSame( [ 'Location: /foo/bar' ], $response->getHeaders()->toArray() );
+    }
+
+
+    public function testRedirectTemporaryWithGet() : void {
+        $response = Response::redirectTemporaryWithGet( '/foo/bar' );
+        self::assertSame( 303, $response->getStatusCode() );
+        self::assertSame( [ 'Location: /foo/bar' ], $response->getHeaders()->toArray() );
+    }
+
+
+    public function testRedirectTemporaryWithSameMethod() : void {
+        $response = Response::redirectTemporaryWithSameMethod( '/foo/bar' );
+        self::assertSame( 307, $response->getStatusCode() );
+        self::assertSame( [ 'Location: /foo/bar' ], $response->getHeaders()->toArray() );
+    }
+
+
     public function testText() : void {
         $response = Response::text( 'Hello, world!', 200, [ 'X-Foo: Bar' ] );
         self::assertSame( 'Hello, world!', strval( $response->getPage() ) );

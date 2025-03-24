@@ -40,6 +40,38 @@ readonly class Response extends AbstractResponse {
     }
 
 
+    public static function redirectPermanentWithGet( string $i_stLocation ) : self {
+        $page = new SimpleHtmlPage(
+            '<p>Moved Permanently: <a href="' . $i_stLocation . '">' . $i_stLocation . '</a></p>'
+        );
+        return new self( $page, 301, [ "Location: {$i_stLocation}" ] );
+    }
+
+
+    public static function redirectPermanentWithSameMethod( string $i_stLocation ) : self {
+        $page = new SimpleHtmlPage(
+            '<p>Permanent Redirect: <a href="' . $i_stLocation . '">' . $i_stLocation . '</a></p>'
+        );
+        return new self( $page, 308, [ "Location: {$i_stLocation}" ] );
+    }
+
+
+    public static function redirectTemporaryWithGet( string $i_stLocation ) : self {
+        $page = new SimpleHtmlPage(
+            '<p>See Other: <a href="' . $i_stLocation . '">' . $i_stLocation . '</a></p>'
+        );
+        return new self( $page, 303, [ "Location: {$i_stLocation}" ] );
+    }
+
+
+    public static function redirectTemporaryWithSameMethod( string $i_stLocation ) : self {
+        $page = new SimpleHtmlPage(
+            '<p>Temporary Redirect: <a href="' . $i_stLocation . '">' . $i_stLocation . '</a></p>'
+        );
+        return new self( $page, 307, [ "Location: {$i_stLocation}" ] );
+    }
+
+
     /** @param ?iterable<string> $i_rHeaders */
     public static function text( string $i_stContent, int $i_uStatusCode = 200, ?iterable $i_rHeaders = null ) : self {
         return static::page( new TextPage( $i_stContent ), $i_uStatusCode, $i_rHeaders );

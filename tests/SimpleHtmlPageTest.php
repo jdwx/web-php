@@ -22,6 +22,33 @@ final class SimpleHtmlPageTest extends TestCase {
     }
 
 
+    public function testPrefix() : void {
+        $page = new class( 'CONTENT' ) extends SimpleHtmlPage {
+
+
+            public function __construct( $i_nstContent ) {
+                parent::__construct( $i_nstContent );
+            }
+
+
+            protected function prefix() : string {
+                return 'TEST_';
+            }
+
+
+        };
+        self::assertStringContainsString( 'TEST_CONTENT', $page->render() );
+    }
+
+
+    public function testPrependContent() : void {
+        $page = new SimpleHtmlPage();
+        $page->setContent( 'CONTENT' );
+        $page->prependContent( 'TEST_' );
+        self::assertSame( 'TEST_CONTENT', $page->getContent() );
+    }
+
+
     public function testRender() : void {
         $page = new SimpleHtmlPage();
         $page->setContent( 'TEST_CONTENT' );
@@ -33,6 +60,25 @@ final class SimpleHtmlPageTest extends TestCase {
         $page = new SimpleHtmlPage();
         $page->setContent( 'TEST_CONTENT' );
         self::assertSame( 'TEST_CONTENT', $page->getContent() );
+    }
+
+
+    public function testSuffix() : void {
+        $page = new class( 'CONTENT' ) extends SimpleHtmlPage {
+
+
+            public function __construct( $i_nstContent ) {
+                parent::__construct( $i_nstContent );
+            }
+
+
+            protected function suffix() : string {
+                return '_TEST';
+            }
+
+
+        };
+        self::assertStringContainsString( 'CONTENT_TEST', $page->render() );
     }
 
 

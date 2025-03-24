@@ -26,14 +26,33 @@ class SimpleHtmlPage extends HtmlPage {
     }
 
 
+    public function prependContent( string $i_stContent ) : static {
+        $this->nstContent = $i_stContent . ( $this->nstContent ?? '' );
+        return $this;
+    }
+
+
     public function setContent( string $i_stContent ) : static {
         $this->nstContent = $i_stContent;
         return $this;
     }
 
 
-    protected function content() : string {
-        return $this->nstContent ?? '';
+    /** @return string|iterable<string> */
+    protected function content() : string|iterable {
+        yield $this->prefix();
+        yield $this->nstContent ?? '';
+        yield $this->suffix();
+    }
+
+
+    protected function prefix() : string {
+        return '';
+    }
+
+
+    protected function suffix() : string {
+        return '';
     }
 
 

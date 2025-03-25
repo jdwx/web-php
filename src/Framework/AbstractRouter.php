@@ -17,6 +17,7 @@ use JDWX\Web\JsonPage;
 use JDWX\Web\PageInterface;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
+use JDWX\Web\ServerInterface;
 use JDWX\Web\SimpleHtmlPage;
 use JDWX\Web\TextPage;
 use JDWX\Web\UrlParts;
@@ -97,6 +98,11 @@ abstract class AbstractRouter implements RouterInterface {
             ] );
             $this->error->showException( $e );
         }
+    }
+
+
+    public function server() : ServerInterface {
+        return $this->request()->server();
     }
 
 

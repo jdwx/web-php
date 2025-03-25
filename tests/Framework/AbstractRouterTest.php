@@ -253,6 +253,14 @@ final class AbstractRouterTest extends MyTestCase {
     }
 
 
+    public function testServer() : void {
+        $srv = new MockServer();
+        $req = Request::synthetic( i_server: $srv );
+        $router = new MyAbstractRouter( i_req: $req );
+        self::assertSame( $srv, $router->server() );
+    }
+
+
     private function newRequest( string $i_stMethod = 'GET', string $i_stURI = '/' ) : Request {
         $srv = new MockServer( $i_stMethod, $i_stURI );
         return Request::synthetic( i_server: $srv );

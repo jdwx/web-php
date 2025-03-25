@@ -10,6 +10,7 @@ namespace JDWX\Web\Framework;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotImplementedException;
 use JDWX\Web\RequestInterface;
+use JDWX\Web\ServerInterface;
 use Psr\Log\LoggerInterface;
 
 
@@ -91,6 +92,10 @@ abstract class AbstractRoute implements RouteInterface {
 
     protected function router() : RouterInterface {
         return $this->router;
+    }
+
+    protected function server() : ServerInterface {
+        return $this->router()->server();
     }
 
 

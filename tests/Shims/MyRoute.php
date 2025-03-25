@@ -11,6 +11,7 @@ use Ds\Map;
 use JDWX\Web\Framework\AbstractRoute;
 use JDWX\Web\Framework\ResponseInterface;
 use JDWX\Web\Framework\RouterInterface;
+use JDWX\Web\ServerInterface;
 use Psr\Log\LoggerInterface;
 
 
@@ -78,6 +79,11 @@ class MyRoute extends AbstractRoute {
 
     public function loggerPub() : LoggerInterface {
         return $this->logger();
+    }
+
+
+    public function serverPub() : ServerInterface {
+        return $this->server();
     }
 
 

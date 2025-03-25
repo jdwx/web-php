@@ -8,6 +8,7 @@ namespace JDWX\Web\Framework;
 
 
 use JDWX\Web\RequestInterface;
+use JDWX\Web\ServerInterface;
 use Psr\Log\LoggerInterface;
 
 
@@ -50,6 +51,12 @@ interface RouterInterface {
      * @return void
      */
     public function run() : void;
+
+
+    /**
+     * @return ServerInterface The server object this router is using.
+     */
+    public function server() : ServerInterface;
 
 
 }

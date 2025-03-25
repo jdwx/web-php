@@ -37,6 +37,8 @@ class MockSessionBackend extends AbstractSessionBackend {
 
     public bool $bFailRegenerate = false;
 
+    public bool $bFailReset = false;
+
     public bool $bFailStart = false;
 
     public bool $bFailUnset = false;
@@ -45,7 +47,7 @@ class MockSessionBackend extends AbstractSessionBackend {
 
 
     /** @param array<string, string> $rBackup */
-    public function __construct( private array $rBackup ) {
+    public function __construct( public array $rBackup ) {
         $this->setup();
     }
 
@@ -202,9 +204,15 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @codeCoverageIgnore */
     public function reset() : bool {
-        throw new LogicException( 'Not implemented.' );
+        if ( $this->bFailReset ) {
+            return false;
+        }
+        if ( ! $this->bActive ) {
+            return false;
+        }
+        $this->rSession = $this->rBackup;
+        return true;
     }
 
 

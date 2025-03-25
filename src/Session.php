@@ -30,11 +30,19 @@ class Session {
     protected static ?SessionBackendInterface $backend = null;
 
 
+    /**
+     * @return void
+     *
+     * Abort the session without saving any changes to the session data.
+     */
     public static function abort() : void {
         static::backend()->abortEx();
     }
 
 
+    /**
+     * @return bool True if a session is active, false otherwise.
+     */
     public static function active() : bool {
         return static::backend()->status() == PHP_SESSION_ACTIVE;
     }
@@ -146,6 +154,10 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey The name of the session variable to increment.
+     * @param float|int $i_nValue The value to increment by. (Default: 1)
+     */
     public static function increment( string $i_stKey, float|int $i_nValue = 1 ) : void {
         static::checkActive();
         if ( ! static::has( $i_stKey ) ) {
@@ -156,6 +168,12 @@ class Session {
     }
 
 
+    /**
+     * @param SessionBackendInterface $i_backend The session backend to use.
+     * @return void
+     *
+     * Initialize the session handler. Only used for testing.
+     */
     public static function init( SessionBackendInterface $i_backend ) : void {
         static::$backend = $i_backend;
     }
@@ -252,6 +270,14 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey1 The first key.
+     * @param string $i_stKey2 The second key.
+     * @param mixed $i_xValue The value to set.
+     * @return void
+     *
+     * Simplifies setting a session variable in a two-level hierarchy.
+     */
     public static function nestedSet( string $i_stKey1, string $i_stKey2, mixed $i_xValue ) : void {
         static::checkActive();
         if ( ! static::has( $i_stKey1 ) ) {
@@ -261,7 +287,11 @@ class Session {
     }
 
 
-    /** @return array<string, string|list<string>> */
+    /**
+     * @return array<string, string|list<string>>
+     *
+     * Return the session data while the session is not active.
+     */
     public static function peek() : array {
         static::backend()->start();
         $a = static::backend()->list();
@@ -270,18 +300,57 @@ class Session {
     }
 
 
+    /**
+     * @param bool $i_bDeleteOld
+     * @return void
+     *
+     * Regenerate the session ID while preserving the session data.
+     */
     public static function regenerate( bool $i_bDeleteOld = false ) : void {
         static::checkActive();
         static::backend()->regenerateIdEx( $i_bDeleteOld );
     }
 
 
+    /**
+     * @return void
+     *
+     * Reset the session data to its state when the session was started.
+     *
+     */
+    public static function reset( bool $i_bPreserveTimes = true ) : void {
+        $ntmExpire = static::getIntOrNull( 'tmExpire' );
+        $ntmStart = static::getIntOrNull( 'tmStart' );
+        if ( ! static::backend()->reset() ) {
+            throw new RuntimeException( 'Session reset failed.' );
+        }
+        if ( $i_bPreserveTimes ) {
+            if ( is_int( $ntmExpire ) ) {
+                static::set( 'tmExpire', $ntmExpire );
+            }
+            if ( is_int( $ntmStart ) ) {
+                static::set( 'tmStart', $ntmStart );
+            }
+        }
+    }
+
+
+    /**
+     * @param string $i_stKey The name of the session variable to set.
+     * @param mixed $i_xValue The value to set.
+     * @return void
+     *
+     * Set a session variable.
+     */
     public static function set( string $i_stKey, mixed $i_xValue ) : void {
         static::checkActive();
         static::backend()->set( $i_stKey, $i_xValue );
     }
 
 
+    /**
+     * Start a session if one is not already active.
+     */
     public static function softStart( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
                                       ?RequestInterface $i_req = null ) : bool {
         if ( static::active() ) {
@@ -291,6 +360,14 @@ class Session {
     }
 
 
+    /**
+     * @param LoggerInterface|null $i_logger
+     * @param string|null $i_stSessionName
+     * @param RequestInterface|null $i_req
+     * @return bool
+     *
+     * Start a session. If a session is already active, an exception is thrown.
+     */
     public static function start( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
                                   ?RequestInterface $i_req = null ) : bool {
         if ( is_string( $i_stSessionName ) ) {
@@ -347,12 +424,25 @@ class Session {
     }
 
 
+    /**
+     * @return void
+     *
+     * Removes all session data. The session remains active.
+     */
     public static function unset() : void {
         static::checkActive();
         static::backend()->unsetEx();
     }
 
 
+    /**
+     * @return void
+     *
+     * Write the session data and close the session. Used if you
+     * need to do additional processing after writing the session data
+     * but don't want to block potential other requests that might
+     * need to access the session.
+     */
     public static function writeClose() : void {
         static::checkActive();
         static::backend()->writeCloseEx();
@@ -367,6 +457,11 @@ class Session {
     }
 
 
+    /**
+     * @return void
+     *
+     * Check if a session is active and throw an exception if it is not.
+     */
     protected static function checkActive() : void {
         if ( ! static::active() ) {
             throw new LogicException( 'Session not started.' );

@@ -295,6 +295,38 @@ final class SessionTest extends TestCase {
     }
 
 
+    public function testReset() : void {
+        $tmExpire = time() + 60;
+        $this->initSession( [ 'foo' => 'bar', 'tmExpire' => $tmExpire ] );
+        Session::start();
+        self::assertSame( 'bar', Session::get( 'foo' ) );
+        Session::set( 'foo', 'baz' );
+        self::assertSame( 'baz', Session::get( 'foo' ) );
+        $tmExpire2 = Session::getInt( 'tmExpire' );
+        Session::reset();
+        self::assertSame( $tmExpire2, Session::getInt( 'tmExpire' ) );
+        Session::reset( false );
+        self::assertSame( $tmExpire, Session::getInt( 'tmExpire' ) );
+        self::assertSame( 'bar', Session::get( 'foo' ) );
+    }
+
+
+    public function testResetForFailure() : void {
+        $be = $this->initSession();
+        $be->bFailReset = true;
+        Session::start();
+        self::expectException( RuntimeException::class );
+        Session::reset();
+    }
+
+
+    public function testResetForNotStarted() : void {
+        $this->initSession();
+        self::expectException( LogicException::class );
+        Session::reset();
+    }
+
+
     public function testSoftStart() : void {
         $be = $this->initSession();
         self::assertTrue( Session::softStart() );

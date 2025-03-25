@@ -31,6 +31,8 @@ class MockServer implements ServerInterface {
 
     public string $stRequestUri = '/';
 
+    public string $stRemoteAddr = '127.0.0.1';
+
     public int $iRemotePort = 12345;
 
     public string $stScriptFilename = '/var/www/html/index.php';
@@ -84,6 +86,11 @@ class MockServer implements ServerInterface {
 
     public function phpSelf() : string {
         return $this->stPhpSelf;
+    }
+
+
+    public function remoteAddr() : string {
+        return $this->stRemoteAddr;
     }
 
 

@@ -46,6 +46,11 @@ class Server implements ServerInterface {
     }
 
 
+    public function remoteAddr() : string {
+        return $_SERVER[ 'REMOTE_ADDR' ];
+    }
+
+
     public function remotePort() : int {
         return (int) $_SERVER[ 'REMOTE_PORT' ];
     }

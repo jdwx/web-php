@@ -31,6 +31,9 @@ interface ServerInterface {
     public function phpSelf() : string;
 
 
+    public function remoteAddr() : string;
+
+
     public function remotePort() : int;
 
 

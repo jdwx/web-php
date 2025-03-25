@@ -204,6 +204,18 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
+    public function remove( string $name ) : void {
+        unset( $this->rSession[ $name ] );
+    }
+
+
+    public function remove2( string $name, string $sub ) : void {
+        if ( $this->has2( $name, $sub ) ) {
+            unset( $this->rSession[ $name ][ $sub ] );
+        }
+    }
+
+
     public function reset() : bool {
         if ( $this->bFailReset ) {
             return false;

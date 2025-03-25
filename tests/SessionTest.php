@@ -276,6 +276,16 @@ final class SessionTest extends TestCase {
     }
 
 
+    public function testNestedRemove() : void {
+        $be = $this->initSession();
+        Session::start();
+        $be->set( 'foo', [ 'bar' => 'baz', 'qux' => 'quux' ] );
+        Session::nestedRemove( 'foo', 'bar' );
+        Session::nestedRemove( 'foo', 'corge' );
+        self::assertSame( [ 'qux' => 'quux' ], $be->get( 'foo' ) );
+    }
+
+
     public function testPeek() : void {
         $this->initSession( [ 'foo' => 'bar', 'baz' => 'qux' ] );
         $peek = Session::peek();
@@ -292,6 +302,19 @@ final class SessionTest extends TestCase {
         $ses->bFailRegenerate = true;
         self::expectException( RuntimeException::class );
         Session::regenerate();
+    }
+
+
+    public function testRemove() : void {
+        $be = $this->initSession();
+        Session::start();
+        $be->set( 'foo', 'bar' );
+        $be->set( 'qux', 'quux' );
+        Session::remove( 'foo' );
+        self::assertFalse( $be->has( 'foo' ) );
+        Session::remove( 'baz' );
+        self::assertFalse( $be->has( 'baz' ) );
+        self::assertTrue( $be->has( 'qux' ) );
     }
 
 

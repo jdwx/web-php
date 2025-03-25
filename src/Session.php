@@ -270,6 +270,12 @@ class Session {
     }
 
 
+    public static function nestedRemove( string $i_stKey1, string $i_stKey2 ) : void {
+        static::checkActive();
+        static::backend()->remove2( $i_stKey1, $i_stKey2 );
+    }
+
+
     /**
      * @param string $i_stKey1 The first key.
      * @param string $i_stKey2 The second key.
@@ -309,6 +315,12 @@ class Session {
     public static function regenerate( bool $i_bDeleteOld = false ) : void {
         static::checkActive();
         static::backend()->regenerateIdEx( $i_bDeleteOld );
+    }
+
+
+    public static function remove( string $i_stKey ) : void {
+        static::checkActive();
+        static::backend()->remove( $i_stKey );
     }
 
 

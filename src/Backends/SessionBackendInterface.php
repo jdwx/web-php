@@ -90,6 +90,12 @@ interface SessionBackendInterface {
     public function registerShutdown() : void;
 
 
+    public function remove( string $name ) : void;
+
+
+    public function remove2( string $name, string $sub ) : void;
+
+
     public function reset() : bool;
 
 

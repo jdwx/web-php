@@ -32,16 +32,6 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function clear( string $name ) : void {
-        unset( $_SESSION[ $name ] );
-    }
-
-
-    public function clear2( string $name, string $sub ) : void {
-        unset( $_SESSION[ $name ][ $sub ] );
-    }
-
-
     public function createId( string $prefix = '' ) : string|false {
         return session_create_id( $prefix );
     }

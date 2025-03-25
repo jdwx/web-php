@@ -21,6 +21,59 @@ use TypeError;
  * This class encapsulates the PHP session handler functions, performing error
  * and type checking, which may make it easier to use a different methodology
  * in the future.
+ *
+ * Methods are grouped into several categories. The first group is used for
+ * manipulating top-level values. The second group is used for manipulating
+ * nested values, which is mainly useful for namespacing session variables
+ * when you don't know what else you might be sharing the session with.
+ * (Using nested variables is highly encouraged.) The third group is used
+ * for manipulating the session as a whole. The fourth group is used for
+ * testing and debugging.
+ *
+ * Methods used for manipulating top-level values:
+ *
+ * - get()
+ * - getInt()
+ * - getIntOrNull()
+ * - getString()
+ * - getStringOrNull()
+ * - has()
+ * - increment()
+ * - remove()
+ *
+ * Methods used for manipulating nested values:
+ *
+ * - nestedGet()
+ * - nestedGetInt()
+ * - nestedGetIntOrNull()
+ * - nestedGetString()
+ * - nestedGetStringOrNull()
+ * - nestedHas()
+ * - nestedIncrement()
+ * - nestedRemove()
+ *
+ * Methods used for manipulating the session as a whole:
+ *
+ * - abort()
+ * - active()
+ * - cacheLimiter()
+ * - destroy()
+ * - flush()
+ * - id()
+ * - list()
+ * - peek()
+ * - regenerate()
+ * - reset()
+ * - softStart()
+ * - start()
+ * - unset()
+ * - writeClose()
+ *
+ * Methods used internally or for testing and debugging:
+ * - backend()
+ * - checkActive()
+ * - init()
+ *
  */
 class Session {
 
@@ -53,9 +106,9 @@ class Session {
     }
 
 
+    /** @deprecated Use Session::remove() */
     public static function clear( string $i_stKey ) : void {
-        static::checkActive();
-        static::backend()->clear( $i_stKey );
+        static::remove( $i_stKey );
     }
 
 
@@ -186,15 +239,20 @@ class Session {
     }
 
 
+    /** @deprecated Use Session::nestedRemove(). */
     public static function nestedClear( string $i_stKey, string $i_stKey2 ) : void {
-        static::checkActive();
-        if ( ! static::nestedHas( $i_stKey, $i_stKey2 ) ) {
-            return;
-        }
-        static::backend()->clear2( $i_stKey, $i_stKey2 );
+        static::nestedRemove( $i_stKey, $i_stKey2 );
     }
 
 
+    /**
+     * @param string $i_stKey1
+     * @param string $i_stKey2
+     * @return mixed The found value or null if not found.
+     *
+     * Get a session variable in a namespaced hierarchy. Note that it is not
+     * possible to distinguish between a null value and a non-existent value.
+     */
     public static function nestedGet( string $i_stKey1, string $i_stKey2 ) : mixed {
         if ( ! static::nestedHas( $i_stKey1, $i_stKey2 ) ) {
             return null;
@@ -203,6 +261,15 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey1
+     * @param string $i_stKey2
+     * @param int|null $i_niDefault
+     * @return int
+     *
+     * Get a session variable in a namespaced hierarchy, requiring it to exist
+     * and be an integer (with an optional default value if it does not exist).
+     */
     public static function nestedGetInt( string $i_stKey1, string $i_stKey2, ?int $i_niDefault = null ) : int {
         $nst = static::nestedGetIntOrNull( $i_stKey1, $i_stKey2 );
         if ( is_int( $nst ) ) {
@@ -215,6 +282,15 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey1
+     * @param string $i_stKey2
+     * @return int|null
+     *
+     * Get a session variable in a namespaced hierarchy, requiring it to be
+     * an integer if it exists. (Note it is not possible to distinguish
+     * between a null value and a non-existent value.)
+     */
     public static function nestedGetIntOrNull( string $i_stKey1, string $i_stKey2 ) : ?int {
         $x = static::nestedGet( $i_stKey1, $i_stKey2 );
         if ( $x === null ) {
@@ -227,6 +303,15 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey1
+     * @param string $i_stKey2
+     * @param string|null $i_nstDefault
+     * @return string
+     *
+     * Get a session variable in a namespaced hierarchy, requiring it to exist
+     * and be a string (with an optional default value if it doesn't).
+     */
     public static function nestedGetString( string $i_stKey1, string $i_stKey2, ?string $i_nstDefault = null ) : string {
         $nst = static::nestedGetStringOrNull( $i_stKey1, $i_stKey2 );
         if ( is_string( $nst ) ) {
@@ -239,6 +324,15 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey1
+     * @param string $i_stKey2
+     * @return string|null
+     *
+     * Get a session variable in a namespaced hierarchy, requiring it to be
+     * a string if it exists. (Note it is not possible to distinguish
+     * between a null value and a non-existent value.)
+     */
     public static function nestedGetStringOrNull( string $i_stKey1, string $i_stKey2 ) : ?string {
         $x = static::nestedGet( $i_stKey1, $i_stKey2 );
         if ( $x === null ) {
@@ -257,6 +351,14 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey1
+     * @param string $i_stKey2
+     * @param float|int $i_nValue
+     * @return void
+     *
+     * Increment a session variable in a namespaced hierarchy.
+     */
     public static function nestedIncrement( string $i_stKey1, string $i_stKey2, float|int $i_nValue = 1 ) : void {
         static::checkActive();
         if ( ! static::nestedHas( $i_stKey1, $i_stKey2 ) ) {
@@ -270,6 +372,13 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey1
+     * @param string $i_stKey2
+     * @return void
+     *
+     * Remove a session variable in a namespaced hierarchy.
+     */
     public static function nestedRemove( string $i_stKey1, string $i_stKey2 ) : void {
         static::checkActive();
         static::backend()->remove2( $i_stKey1, $i_stKey2 );
@@ -318,6 +427,12 @@ class Session {
     }
 
 
+    /**
+     * @param string $i_stKey
+     * @return void
+     *
+     * Remove a session variable.
+     */
     public static function remove( string $i_stKey ) : void {
         static::checkActive();
         static::backend()->remove( $i_stKey );

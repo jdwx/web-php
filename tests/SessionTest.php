@@ -49,6 +49,10 @@ final class SessionTest extends TestCase {
     }
 
 
+    /**
+     * @noinspection PhpDeprecationInspection
+     * @suppress PhanDeprecatedFunction
+     */
     public function testClear() : void {
         $this->initSession();
         Session::start();
@@ -195,8 +199,8 @@ final class SessionTest extends TestCase {
     public function testList() : void {
         $this->initSession();
         Session::start();
-        Session::clear( 'tmExpire' );
-        Session::clear( 'tmStart' );
+        Session::remove( 'tmExpire' );
+        Session::remove( 'tmStart' );
         Session::set( 'foo', 123 );
         Session::set( 'bar', 456 );
         $x = Session::list();
@@ -204,6 +208,10 @@ final class SessionTest extends TestCase {
     }
 
 
+    /**
+     * @noinspection PhpDeprecationInspection
+     * @suppress PhanDeprecatedFunction
+     */
     public function testNestedClear() : void {
         $this->initSession();
         Session::start();

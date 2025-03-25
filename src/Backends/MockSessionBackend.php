@@ -82,16 +82,6 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function clear( string $name ) : void {
-        unset( $this->rSession[ $name ] );
-    }
-
-
-    public function clear2( string $name, string $sub ) : void {
-        unset( $this->rSession[ $name ][ $sub ] );
-    }
-
-
     /** @codeCoverageIgnore */
     public function createId( string $prefix = '' ) : string|false {
         throw new LogicException( 'Not implemented.' );

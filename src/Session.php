@@ -51,7 +51,7 @@ class Session {
     }
 
 
-    public static function cookieInRequest( ?Request $i_req = null ) : bool {
+    public static function cookieInRequest( ?RequestInterface $i_req = null ) : bool {
         if ( ! $i_req ) {
             $i_req = Request::getGlobal();
         }

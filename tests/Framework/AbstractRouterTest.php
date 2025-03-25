@@ -18,6 +18,7 @@ use JDWX\Web\Http;
 use JDWX\Web\Request;
 use JDWX\Web\TextPage;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Psr\Log\LoggerInterface;
 use Shims\MyAbstractRouter;
 use Shims\MyTestCase;
 
@@ -95,6 +96,16 @@ final class AbstractRouterTest extends MyTestCase {
         $error = new HttpError();
         $router = new MyAbstractRouter( i_error: $error, i_req: $req );
         self::assertSame( $error, $router->getHttpError() );
+    }
+
+
+    public function testLogger() : void {
+        $log = new BufferLogger();
+        $router = new MyAbstractRouter( $log );
+        self::assertSame( $log, $router->logger() );
+
+        $router = new MyAbstractRouter();
+        self::assertInstanceOf( LoggerInterface::class, $router->logger() );
     }
 
 

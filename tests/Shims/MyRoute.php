@@ -11,6 +11,7 @@ use Ds\Map;
 use JDWX\Web\Framework\AbstractRoute;
 use JDWX\Web\Framework\ResponseInterface;
 use JDWX\Web\Framework\RouterInterface;
+use Psr\Log\LoggerInterface;
 
 
 class MyRoute extends AbstractRoute {
@@ -72,6 +73,11 @@ class MyRoute extends AbstractRoute {
             return call_user_func( $this->mapCallbacks[ 'put' ], $i_stUri, $i_stPath );
         }
         return parent::handlePUT( $i_stUri, $i_stPath );
+    }
+
+
+    public function loggerPub() : LoggerInterface {
+        return $this->logger();
     }
 
 

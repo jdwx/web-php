@@ -8,6 +8,7 @@ namespace JDWX\Web\Framework;
 
 
 use JDWX\Web\RequestInterface;
+use Psr\Log\LoggerInterface;
 
 
 interface RouterInterface {
@@ -20,6 +21,9 @@ interface RouterInterface {
 
 
     public function getHttpError() : HttpError;
+
+
+    public function logger() : LoggerInterface;
 
 
     /**

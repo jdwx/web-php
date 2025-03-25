@@ -79,6 +79,13 @@ final class AbstractRouteTest extends TestCase {
     }
 
 
+    public function testLogger() : void {
+        $router = $this->newRouter( 'GET' );
+        $route = new MyRoute( $router );
+        self::assertSame( $router->logger(), $route->loggerPub() );
+    }
+
+
     private function newRouter( string $i_stMethod ) : RouterInterface {
         $srv = new MockServer( $i_stMethod, '/' );
         $req = Request::synthetic( [], [], [], [], $srv );

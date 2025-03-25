@@ -10,6 +10,7 @@ namespace JDWX\Web\Framework;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotImplementedException;
 use JDWX\Web\RequestInterface;
+use Psr\Log\LoggerInterface;
 
 
 abstract class AbstractRoute implements RouteInterface {
@@ -64,6 +65,11 @@ abstract class AbstractRoute implements RouteInterface {
     /** @suppress PhanTypeMissingReturnReal */
     protected function handlePUT( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
+    }
+
+
+    protected function logger() : LoggerInterface {
+        return $this->router()->logger();
     }
 
 

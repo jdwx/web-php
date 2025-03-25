@@ -72,6 +72,11 @@ abstract class AbstractRouter implements RouterInterface {
     }
 
 
+    public function logger() : LoggerInterface {
+        return $this->logger;
+    }
+
+
     public function request() : RequestInterface {
         return $this->request;
     }

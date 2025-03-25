@@ -295,6 +295,14 @@ final class SessionTest extends TestCase {
     }
 
 
+    public function testSoftStart() : void {
+        $be = $this->initSession();
+        self::assertTrue( Session::softStart() );
+        self::assertTrue( $be->bActive );
+        self::assertTrue( Session::softStart() );
+    }
+
+
     public function testStart() : void {
         $be = $this->initSession();
         Session::start( i_stSessionName: 'alt-session-name' );

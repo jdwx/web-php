@@ -282,8 +282,17 @@ class Session {
     }
 
 
-    public static function start( ?LoggerInterface $i_logger = null, ?string $i_stSessionName = null,
-                                  ?Request         $i_req = null ) : bool {
+    public static function softStart( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
+                                      ?RequestInterface $i_req = null ) : bool {
+        if ( static::active() ) {
+            return true;
+        }
+        return static::start( $i_logger, $i_stSessionName, $i_req );
+    }
+
+
+    public static function start( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
+                                  ?RequestInterface $i_req = null ) : bool {
         if ( is_string( $i_stSessionName ) ) {
             $stSessionName = $i_stSessionName;
             static::backend()->name( $stSessionName );

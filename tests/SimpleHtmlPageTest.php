@@ -26,7 +26,7 @@ final class SimpleHtmlPageTest extends TestCase {
         $page = new class( 'CONTENT' ) extends SimpleHtmlPage {
 
 
-            public function __construct( $i_nstContent ) {
+            public function __construct( ?string $i_nstContent ) {
                 parent::__construct( $i_nstContent );
             }
 
@@ -67,7 +67,7 @@ final class SimpleHtmlPageTest extends TestCase {
         $page = new class( 'CONTENT' ) extends SimpleHtmlPage {
 
 
-            public function __construct( $i_nstContent ) {
+            public function __construct( ?string $i_nstContent ) {
                 parent::__construct( $i_nstContent );
             }
 

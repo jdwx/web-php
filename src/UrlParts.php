@@ -67,6 +67,21 @@ class UrlParts implements \ArrayAccess {
             $stPath .= $this->nstFile;
         }
         return $stPath;
+    }
+
+
+    public function validate() : bool {
+        foreach ( $this->subFolders as $part ) {
+            if ( ! Url::validatePathSegment( $part ) ) {
+                return false;
+            }
+        }
+
+        if ( ! Url::validatePathSegment( $this->nstFile ) ) {
+            return false;
+        }
+
+        return true;
 
     }
 

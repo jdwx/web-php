@@ -42,4 +42,29 @@ final class UrlPartsTest extends TestCase {
     }
 
 
+    public function testValidate() : void {
+        $url = Url::splitEx( 'https://example.com/path/to/resource?query=string#fragment' );
+        self::assertTrue( $url->validate() );
+
+        $url = Url::splitEx( 'https://example.com/path/te,st/resource?query=string#fragment' );
+        self::assertTrue( $url->validate() );
+
+        $url = Url::splitEx( 'https://example.com/path/%41/resource?query=string#fragment' );
+        self::assertTrue( $url->validate() );
+
+        $url = Url::splitEx( 'https://example.com/path//resource?query=string#fragment' );
+        self::assertFalse( $url->validate() );
+
+        $url = Url::splitEx( 'https://example.com/path/te%st/resource?query=string#fragment' );
+        self::assertFalse( $url->validate() );
+
+        $url = Url::splitEx( 'https://example.com/path/reso%urce?query=string#fragment' );
+        self::assertFalse( $url->validate() );
+
+        $url = Url::splitEx( 'https://example.com/path/../resource?query=string#fragment' );
+        self::assertFalse( $url->validate() );
+
+    }
+
+
 }

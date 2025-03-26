@@ -136,4 +136,15 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
+    /**
+     * Make sure that the provided URI is valid and isn't up to any tricky
+     * stuff.
+     */
+    public function validateUri() : bool {
+        # Note that splitting the URL parts already checks the URI as a
+        # whole for things like invalid characters.
+        return $this->uriParts()->validate();
+    }
+
+
 }

@@ -147,6 +147,21 @@ final class AbstractRequestTest extends TestCase {
     }
 
 
+    public function testValidateUri() : void {
+        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/test/' ) );
+        self::assertTrue( $req->validateUri() );
+
+        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/test/this' ) );
+        self::assertTrue( $req->validateUri() );
+
+        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/test/..' ) );
+        self::assertFalse( $req->validateUri() );
+
+        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/te%st/this' ) );
+        self::assertFalse( $req->validateUri() );
+    }
+
+
     public function testXCOOKIE() : void {
         $req = $this->newAbstractRequest( i_rCookie: [ 'foo' => 'bar' ] );
         self::assertTrue( $req->_COOKIE()->has( 'foo' ) );

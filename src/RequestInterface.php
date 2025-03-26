@@ -77,4 +77,7 @@ interface RequestInterface {
     public function uriParts() : UrlParts;
 
 
+    public function validateUri() : bool;
+
+
 }

@@ -97,6 +97,47 @@ class Url {
     }
 
 
+    public static function validatePathSegment( ?string $i_nstComponent ) : bool {
+
+        # It could be null if the URI ends in a slash, which is fine.
+        if ( is_null( $i_nstComponent ) ) {
+            return true;
+        }
+
+        # But an empty string is not.
+        if ( '' === $i_nstComponent ) {
+            return false;
+        }
+
+        # And we don't want to see any double-dots.
+        if ( '..' === $i_nstComponent ) {
+            return false;
+        }
+
+        # The allowable characters are:
+        # pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+        # unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+        # pct-encoded = "%" HEXDIG HEXDIG
+        # sub-delims   = "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
+        #
+        # What we're going to do here is try to whittle the path down
+        # to nothing by removing valid components. If we can't, then
+        # there's something invalid in there.
+
+        # Start with pct-encoded. It's the only multi-character component.
+        $i_nstComponent = preg_replace( '/%[0-9A-Fa-f]{2}/', '', $i_nstComponent );
+
+        # Now remove the sub-delims. Note % is no longer valid after above,
+        # but we'll get : and @ while we're at it.
+        $i_nstComponent = preg_replace( '/[!$&\'()*+,;=:@]/', '', $i_nstComponent );
+
+        # Now remove the unreserved characters.
+        $i_nstComponent = preg_replace( '/[A-Za-z0-9\-._~]/', '', $i_nstComponent );
+
+        return '' === $i_nstComponent;
+    }
+
+
     protected static function makeParts() : UrlParts {
         return new UrlParts();
     }

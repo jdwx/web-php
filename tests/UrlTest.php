@@ -93,6 +93,7 @@ final class UrlTest extends TestCase {
     public function testSplitForInvalid() : void {
         self::assertNull( Url::split( '\\absolute-nonsense\\' ) );
         self::assertNull( Url::split( 'https://example.com,http://http' ) );
+        self::assertNull( Url::split( 'https://example.com/path/te st/resource?query=string#fragment' ) );
     }
 
 
@@ -127,6 +128,22 @@ final class UrlTest extends TestCase {
         $parts = Url::split( '/a/b?foo=1&bar=baz' );
         self::expectException( LogicException::class );
         unset( $parts[ 'foo' ] );
+    }
+
+
+    public function testValidatePathSegment() : void {
+        self::assertTrue( Url::validatePathSegment( 'test' ) );
+        self::assertTrue( Url::validatePathSegment( 'test-123' ) );
+        self::assertTrue( Url::validatePathSegment( 'test_123' ) );
+        self::assertTrue( Url::validatePathSegment( 'test.123' ) );
+        self::assertTrue( Url::validatePathSegment( 'test%20' ) );
+        self::assertTrue( Url::validatePathSegment( null ) );
+        self::assertFalse( Url::validatePathSegment( 'test/' ) );
+        self::assertFalse( Url::validatePathSegment( 'test?' ) );
+        self::assertFalse( Url::validatePathSegment( 'test#' ) );
+        self::assertFalse( Url::validatePathSegment( 'tes%t' ) );
+        self::assertFalse( Url::validatePathSegment( '..' ) );
+        self::assertFalse( Url::validatePathSegment( '' ) );
     }
 
 

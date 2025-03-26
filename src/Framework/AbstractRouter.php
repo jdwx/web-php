@@ -9,6 +9,7 @@ namespace JDWX\Web\Framework;
 
 use Ds\Set;
 use JDWX\Log\StderrLogger;
+use JDWX\Web\Framework\Exceptions\BadRequestException;
 use JDWX\Web\Framework\Exceptions\HttpStatusException;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotFoundException;
@@ -85,6 +86,9 @@ abstract class AbstractRouter implements RouterInterface {
 
     public function run() : void {
         try {
+            if ( ! $this->request()->validateUri() ) {
+                throw new BadRequestException( 'Invalid URI' );
+            }
             if ( $this->route() ) {
                 return;
             }

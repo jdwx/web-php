@@ -225,6 +225,17 @@ final class AbstractRouterTest extends MyTestCase {
     }
 
 
+    public function testRunForInvalidUrl() : void {
+        $req = $this->newRequest( 'GET', '/test/..' );
+        $logger = new BufferLogger();
+        $router = new MyAbstractRouter( $logger, i_req: $req );
+        ob_start();
+        $router->run();
+        $st = ob_get_clean();
+        self::assertStringContainsString( '400 Bad Request', $st );
+    }
+
+
     public function testRunForNotFound() : void {
         $req = $this->newRequest( 'GET', '/foo/bar' );
         $logger = new BufferLogger();

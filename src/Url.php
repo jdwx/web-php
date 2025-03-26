@@ -114,6 +114,12 @@ class Url {
             return false;
         }
 
+        # Don't really want single dots either. (I.e., don't use this
+        # method to validate a relative URI!)
+        if ( '.' === $i_nstComponent ) {
+            return false;
+        }
+
         # The allowable characters are:
         # pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
         # unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"

@@ -143,6 +143,7 @@ final class UrlTest extends TestCase {
         self::assertFalse( Url::validatePathSegment( 'test#' ) );
         self::assertFalse( Url::validatePathSegment( 'tes%t' ) );
         self::assertFalse( Url::validatePathSegment( '..' ) );
+        self::assertFalse( Url::validatePathSegment( '.' ) );
         self::assertFalse( Url::validatePathSegment( '' ) );
     }
 

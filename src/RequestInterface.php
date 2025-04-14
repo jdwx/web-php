@@ -14,25 +14,25 @@ use JDWX\Param\IParameterSet;
 interface RequestInterface {
 
 
-    public function COOKIE( string $i_stName ) : ?IParameter;
+    public function COOKIE( string $i_stName, mixed $i_xDefault = null ) : ?IParameter;
 
 
     public function FILES() : FilesHandler;
 
 
-    public function GET( string $i_stName ) : ?IParameter;
+    public function GET( string $i_stName, mixed $i_xDefault = null ) : ?IParameter;
 
 
-    public function POST( string $i_stName ) : ?IParameter;
+    public function POST( string $i_stName, mixed $i_xDefault = null ) : ?IParameter;
 
 
-    public function _COOKIE() : ?IParameterSet;
+    public function _COOKIE() : IParameterSet;
 
 
-    public function _GET() : ?IParameterSet;
+    public function _GET() : IParameterSet;
 
 
-    public function _POST() : ?IParameterSet;
+    public function _POST() : IParameterSet;
 
 
     public function cookieEx( string $i_stName ) : IParameter;
@@ -42,7 +42,7 @@ interface RequestInterface {
     public function cookieHas( ...$i_rstNames ) : bool;
 
 
-    public function getEx( string $i_stName ) : IParameter;
+    public function getEx( string $i_stName, mixed $i_xDefault = null ) : IParameter;
 
 
     /** @param string ...$i_rstNames */
@@ -61,7 +61,7 @@ interface RequestInterface {
     public function path() : string;
 
 
-    public function postEx( string $i_stName ) : IParameter;
+    public function postEx( string $i_stName, mixed $i_xDefault = null ) : IParameter;
 
 
     /** @param string ...$i_rstNames */

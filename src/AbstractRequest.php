@@ -56,8 +56,8 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
-    public function cookieEx( string $i_stName ) : IParameter {
-        $np = $this->COOKIE( $i_stName );
+    public function cookieEx( string $i_stName, mixed $i_xDefault = null ) : IParameter {
+        $np = $this->COOKIE( $i_stName, $i_xDefault );
         if ( $np instanceof IParameter ) {
             return $np;
         }

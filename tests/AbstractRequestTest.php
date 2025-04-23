@@ -21,6 +21,7 @@ final class AbstractRequestTest extends TestCase {
         $req = $this->newAbstractRequest( i_rCookie: [ 'foo' => 'bar', 1 => 'baz' ] );
         self::assertSame( 'bar', $req->COOKIE( 'foo' )->asString() );
         self::assertSame( 'baz', $req->COOKIE( '1' )->asString() );
+        self::assertSame( 'quux', $req->COOKIE( 'qux', 'quux' )->asString() );
         self::assertNull( $req->COOKIE( 'bar' ) );
     }
 
@@ -28,6 +29,7 @@ final class AbstractRequestTest extends TestCase {
     public function testCookieEx() : void {
         $req = $this->newAbstractRequest( i_rCookie: [ 'foo' => 'bar' ] );
         self::assertSame( 'bar', $req->cookieEx( 'foo' )->asString() );
+        self::assertSame( 'quux', $req->cookieEx( 'qux', 'quux' )->asString() );
         self::expectException( OutOfBoundsException::class );
         $req->cookieEx( 'bar' );
     }
@@ -115,8 +117,7 @@ final class AbstractRequestTest extends TestCase {
         $req = $this->newAbstractRequest( i_rPost: [ 'foo' => 'bar' ] );
         self::assertSame( 'bar', $req->postEx( 'foo' )->asString() );
 
-        # Test with default value
-        self::assertSame( 'baz', $req->postEx( 'bar', 'baz' )->asString() );
+        self::assertSame( 'quux', $req->postEx( 'qux', 'quux' )->asString() );
 
         self::expectException( OutOfBoundsException::class );
         $req->postEx( 'bar' );

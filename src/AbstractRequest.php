@@ -107,7 +107,7 @@ abstract readonly class AbstractRequest implements RequestInterface {
 
 
     public function postEx( string $i_stName, mixed $i_xDefault = null ) : IParameter {
-        $np = $this->POST( $i_stName );
+        $np = $this->POST( $i_stName, $i_xDefault );
         if ( $np instanceof IParameter ) {
             return $np;
         }

@@ -51,6 +51,7 @@ final class AbstractRequestTest extends TestCase {
         $req = $this->newAbstractRequest( [ 'foo' => 'bar', 1 => 'baz' ] );
         self::assertSame( 'bar', $req->GET( 'foo' )->asString() );
         self::assertSame( 'baz', $req->GET( '1' )->asString() );
+        self::assertSame( 'quux', $req->GET( 'qux', 'quux' )->asString() );
         self::assertNull( $req->GET( 'qux' ) );
     }
 
@@ -58,6 +59,7 @@ final class AbstractRequestTest extends TestCase {
     public function testGetEx() : void {
         $req = $this->newAbstractRequest( [ 'foo' => 'bar' ] );
         self::assertSame( 'bar', $req->getEx( 'foo' )->asString() );
+        self::assertSame( 'quux', $req->getEx( 'qux', 'quux' )->asString() );
         self::expectException( OutOfBoundsException::class );
         $req->getEx( 'baz' );
     }
@@ -98,6 +100,7 @@ final class AbstractRequestTest extends TestCase {
         $req = $this->newAbstractRequest( i_rPost: [ 'foo' => 'bar', 1 => 'baz' ] );
         self::assertSame( 'bar', $req->POST( 'foo' )->asString() );
         self::assertSame( 'baz', $req->POST( '1' )->asString() );
+        self::assertSame( 'quux', $req->POST( 'qux', 'quux' )->asString() );
         self::assertNull( $req->POST( 'bar' ) );
     }
 
@@ -111,6 +114,10 @@ final class AbstractRequestTest extends TestCase {
     public function testPostEx() : void {
         $req = $this->newAbstractRequest( i_rPost: [ 'foo' => 'bar' ] );
         self::assertSame( 'bar', $req->postEx( 'foo' )->asString() );
+
+        # Test with default value
+        self::assertSame( 'baz', $req->postEx( 'bar', 'baz' )->asString() );
+
         self::expectException( OutOfBoundsException::class );
         $req->postEx( 'bar' );
     }

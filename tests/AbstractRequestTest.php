@@ -78,13 +78,13 @@ final class AbstractRequestTest extends TestCase {
     public function testIsGET() : void {
         $req = $this->newAbstractRequest();
         self::assertTrue( $req->isGET() );
-        $req = $this->newAbstractRequest( i_server: new MockServer( 'POST' ) );
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ) );
         self::assertFalse( $req->isGET() );
     }
 
 
     public function testIsPOST() : void {
-        $req = $this->newAbstractRequest( i_server: new MockServer( 'POST' ) );
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ) );
         self::assertTrue( $req->isPOST() );
 
         $req = $this->newAbstractRequest();
@@ -93,7 +93,7 @@ final class AbstractRequestTest extends TestCase {
 
 
     public function testMethod() : void {
-        $req = $this->newAbstractRequest( i_server: new MockServer( 'TEST_METHOD' ) );
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'TEST_METHOD' ) );
         self::assertSame( 'test_method', $req->method() );
     }
 
@@ -108,7 +108,9 @@ final class AbstractRequestTest extends TestCase {
 
 
     public function testPath() : void {
-        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/foo/bar?a=b&c=d' ) );
+        $req = $this->newAbstractRequest(
+            i_server: ( new MockServer() )->withRequestUri( '/foo/bar?a=b&c=d' )
+        );
         self::assertSame( '/foo/bar', $req->path() );
     }
 
@@ -140,13 +142,17 @@ final class AbstractRequestTest extends TestCase {
 
 
     public function testUri() : void {
-        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/foo/bar?a=b&c=d' ) );
+        $req = $this->newAbstractRequest(
+            i_server: ( new MockServer() )->withRequestUri( '/foo/bar?a=b&c=d' )
+        );
         self::assertSame( '/foo/bar?a=b&c=d', $req->uri() );
     }
 
 
     public function testUriParts() : void {
-        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/foo/bar/baz?a=b&c=d' ) );
+        $req = $this->newAbstractRequest(
+            i_server: ( new MockServer() )->withRequestUri( '/foo/bar/baz?a=b&c=d' )
+        );
         $parts = $req->uriParts();
         self::assertSame( [ 'foo', 'bar' ], $parts->subFolders );
         self::assertSame( 'baz', $parts->nstFile );
@@ -156,16 +162,16 @@ final class AbstractRequestTest extends TestCase {
 
 
     public function testValidateUri() : void {
-        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/test/' ) );
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestUri( '/test/' ) );
         self::assertTrue( $req->validateUri() );
 
-        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/test/this' ) );
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestUri( '/test/this' ) );
         self::assertTrue( $req->validateUri() );
 
-        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/test/..' ) );
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestUri( '/test/..' ) );
         self::assertFalse( $req->validateUri() );
 
-        $req = $this->newAbstractRequest( i_server: new MockServer( i_stRequestUri: '/te%st/this' ) );
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestUri( '/te%st/this' ) );
         self::assertFalse( $req->validateUri() );
     }
 

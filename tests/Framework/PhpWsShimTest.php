@@ -75,7 +75,8 @@ final class PhpWsShimTest extends TestCase {
 
 
     private function newRequest( string $i_stUri = '/' ) : RequestInterface {
-        $srv = new MockServer( 'GET', $i_stUri );
+        $srv = new MockServer();
+        $srv = $srv->withRequestUri( $i_stUri );
         $srv = $srv->withDocumentRoot( __DIR__ . '/../../example/static' );
         return Request::synthetic( [], [], [], [], $srv );
     }

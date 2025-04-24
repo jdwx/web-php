@@ -8,7 +8,7 @@ namespace JDWX\Web;
 
 
 /** This class encapsulates the $_SERVER superglobal to allow type & error checking. */
-class Server implements ServerInterface {
+readonly class Server implements ServerInterface {
 
 
     protected const array DEFAULTS = [
@@ -170,115 +170,138 @@ class Server implements ServerInterface {
     }
 
 
-    public function withDocumentRoot( string $i_stDocumentRoot ) : self {
-        $out = clone $this;
-        $out->stDocumentRoot = $i_stDocumentRoot;
-        return $out;
+    public function withDocumentRoot( string $i_stDocumentRoot ) : static {
+        $r = $this->_export();
+        $r[ 'DOCUMENT_ROOT' ] = $i_stDocumentRoot;
+        return new static( $r );
     }
 
 
-    public function withHttpHost( string $i_stHttpHost ) : self {
-        $out = clone $this;
-        $out->stHttpHost = $i_stHttpHost;
-        return $out;
+    public function withHttpHost( string $i_stHttpHost ) : static {
+        $r = $this->_export();
+        $r[ 'HTTP_HOST' ] = $i_stHttpHost;
+        return new static( $r );
     }
 
 
-    public function withHttpReferer( string $i_stHttpReferer ) : self {
-        $out = clone $this;
-        $out->stHttpReferer = $i_stHttpReferer;
-        return $out;
+    public function withHttpReferer( string $i_stHttpReferer ) : static {
+        $r = $this->_export();
+        $r[ 'HTTP_REFERER' ] = $i_stHttpReferer;
+        return new static( $r );
     }
 
 
-    public function withHttpUserAgent( string $i_stHttpUserAgent ) : self {
-        $out = clone $this;
-        $out->stHttpUserAgent = $i_stHttpUserAgent;
-        return $out;
+    public function withHttpUserAgent( string $i_stHttpUserAgent ) : static {
+        $r = $this->_export();
+        $r[ 'HTTP_USER_AGENT' ] = $i_stHttpUserAgent;
+        return new static( $r );
     }
 
 
-    public function withHttps( bool $i_bHttps ) : self {
-        $out = clone $this;
-        $out->bHttps = $i_bHttps;
-        return $out;
+    public function withHttps( bool $i_bHttps ) : static {
+        $r = $this->_export();
+        $r[ 'HTTPS' ] = $i_bHttps ? 'on' : 'off';
+        return new static( $r );
     }
 
 
-    public function withPathInfo( string $i_stPathInfo ) : self {
-        $out = clone $this;
-        $out->stPathInfo = $i_stPathInfo;
-        return $out;
+    public function withPathInfo( string $i_stPathInfo ) : static {
+        $r = $this->_export();
+        $r[ 'PATH_INFO' ] = $i_stPathInfo;
+        return new static( $r );
     }
 
 
-    public function withPhpSelf( string $i_stPhpSelf ) : self {
-        $out = clone $this;
-        $out->stPhpSelf = $i_stPhpSelf;
-        return $out;
+    public function withPhpSelf( string $i_stPhpSelf ) : static {
+        $r = $this->_export();
+        $r[ 'PHP_SELF' ] = $i_stPhpSelf;
+        return new static( $r );
     }
 
 
-    public function withRemoteAddr( string $i_stRemoteAddr ) : self {
-        $out = clone $this;
-        $out->stRemoteAddr = $i_stRemoteAddr;
-        return $out;
+    public function withRemoteAddr( string $i_stRemoteAddr ) : static {
+        $r = $this->_export();
+        $r[ 'REMOTE_ADDR' ] = $i_stRemoteAddr;
+        return new static( $r );
     }
 
 
-    public function withRemotePort( int $i_iRemotePort ) : self {
-        $out = clone $this;
-        $out->iRemotePort = $i_iRemotePort;
-        return $out;
+    public function withRemotePort( int $i_iRemotePort ) : static {
+        $r = $this->_export();
+        $r[ 'REMOTE_PORT' ] = strval( $i_iRemotePort );
+        return new static( $r );
     }
 
 
-    public function withRequestMethod( string $i_stRequestMethod ) : self {
-        $out = clone $this;
-        $out->stRequestMethod = $i_stRequestMethod;
-        return $out;
+    public function withRequestMethod( string $i_stRequestMethod ) : static {
+        $r = $this->_export();
+        $r[ 'REQUEST_METHOD' ] = $i_stRequestMethod;
+        return new static( $r );
     }
 
 
-    public function withRequestScheme( string $i_stRequestScheme ) : self {
-        $out = clone $this;
-        $out->stRequestScheme = $i_stRequestScheme;
-        return $out;
+    public function withRequestScheme( string $i_stRequestScheme ) : static {
+        $r = $this->_export();
+        $r[ 'REQUEST_SCHEME' ] = $i_stRequestScheme;
+        return new static( $r );
     }
 
 
-    public function withRequestUri( string $i_stRequestUri ) : self {
-        $out = clone $this;
-        $out->stRequestUri = $i_stRequestUri;
-        return $out;
+    public function withRequestUri( string $i_stRequestUri ) : static {
+        $r = $this->_export();
+        $r[ 'REQUEST_URI' ] = $i_stRequestUri;
+        return new static( $r );
     }
 
 
-    public function withScriptFilename( string $i_stScriptFilename ) : self {
-        $out = clone $this;
-        $out->stScriptFilename = $i_stScriptFilename;
-        return $out;
+    public function withScriptFilename( string $i_stScriptFilename ) : static {
+        $r = $this->_export();
+        $r[ 'SCRIPT_FILENAME' ] = $i_stScriptFilename;
+        return new static( $r );
     }
 
 
-    public function withScriptName( string $i_stScriptName ) : self {
-        $out = clone $this;
-        $out->stScriptName = $i_stScriptName;
-        return $out;
+    public function withScriptName( string $i_stScriptName ) : static {
+        $r = $this->_export();
+        $r[ 'SCRIPT_NAME' ] = $i_stScriptName;
+        return new static( $r );
     }
 
 
-    public function withServerAddr( string $i_stServerAddr ) : self {
-        $out = clone $this;
-        $out->stServerAddr = $i_stServerAddr;
-        return $out;
+    public function withServerAddr( string $i_stServerAddr ) : static {
+        $r = $this->_export();
+        $r[ 'SERVER_ADDR' ] = $i_stServerAddr;
+        return new static( $r );
     }
 
 
-    public function withServerName( string $i_stServerName ) : self {
-        $out = clone $this;
-        $out->stServerName = $i_stServerName;
-        return $out;
+    public function withServerName( string $i_stServerName ) : static {
+        $r = $this->_export();
+        $r[ 'SERVER_NAME' ] = $i_stServerName;
+        return new static( $r );
+    }
+
+
+    /** @return array<string, string> */
+    private function _export() : array {
+        return [
+            'DOCUMENT_ROOT' => $this->stDocumentRoot,
+            'HTTP_HOST' => $this->stHttpHost,
+            'HTTP_REFERER' => $this->stHttpReferer,
+            'HTTP_USER_AGENT' => $this->stHttpUserAgent,
+            'HTTPS' => $this->bHttps ? 'on' : 'off',
+            'PATH_INFO' => $this->stPathInfo,
+            'PHP_SELF' => $this->stPhpSelf,
+            'REMOTE_ADDR' => $this->stRemoteAddr,
+            'REMOTE_PORT' => strval( $this->iRemotePort ),
+            'REQUEST_METHOD' => $this->stRequestMethod,
+            'REQUEST_SCHEME' => $this->stRequestScheme,
+            'REQUEST_URI' => $this->stRequestUri,
+            'SCRIPT_FILENAME' => $this->stScriptFilename,
+            'SCRIPT_NAME' => $this->stScriptName,
+            'SERVER_ADDR' => $this->stServerAddr,
+            'SERVER_NAME' => $this->stServerName,
+        ];
     }
 
 

@@ -273,7 +273,8 @@ final class AbstractRouterTest extends MyTestCase {
 
 
     private function newRequest( string $i_stMethod = 'GET', string $i_stURI = '/' ) : Request {
-        $srv = new MockServer( $i_stMethod, $i_stURI );
+        $srv = new MockServer();
+        $srv = $srv->withRequestMethod( $i_stMethod )->withRequestUri( $i_stURI );
         return Request::synthetic( i_server: $srv );
     }
 

@@ -87,7 +87,8 @@ final class AbstractRouteTest extends TestCase {
 
 
     public function testServer() : void {
-        $srv = new MockServer( 'GET', '/' );
+        $srv = new MockServer();
+        $srv = $srv->withRequestUri( '/' );
         $req = Request::synthetic( i_server: $srv );
         $router = new MyRouter( i_req: $req );
         $route = new MyRoute( $router );
@@ -96,7 +97,8 @@ final class AbstractRouteTest extends TestCase {
 
 
     private function newRouter( string $i_stMethod ) : RouterInterface {
-        $srv = new MockServer( $i_stMethod, '/' );
+        $srv = new MockServer();
+        $srv = $srv->withRequestMethod( $i_stMethod )->withRequestUri( '/' );
         $req = Request::synthetic( [], [], [], [], $srv );
         return new MyRouter( i_req: $req );
     }

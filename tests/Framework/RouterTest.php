@@ -143,7 +143,8 @@ final class RouterTest extends TestCase {
 
 
     private function newRequest( string $i_stMethod, string $i_stUri ) : RequestInterface {
-        $srv = new MockServer( $i_stMethod, $i_stUri );
+        $srv = new MockServer();
+        $srv = $srv->withRequestMethod( $i_stMethod )->withRequestUri( $i_stUri );
         return Request::synthetic( [], [], [], [], $srv );
     }
 

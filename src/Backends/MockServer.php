@@ -10,7 +10,7 @@ namespace JDWX\Web\Backends;
 use JDWX\Web\Server;
 
 
-class MockServer extends Server {
+readonly class MockServer extends Server {
 
 
     protected const array DEFAULTS = [
@@ -31,18 +31,6 @@ class MockServer extends Server {
         'SERVER_ADDR' => '192.0.2.1',
         'SERVER_NAME' => 'www.example.com',
     ];
-
-
-    public function __construct( ?string $i_nstRequestMethod = null, ?string $i_stRequestUri = null ) {
-        $r = [];
-        if ( is_string( $i_nstRequestMethod ) ) {
-            $r[ 'REQUEST_METHOD' ] = $i_nstRequestMethod;
-        }
-        if ( is_string( $i_stRequestUri ) ) {
-            $r[ 'REQUEST_URI' ] = $i_stRequestUri;
-        }
-        parent::__construct( $r );
-    }
 
 
 }

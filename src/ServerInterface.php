@@ -10,6 +10,10 @@ namespace JDWX\Web;
 interface ServerInterface {
 
 
+    /** @param array<string, string>|null $i_nrDefaults */
+    public function __construct( ?array $i_nrDefaults = null );
+
+
     public function documentRoot() : string;
 
 

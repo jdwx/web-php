@@ -11,116 +11,179 @@ use PHPUnit\Framework\TestCase;
 class ServerTest extends TestCase {
 
 
-    private Server $server;
-
-
     public function testDocumentRoot() : void {
-        self::assertSame( '/var/www/html', $this->server->documentRoot() );
+        $srv = new Server( [
+            'DOCUMENT_ROOT' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->documentRoot() );
+
+        $srv = $srv->withDocumentRoot( 'bar' );
+        self::assertSame( 'bar', $srv->documentRoot() );
     }
 
 
     public function testHttpHost() : void {
-        self::assertSame( 'example.com', $this->server->httpHost() );
+        $srv = new Server( [
+            'HTTP_HOST' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->httpHost() );
+
+        $srv = $srv->withHttpHost( 'bar' );
+        self::assertSame( 'bar', $srv->httpHost() );
     }
 
 
     public function testHttpReferer() : void {
-        self::assertSame( 'https://referrer.com', $this->server->httpReferer() );
+        $srv = new Server( [
+            'HTTP_REFERER' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->httpReferer() );
+
+        $srv = $srv->withHttpReferer( 'bar' );
+        self::assertSame( 'bar', $srv->httpReferer() );
     }
 
 
     public function testHttpUserAgent() : void {
-        self::assertSame( 'PHPUnit Test Browser', $this->server->httpUserAgent() );
+        $srv = new Server( [
+            'HTTP_USER_AGENT' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->httpUserAgent() );
+
+        $srv = $srv->withHttpUserAgent( 'bar' );
+        self::assertSame( 'bar', $srv->httpUserAgent() );
     }
 
 
     public function testHttps() : void {
-        self::assertTrue( $this->server->https() );
+        $srv = new Server( [
+            'HTTPS' => 'on',
+        ] );
+        self::assertTrue( $srv->https() );
 
-        $_SERVER[ 'HTTPS' ] = 'off';
-        /** @noinspection PhpConditionAlreadyCheckedInspection */
-        self::assertFalse( $this->server->https() );
+        $srv = $srv->withHttps( false );
+        self::assertFalse( $srv->https() );
     }
 
 
     public function testPathInfo() : void {
-        self::assertSame( '/path/info', $this->server->pathInfo() );
+        $srv = new Server( [
+            'PATH_INFO' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->pathInfo() );
+
+        $srv = $srv->withPathInfo( 'bar' );
+        self::assertSame( 'bar', $srv->pathInfo() );
     }
 
 
     public function testPhpSelf() : void {
-        self::assertSame( '/index.php', $this->server->phpSelf() );
+        $srv = new Server( [
+            'PHP_SELF' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->phpSelf() );
+
+        $srv = $srv->withPhpSelf( 'bar' );
+        self::assertSame( 'bar', $srv->phpSelf() );
     }
 
 
     public function testRemoteAddr() : void {
-        self::assertSame( '192.0.2.1', $this->server->remoteAddr() );
+        $srv = new Server( [
+            'REMOTE_ADDR' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->remoteAddr() );
+
+        $srv = $srv->withRemoteAddr( 'bar' );
+        self::assertSame( 'bar', $srv->remoteAddr() );
     }
 
 
     public function testRemotePort() : void {
-        self::assertSame( 12345, $this->server->remotePort() );
-        self::assertIsInt( $this->server->remotePort() );
+        $srv = new Server( [
+            'REMOTE_PORT' => '123',
+        ] );
+        self::assertSame( 123, $srv->remotePort() );
+
+        $srv = $srv->withRemotePort( 456 );
+        self::assertSame( 456, $srv->remotePort() );
     }
 
 
     public function testRequestMethod() : void {
-        self::assertSame( 'GET', $this->server->requestMethod() );
+        $srv = new Server( [
+            'REQUEST_METHOD' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->requestMethod() );
+
+        $srv = $srv->withRequestMethod( 'bar' );
+        self::assertSame( 'bar', $srv->requestMethod() );
     }
 
 
     public function testRequestScheme() : void {
-        self::assertSame( 'https', $this->server->requestScheme() );
+        $srv = new Server( [
+            'REQUEST_SCHEME' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->requestScheme() );
+
+        $srv = $srv->withRequestScheme( 'bar' );
+        self::assertSame( 'bar', $srv->requestScheme() );
     }
 
 
     public function testRequestUri() : void {
-        self::assertSame( '/test/path', $this->server->requestUri() );
+        $srv = new Server( [
+            'REQUEST_URI' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->requestUri() );
+
+        $srv = $srv->withRequestUri( 'bar' );
+        self::assertSame( 'bar', $srv->requestUri() );
     }
 
 
     public function testScriptFilename() : void {
-        self::assertSame( '/var/www/html/index.php', $this->server->scriptFilename() );
+        $srv = new Server( [
+            'SCRIPT_FILENAME' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->scriptFilename() );
+
+        $srv = $srv->withScriptFilename( 'bar' );
+        self::assertSame( 'bar', $srv->scriptFilename() );
     }
 
 
     public function testScriptName() : void {
-        self::assertSame( '/index.php', $this->server->scriptName() );
+        $srv = new Server( [
+            'SCRIPT_NAME' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->scriptName() );
+
+        $srv = $srv->withScriptName( 'bar' );
+        self::assertSame( 'bar', $srv->scriptName() );
     }
 
 
     public function testServerAddr() : void {
-        self::assertSame( '203.0.113.1', $this->server->serverAddr() );
+        $srv = new Server( [
+            'SERVER_ADDR' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->serverAddr() );
+
+        $srv = $srv->withServerAddr( 'bar' );
+        self::assertSame( 'bar', $srv->serverAddr() );
     }
 
 
     public function testServerName() : void {
-        self::assertSame( 'server.example.com', $this->server->serverName() );
-    }
+        $srv = new Server( [
+            'SERVER_NAME' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->serverName() );
 
-
-    protected function setUp() : void {
-        parent::setUp();
-
-        // Set up default $_SERVER values for testing
-        $_SERVER[ 'DOCUMENT_ROOT' ] = '/var/www/html';
-        $_SERVER[ 'HTTP_HOST' ] = 'example.com';
-        $_SERVER[ 'HTTP_REFERER' ] = 'https://referrer.com';
-        $_SERVER[ 'HTTP_USER_AGENT' ] = 'PHPUnit Test Browser';
-        $_SERVER[ 'HTTPS' ] = 'on';
-        $_SERVER[ 'PATH_INFO' ] = '/path/info';
-        $_SERVER[ 'PHP_SELF' ] = '/index.php';
-        $_SERVER[ 'REMOTE_ADDR' ] = '192.0.2.1';
-        $_SERVER[ 'REMOTE_PORT' ] = '12345';
-        $_SERVER[ 'REQUEST_METHOD' ] = 'GET';
-        $_SERVER[ 'REQUEST_SCHEME' ] = 'https';
-        $_SERVER[ 'REQUEST_URI' ] = '/test/path';
-        $_SERVER[ 'SCRIPT_FILENAME' ] = '/var/www/html/index.php';
-        $_SERVER[ 'SCRIPT_NAME' ] = '/index.php';
-        $_SERVER[ 'SERVER_ADDR' ] = '203.0.113.1';
-        $_SERVER[ 'SERVER_NAME' ] = 'server.example.com';
-
-        $this->server = new Server();
+        $srv = $srv->withServerName( 'bar' );
+        self::assertSame( 'bar', $srv->serverName() );
     }
 
 

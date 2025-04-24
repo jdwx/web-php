@@ -181,7 +181,7 @@ final class StaticShimTest extends MyTestCase {
     private function newRequest( string $i_stUri, ?string $i_nstDocumentRoot = null ) : Request {
         $srv = new MockServer( 'GET', $i_stUri );
         if ( is_string( $i_nstDocumentRoot ) ) {
-            $srv->stDocumentRoot = $i_nstDocumentRoot;
+            $srv = $srv->withDocumentRoot( $i_nstDocumentRoot );
         }
         return Request::synthetic( [], [], [], [], $srv );
     }

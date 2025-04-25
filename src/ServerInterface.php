@@ -62,4 +62,52 @@ interface ServerInterface {
     public function serverName() : string;
 
 
+    public function withDocumentRoot( string $i_stDocumentRoot ) : static;
+
+
+    public function withHttpHost( string $i_stHttpHost ) : static;
+
+
+    public function withHttpReferer( string $i_stHttpReferer ) : static;
+
+
+    public function withHttpUserAgent( string $i_stHttpUserAgent ) : static;
+
+
+    public function withHttps( bool $i_bHttps ) : static;
+
+
+    public function withPathInfo( string $i_stPathInfo ) : static;
+
+
+    public function withPhpSelf( string $i_stPhpSelf ) : static;
+
+
+    public function withRemoteAddr( string $i_stRemoteAddr ) : static;
+
+
+    public function withRemotePort( int $i_uRemotePort ) : static;
+
+
+    public function withRequestMethod( string $i_stRequestMethod ) : static;
+
+
+    public function withRequestScheme( string $i_stRequestScheme ) : static;
+
+
+    public function withRequestUri( string $i_stRequestUri ) : static;
+
+
+    public function withScriptFilename( string $i_stScriptFilename ) : static;
+
+
+    public function withScriptName( string $i_stScriptName ) : static;
+
+
+    public function withServerAddr( string $i_stServerAddr ) : static;
+
+
+    public function withServerName( string $i_stServerName ) : static;
+
+
 }

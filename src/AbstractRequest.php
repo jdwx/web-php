@@ -9,15 +9,14 @@ namespace JDWX\Web;
 
 use JDWX\Param\IParameter;
 use JDWX\Param\IParameterSet;
-use JDWX\Param\ParameterSet;
 use OutOfBoundsException;
 
 
 abstract readonly class AbstractRequest implements RequestInterface {
 
 
-    public function __construct( private ParameterSet    $setGet, private ParameterSet $setPost,
-                                 private ParameterSet    $setCookie, private FilesHandler $files,
+    public function __construct( private IParameterSet   $setGet, private IParameterSet $setPost,
+                                 private IParameterSet   $setCookie, private FilesHandler $files,
                                  private ServerInterface $server ) {}
 
 

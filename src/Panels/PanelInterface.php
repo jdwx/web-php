@@ -26,8 +26,8 @@ interface PanelInterface {
     public function bodyLate() : iterable|string;
 
 
-    /** @return iterable<string> */
-    public function cssUris() : iterable|string;
+    /** @return iterable<CssInterface> */
+    public function cssList() : iterable;
 
 
     public function first() : void;
@@ -38,14 +38,14 @@ interface PanelInterface {
 
 
     /** @return iterable<string> */
-    public function headers() : iterable;
+    public function headerList() : iterable;
 
 
     public function last() : void;
 
 
     /** @return iterable<ScriptInterface> */
-    public function scripts() : iterable;
+    public function scriptList() : iterable;
 
 
 }

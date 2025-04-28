@@ -8,7 +8,6 @@ namespace JDWX\Web\Panels;
 
 
 use JDWX\Web\AbstractHtmlPage;
-use JDWX\Web\Http;
 
 
 /**
@@ -21,99 +20,50 @@ use JDWX\Web\Http;
 class PanelPage extends AbstractHtmlPage {
 
 
-    /** @param list<PanelInterface> $rPanels */
-    public function __construct( private array $rPanels, ?string $i_nstLanguage = null ) {
+    use PanelContainerTrait;
+
+
+    /** @param list<PanelInterface>|null $i_nrPanels */
+    public function __construct( ?array $i_nrPanels = null, ?string $i_nstLanguage = null ) {
+        if ( is_array( $i_nrPanels ) ) {
+            $this->setPanels( $i_nrPanels );
+        }
         parent::__construct( $i_nstLanguage );
     }
 
 
-    public function appendPanel( PanelInterface $i_panel ) : void {
-        $this->rPanels[] = $i_panel;
-    }
-
-
-    public function prependPanel( PanelInterface $i_panel ) : void {
-        array_unshift( $this->rPanels, $i_panel );
-    }
-
-
-    /** @return iterable<string> */
-    protected function _scripts() : iterable {
-        $rScripts = [];
-        foreach ( $this->scripts() as $script ) {
-            $stScript = strval( $script );
-            if ( isset( $rScripts[ $stScript ] ) ) {
-                continue;
-            }
-            $rScripts[ $stScript ] = true;
-            yield $stScript;
-        }
-    }
-
-
     protected function body() : iterable {
-        foreach ( $this->rPanels as $panel ) {
-            yield from $this->yield( $panel->bodyEarly() );
-        }
-        foreach ( $this->rPanels as $panel ) {
-            yield from $this->yield( $panel->body() );
-        }
-        foreach ( $this->rPanels as $panel ) {
-            yield from $this->yield( $panel->bodyLate() );
-        }
+        yield from $this->_bodyEarly();
+        yield from $this->_body();
+        yield from $this->_bodyLate();
         yield from $this->_scripts();
     }
 
 
-    /** @return iterable<string> */
-    protected function cssUris() : iterable {
-        $rCssUris = [];
-        foreach ( $this->rPanels as $panel ) {
-            foreach ( $panel->cssUris() as $stCssUri ) {
-                $rCssUris[ $stCssUri ] = true;
-            }
-        }
-        return array_keys( $rCssUris );
+    protected function cssList() : iterable {
+        yield from $this->_cssList();
     }
 
 
     protected function first() : void {
-        foreach ( $this->rPanels as $panel ) {
-            $panel->first();
-        }
+        $this->_first();
     }
 
 
     protected function head() : iterable {
         yield from parent::head();
-        foreach ( $this->rPanels as $panel ) {
-            yield from $this->yield( $panel->head() );
-        }
+        yield from $this->_head();
     }
 
 
-    protected function headers() : void {
-        parent::headers();
-        foreach ( $this->rPanels as $panel ) {
-            foreach ( $panel->headers() as $header ) {
-                Http::setHeader( $header );
-            }
-        }
+    /** @return iterable<string> */
+    protected function headerList() : iterable {
+        yield from $this->_headerList();
     }
 
 
     protected function last() : void {
-        foreach ( $this->rPanels as $panel ) {
-            $panel->last();
-        }
-    }
-
-
-    /** @return iterable<ScriptInterface> */
-    protected function scripts() : iterable {
-        foreach ( $this->rPanels as $panel ) {
-            yield from $panel->scripts();
-        }
+        $this->_last();
     }
 
 

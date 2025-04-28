@@ -8,6 +8,7 @@ namespace Panels;
 
 
 use JDWX\Web\Panels\AbstractBodyPanel;
+use JDWX\Web\Panels\CssStylesheet;
 use JDWX\Web\Panels\ScriptUri;
 use JDWX\Web\Panels\SimplePanel;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,14 +19,16 @@ use PHPUnit\Framework\TestCase;
 final class AbstractBodyPanelTest extends TestCase {
 
 
-    public function testAddCssUri() : void {
+    public function testAddCss() : void {
         $panel = new SimplePanel( 'foo' );
-        $panel->addCssUri( 'URI' );
-        self::assertSame( [ 'URI' ], iterator_to_array( $panel->cssUris() ) );
-        $panel->addCssUri( 'URI2' );
+        $css = new CssStylesheet( 'URI' );
+        $panel->addCss( $css );
+        self::assertSame( [ $css ], iterator_to_array( $panel->cssList() ) );
+        $css2 = new CssStylesheet( 'URI2' );
+        $panel->addCss( $css2 );
         self::assertSame(
-            [ 'URI', 'URI2' ],
-            iterator_to_array( $panel->cssUris() )
+            [ $css, $css2 ],
+            iterator_to_array( $panel->cssList() )
         );
     }
 
@@ -33,11 +36,11 @@ final class AbstractBodyPanelTest extends TestCase {
     public function testAddHeader() : void {
         $panel = new SimplePanel( 'foo' );
         $panel->addHeader( 'HEADER' );
-        self::assertSame( [ 'HEADER' ], iterator_to_array( $panel->headers() ) );
+        self::assertSame( [ 'HEADER' ], iterator_to_array( $panel->headerList() ) );
         $panel->addHeader( 'HEADER2', 'VALUE' );
         self::assertSame(
             [ 'HEADER', 'HEADER2: VALUE' ],
-            iterator_to_array( $panel->headers() )
+            iterator_to_array( $panel->headerList() )
         );
     }
 
@@ -46,12 +49,12 @@ final class AbstractBodyPanelTest extends TestCase {
         $panel = new SimplePanel( 'foo' );
         $script = new ScriptUri( 'URI' );
         $panel->addScript( $script );
-        self::assertSame( [ $script ], iterator_to_array( $panel->scripts() ) );
+        self::assertSame( [ $script ], iterator_to_array( $panel->scriptList() ) );
         $script2 = new ScriptUri( 'URI2' );
         $panel->addScript( $script2 );
         self::assertSame(
             [ $script, $script2 ],
-            iterator_to_array( $panel->scripts() )
+            iterator_to_array( $panel->scriptList() )
         );
     }
 
@@ -62,12 +65,12 @@ final class AbstractBodyPanelTest extends TestCase {
         $panel->addScriptUri( 'URI' );
         $out = array_map( function ( $x ) {
             return strval( $x );
-        }, iterator_to_array( $panel->scripts() ) );
+        }, iterator_to_array( $panel->scriptList() ) );
         self::assertSame( [ '<script src="URI"></script>' ], $out );
         $panel->addScriptUri( 'URI2' );
         $out = array_map( function ( $x ) {
             return strval( $x );
-        }, iterator_to_array( $panel->scripts() ) );
+        }, iterator_to_array( $panel->scriptList() ) );
         self::assertSame(
             [ '<script src="URI"></script>', '<script src="URI2"></script>' ],
             $out );

@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Web\Panels\CssInterface;
+
+
 abstract class AbstractHtmlPage extends AbstractPage {
 
 
@@ -99,15 +102,21 @@ abstract class AbstractHtmlPage extends AbstractPage {
 
     protected function css() : string {
         $st = '';
-        foreach ( $this->cssUris() as $stCSSFile ) {
-            $st .= "<link rel=\"stylesheet\" href=\"{$stCSSFile}\">";
+        $r = [];
+        foreach ( $this->cssList() as $css ) {
+            $stCss = strval( $css );
+            if ( isset( $r[ $stCss ] ) ) {
+                continue;
+            }
+            $r[ $stCss ] = true;
+            $st .= $stCss;
         }
         return $st;
     }
 
 
-    /** @return iterable<string> */
-    abstract protected function cssUris() : iterable;
+    /** @return iterable<CssInterface> */
+    abstract protected function cssList() : iterable;
 
 
     protected function docType() : string {
@@ -115,8 +124,7 @@ abstract class AbstractHtmlPage extends AbstractPage {
     }
 
 
-    protected function first() : void {
-    }
+    protected function first() : void {}
 
 
     /** @return iterable<string> */
@@ -129,7 +137,12 @@ abstract class AbstractHtmlPage extends AbstractPage {
     }
 
 
+    /** @return iterable<string> */
+    abstract protected function headerList() : iterable;
+
+    
     protected function headers() : void {
+        Http::setHeaders( $this->headerList() );
     }
 
 
@@ -138,7 +151,7 @@ abstract class AbstractHtmlPage extends AbstractPage {
     }
 
 
-    protected function last() : void { }
+    protected function last() : void {}
 
 
     protected function title() : string {

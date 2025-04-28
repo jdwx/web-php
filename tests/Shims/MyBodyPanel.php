@@ -29,6 +29,12 @@ class MyBodyPanel implements PanelInterface {
 
     public bool $bLast = false;
 
+    /** @var ?callable */
+    public $fnFirst = null;
+
+    /** @var ?callable */
+    public $fnLast = null;
+
 
     /**
      * @inheritDoc
@@ -50,6 +56,9 @@ class MyBodyPanel implements PanelInterface {
 
     public function first() : void {
         $this->bFirst = true;
+        if ( is_callable( $this->fnFirst ) ) {
+            ( $this->fnFirst )();
+        }
     }
 
 
@@ -60,6 +69,9 @@ class MyBodyPanel implements PanelInterface {
 
     public function last() : void {
         $this->bLast = true;
+        if ( is_callable( $this->fnLast ) ) {
+            ( $this->fnLast )();
+        }
     }
 
 

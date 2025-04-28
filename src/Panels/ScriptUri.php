@@ -10,12 +10,9 @@ namespace JDWX\Web\Panels;
 class ScriptUri extends AbstractScript {
 
 
-    public function __construct( private readonly string $uri ) { }
-
-
-    protected function attrs() : iterable {
-        yield from parent::attrs();
-        yield 'src' => $this->uri;
+    public function __construct( string $i_stUri ) {
+        parent::__construct();
+        $this->setAttribute( 'src', $i_stUri );
     }
 
 

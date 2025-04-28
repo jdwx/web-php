@@ -44,7 +44,9 @@ final class PanelPageTest extends TestCase {
     }
 
 
-    /** @noinspection HtmlUnknownTarget */
+    /**
+     * @noinspection HtmlUnknownTarget
+     */
     public function testCSS() : void {
         $panel1 = new SimplePanel();
         $panel1->addCssUri( '/foo.css' );
@@ -52,15 +54,31 @@ final class PanelPageTest extends TestCase {
         $panel2->addCssUri( '/bar.css' );
         $page = new PanelPage( [ $panel1, $panel2 ] );
         $st = $page->render();
-        self::assertStringContainsString( '<link rel="stylesheet" href="/foo.css">', $st );
-        self::assertStringContainsString( '<link rel="stylesheet" href="/bar.css">', $st );
+        self::assertStringContainsString( '<link href="/foo.css" rel="stylesheet">', $st );
+        self::assertStringContainsString( '<link href="/bar.css" rel="stylesheet">', $st );
 
         # Test that the CSS is not duplicated
         $panel2->addCssUri( '/foo.css' );
         $st = $page->render();
-        $stCheck = '<meta charset="UTF-8"><link rel="stylesheet" href="/foo.css">'
-            . '<link rel="stylesheet" href="/bar.css"></head>';
+        $stCheck = '<meta charset="UTF-8"><link href="/foo.css" rel="stylesheet">'
+            . '<link href="/bar.css" rel="stylesheet"></head>';
         self::assertStringContainsString( $stCheck, $st );
+    }
+
+
+    public function testFirst() : void {
+        $st = '';
+        $panel1 = new MyBodyPanel();
+        $panel1->fnFirst = function () use ( &$st ) {
+            $st .= 'Foo';
+        };
+        $panel2 = new MyBodyPanel();
+        $panel2->fnFirst = function () use ( &$st ) {
+            $st .= 'Bar';
+        };
+        $page = new PanelPage( [ $panel1, $panel2 ] );
+        $page->render();
+        self::assertSame( 'FooBar', $st );
     }
 
 
@@ -97,7 +115,7 @@ final class PanelPageTest extends TestCase {
             '#<body>.*EarlyFoo.*EarlyBar.*BodyFoo.*BodyBar.*LateFoo.*LateBar.*</body>#s',
             $st );
         self::assertMatchesRegularExpression(
-            '#<link rel="stylesheet" href="/foo.css">.*<link rel="stylesheet" href="/bar.css">#s',
+            '#<link href="/foo.css" rel="stylesheet">.*<link href="/bar.css" rel="stylesheet">#s',
             $st
         );
         self::assertMatchesRegularExpression(

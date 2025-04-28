@@ -7,6 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Web\Panels\CssListTrait;
+use JDWX\Web\Panels\YieldTrait;
+
+
 /**
  *  Class HtmlPage
  *
@@ -17,14 +21,8 @@ namespace JDWX\Web;
 abstract class HtmlPage extends AbstractHtmlPage {
 
 
-    /** @var list<string> */
-    private array $rstCSSUris = [];
-
-
-    public function addCSSUri( string $i_stCSSFile ) : static {
-        $this->rstCSSUris[] = $i_stCSSFile;
-        return $this;
-    }
+    use CssListTrait;
+    use YieldTrait;
 
 
     /** @return iterable<string> */
@@ -37,9 +35,9 @@ abstract class HtmlPage extends AbstractHtmlPage {
     abstract protected function content() : string|iterable;
 
 
-    /** @return list<string> */
-    protected function cssUris() : array {
-        return $this->rstCSSUris;
+    /** @return iterable<string> */
+    protected function headerList() : iterable {
+        return [];
     }
 
 

@@ -15,7 +15,7 @@ final class HtmlPageTest extends TestCase {
 
     public function testAddCSSUri() : void {
         $page = $this->newHtmlPage();
-        $page->addCSSUri( 'TEST_CSS' );
+        $page->addCssUri( 'TEST_CSS' );
         $st = $page->render();
         self::assertMatchesRegularExpression( '#<head>.*TEST_CSS.*</head>#', $st );
     }
@@ -57,7 +57,7 @@ final class HtmlPageTest extends TestCase {
     public function testRender() : void {
         $page = $this->newHtmlPage( 'TEST_CONTENT' );
         $page->setTitle( 'TEST_TITLE' );
-        $page->addCSSUri( 'TEST_CSS' );
+        $page->addCssUri( 'TEST_CSS' );
 
         # Test for doctype.
         self::assertStringContainsString( '<!DOCTYPE html>', $page->render() );
@@ -72,7 +72,7 @@ final class HtmlPageTest extends TestCase {
         self::assertStringContainsString( '<title>TEST_TITLE</title>', $page->render() );
 
         # Test for CSS
-        self::assertStringContainsString( '<link rel="stylesheet" href="TEST_CSS">', $page->render() );
+        self::assertStringContainsString( '<link href="TEST_CSS" rel="stylesheet">', $page->render() );
 
         # Test for charset.
         self::assertStringContainsString( '<meta charset="UTF-8">', $page->render() );

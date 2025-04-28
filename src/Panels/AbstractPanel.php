@@ -20,14 +20,13 @@ abstract class AbstractPanel implements PanelInterface {
     }
 
 
-    /** @return iterable<string> */
-    public function cssUris() : iterable {
+    /** @return iterable<CssInterface> */
+    public function cssList() : iterable {
         return [];
     }
 
 
-    public function first() : void {
-    }
+    public function first() : void {}
 
 
     public function head() : iterable|string {
@@ -36,17 +35,16 @@ abstract class AbstractPanel implements PanelInterface {
 
 
     /** @return iterable<string> */
-    public function headers() : iterable {
+    public function headerList() : iterable {
         return [];
     }
 
 
-    public function last() : void {
-    }
+    public function last() : void {}
 
 
     /** @return iterable<ScriptInterface> */
-    public function scripts() : iterable {
+    public function scriptList() : iterable {
         return [];
     }
 

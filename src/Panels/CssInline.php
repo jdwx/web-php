@@ -7,15 +7,18 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
-class ScriptBody extends AbstractScript {
+class CssInline implements CssInterface {
+
+
+    use ElementTrait;
 
 
     public function __construct( private readonly string $stBody ) {
-        parent::__construct();
+        $this->setTagName( 'style' );
     }
 
 
-    protected function inner() : string {
+    protected function inner() : ?string {
         return $this->stBody;
     }
 

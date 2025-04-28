@@ -22,13 +22,13 @@ final class AbstractPanelTest extends TestCase {
     public function testSimple() : void {
         $panel = $this->newPanel();
         $panel->first();
-        self::assertSame( [], $panel->headers() );
-        self::assertSame( [], $panel->cssUris() );
+        self::assertSame( [], $panel->headerList() );
+        self::assertSame( [], $panel->cssList() );
         self::assertSame( '', $panel->head() );
         self::assertSame( '', $panel->bodyEarly() );
         self::assertSame( 'BODY', $panel->body() );
         self::assertSame( '', $panel->bodyLate() );
-        self::assertSame( [], $panel->scripts() );
+        self::assertSame( [], $panel->scriptList() );
         $panel->last();
     }
 
@@ -37,7 +37,7 @@ final class AbstractPanelTest extends TestCase {
         return new class( 'BODY' ) extends AbstractPanel {
 
 
-            public function __construct( private readonly string $stBody ) { }
+            public function __construct( private readonly string $stBody ) {}
 
 
             public function body() : string {

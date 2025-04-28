@@ -36,7 +36,7 @@ class PanelPage extends AbstractHtmlPage {
         yield from $this->_bodyEarly();
         yield from $this->_body();
         yield from $this->_bodyLate();
-        yield from $this->_scripts();
+        yield from $this->scripts();
     }
 
 
@@ -64,6 +64,20 @@ class PanelPage extends AbstractHtmlPage {
 
     protected function last() : void {
         $this->_last();
+    }
+
+
+    /** @return iterable<string> */
+    protected function scripts() : iterable {
+        $rScripts = [];
+        foreach ( $this->_scriptList() as $script ) {
+            $stScript = strval( $script );
+            if ( isset( $rScripts[ $stScript ] ) ) {
+                continue;
+            }
+            $rScripts[ $stScript ] = true;
+            yield $stScript;
+        }
     }
 
 

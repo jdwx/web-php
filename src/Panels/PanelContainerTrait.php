@@ -97,18 +97,10 @@ trait PanelContainerTrait {
     }
 
 
-    /** @return iterable<string> */
-    protected function _scripts() : iterable {
-        $rScripts = [];
+    /** @return iterable<ScriptInterface> */
+    protected function _scriptList() : iterable {
         foreach ( $this->rPanels as $panel ) {
-            foreach ( $panel->scriptList() as $script ) {
-                $stScript = strval( $script );
-                if ( isset( $rScripts[ $stScript ] ) ) {
-                    continue;
-                }
-                $rScripts[ $stScript ] = true;
-                yield $stScript;
-            }
+            yield from $panel->scriptList();
         }
     }
 

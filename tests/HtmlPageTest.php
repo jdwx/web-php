@@ -13,6 +13,14 @@ use PHPUnit\Framework\TestCase;
 final class HtmlPageTest extends TestCase {
 
 
+    public function testAddCSSUri() : void {
+        $page = $this->newHtmlPage();
+        $page->addCSSUri( 'TEST_CSS' );
+        $st = $page->render();
+        self::assertMatchesRegularExpression( '#<head>.*TEST_CSS.*</head>#', $st );
+    }
+
+
     public function testGetCharset() : void {
         $page = $this->newHtmlPage();
         self::assertSame( 'UTF-8', $page->getCharset() );
@@ -27,12 +35,12 @@ final class HtmlPageTest extends TestCase {
 
     public function testGetDefaultLanguage() : void {
         $page = $this->newHtmlPage();
-        self::assertSame( 'en', $page->getDefaultLanguage() );
+        self::assertSame( 'en', $page->getLanguage() );
         $page->setLanguage( 'foo' );
-        self::assertSame( 'foo', $page->getDefaultLanguage() );
+        self::assertSame( 'foo', $page->getLanguage() );
 
         $page = $this->newHtmlPage( '', 'bar' );
-        self::assertSame( 'bar', $page->getDefaultLanguage() );
+        self::assertSame( 'bar', $page->getLanguage() );
     }
 
 
@@ -43,19 +51,13 @@ final class HtmlPageTest extends TestCase {
     }
 
 
-    public function testListCSS() : void {
-        $page = $this->newHtmlPage();
-        self::assertSame( [], $page->listCSS() );
-        $page->addCSS( 'TEST_CSS' );
-        self::assertSame( [ 'TEST_CSS' ], $page->listCSS() );
-    }
-
-
     /** @noinspection HtmlUnknownTarget */
+
+
     public function testRender() : void {
         $page = $this->newHtmlPage( 'TEST_CONTENT' );
         $page->setTitle( 'TEST_TITLE' );
-        $page->addCSS( 'TEST_CSS' );
+        $page->addCSSUri( 'TEST_CSS' );
 
         # Test for doctype.
         self::assertStringContainsString( '<!DOCTYPE html>', $page->render() );

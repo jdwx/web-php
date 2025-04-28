@@ -18,7 +18,7 @@ class ExampleRouteHome extends AbstractRoute {
 
     protected function handleGET( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
         $page = new SimpleHtmlPage();
-        $page->addCSS( '/example.css' );
+        $page->addCSSUri( '/example.css' );
         $page->setTitle( 'Example Web Application' );
         $page->setContent(
             "<p>Hello, world!</p>\n"

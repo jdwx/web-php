@@ -7,7 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-interface PageInterface extends \Stringable {
+use Stringable;
+
+
+interface PageInterface extends Stringable {
 
 
     public function echo() : void;
@@ -19,7 +22,8 @@ interface PageInterface extends \Stringable {
     public function render() : string;
 
 
-    public function stream() : \Generator;
+    /** @return iterable<string> */
+    public function stream() : iterable;
 
 
 }

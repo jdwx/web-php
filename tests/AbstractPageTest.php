@@ -34,6 +34,41 @@ final class AbstractPageTest extends TestCase {
     }
 
 
+    public function testYield() : void {
+        $page = new class() extends AbstractPage {
+
+
+            public function __construct() {
+                parent::__construct( 'text/plain' );
+            }
+
+
+            public function stream() : iterable {
+                return [];
+            }
+
+
+            /**
+             * @param string|iterable<string> $i_chunk
+             * @return iterable<string>
+             */
+            public function yieldTest( string|iterable $i_chunk ) : iterable {
+                return $this->yield( $i_chunk );
+            }
+
+
+        };
+        self::assertSame(
+            [ 'TEST_CONTENT' ],
+            iterator_to_array( $page->yieldTest( 'TEST_CONTENT' ), false )
+        );
+        self::assertSame(
+            [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ],
+            iterator_to_array( $page->yieldTest( [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ] ), false )
+        );
+    }
+
+
     /** @param string|iterable<string> $i_content */
     private function newAbstractPage( string $i_stContentType, string|iterable $i_content = '' ) : AbstractPage {
         return new class ( $i_stContentType, $i_content ) extends AbstractPage {

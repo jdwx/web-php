@@ -140,14 +140,14 @@ abstract class AbstractHtmlPage extends AbstractPage {
     /** @return iterable<string> */
     abstract protected function headerList() : iterable;
 
-    
+
     protected function headers() : void {
         Http::setHeaders( $this->headerList() );
     }
 
 
     protected function html() : string {
-        return '<html lang="' . $this->getLanguage() . '">\n';
+        return '<html lang="' . $this->getLanguage() . "\">\n";
     }
 
 

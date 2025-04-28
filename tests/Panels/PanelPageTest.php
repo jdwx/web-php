@@ -66,6 +66,16 @@ final class PanelPageTest extends TestCase {
     }
 
 
+    public function testEmpty() : void {
+        $page = new PanelPage();
+        $st = "<!DOCTYPE html>\n"
+            . "<html lang=\"en\">\n"
+            . "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+            . "<meta charset=\"UTF-8\"></head><body></body></html>";
+        self::assertSame( $st, $page->render() );
+    }
+
+
     public function testFirst() : void {
         $st = '';
         $panel1 = new MyBodyPanel();

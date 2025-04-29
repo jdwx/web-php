@@ -128,6 +128,15 @@ final class SessionTest extends TestCase {
     }
 
 
+    public function testGet() : void {
+        $this->initSession();
+        Session::start();
+        Session::set( 'foo', 'bar' );
+        self::assertSame( 'bar', Session::get( 'foo' ) );
+        self::assertSame( 'baz', Session::get( 'qux', 'baz' ) );
+    }
+
+
     public function testGetInt() : void {
         $this->initSession();
         Session::start();

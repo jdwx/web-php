@@ -136,10 +136,10 @@ class Session {
     }
 
 
-    public static function get( string $i_stKey ) : mixed {
+    public static function get( string $i_stKey, mixed $i_xDefault = null ) : mixed {
 
         if ( ! static::has( $i_stKey ) ) {
-            return null;
+            return $i_xDefault;
         }
 
         return static::backend()->get( $i_stKey );

@@ -29,7 +29,7 @@ trait PanelContainerTrait {
 
     /** @param iterable<PanelInterface> $i_rPanels */
     public function setPanels( iterable $i_rPanels ) : void {
-        $this->rPanels = $i_rPanels;
+        $this->rPanels = iterator_to_array( $i_rPanels, false );
     }
 
 

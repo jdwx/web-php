@@ -10,14 +10,7 @@ namespace JDWX\Web\Panels;
 abstract class AbstractPanel implements PanelInterface {
 
 
-    public function bodyEarly() : iterable|string {
-        return '';
-    }
-
-
-    public function bodyLate() : iterable|string {
-        return '';
-    }
+    use BodyStubTrait;
 
 
     /** @return iterable<CssInterface> */
@@ -26,21 +19,10 @@ abstract class AbstractPanel implements PanelInterface {
     }
 
 
-    public function first() : void {}
-
-
-    public function head() : iterable|string {
-        return '';
-    }
-
-
     /** @return iterable<string> */
     public function headerList() : iterable {
         return [];
     }
-
-
-    public function last() : void {}
 
 
     /** @return iterable<ScriptInterface> */

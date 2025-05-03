@@ -33,6 +33,18 @@ class ServerTest extends TestCase {
     }
 
 
+    public function testHttpHostEx() : void {
+        $srv = new Server( [
+            'HTTP_HOST' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->httpHostEx() );
+
+        $srv = $srv->withHttpHost( null );
+        self::expectException( RuntimeException::class );
+        $srv->httpHostEx();
+    }
+
+
     public function testHttpReferer() : void {
         $srv = new Server( [
             'HTTP_REFERER' => 'foo',
@@ -44,6 +56,18 @@ class ServerTest extends TestCase {
     }
 
 
+    public function testHttpRefererEx() : void {
+        $srv = new Server( [
+            'HTTP_REFERER' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->httpRefererEx() );
+
+        $srv = $srv->withHttpReferer( null );
+        self::expectException( RuntimeException::class );
+        $srv->httpRefererEx();
+    }
+
+
     public function testHttpUserAgent() : void {
         $srv = new Server( [
             'HTTP_USER_AGENT' => 'foo',
@@ -52,6 +76,18 @@ class ServerTest extends TestCase {
 
         $srv = $srv->withHttpUserAgent( 'bar' );
         self::assertSame( 'bar', $srv->httpUserAgent() );
+    }
+
+
+    public function testHttpUserAgentEx() : void {
+        $srv = new Server( [
+            'HTTP_USER_AGENT' => 'foo',
+        ] );
+        self::assertSame( 'foo', $srv->httpUserAgentEx() );
+
+        $srv = $srv->withHttpUserAgent( null );
+        self::expectException( RuntimeException::class );
+        $srv->httpUserAgentEx();
     }
 
 

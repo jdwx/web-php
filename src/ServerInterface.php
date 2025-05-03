@@ -17,13 +17,22 @@ interface ServerInterface {
     public function documentRoot() : string;
 
 
-    public function httpHost() : string;
+    public function httpHost() : ?string;
 
 
-    public function httpReferer() : string;
+    public function httpHostEx() : string;
 
 
-    public function httpUserAgent() : string;
+    public function httpReferer() : ?string;
+
+
+    public function httpRefererEx() : string;
+
+
+    public function httpUserAgent() : ?string;
+
+
+    public function httpUserAgentEx() : string;
 
 
     public function https() : bool;
@@ -65,13 +74,13 @@ interface ServerInterface {
     public function withDocumentRoot( string $i_stDocumentRoot ) : static;
 
 
-    public function withHttpHost( string $i_stHttpHost ) : static;
+    public function withHttpHost( ?string $i_nstHttpHost ) : static;
 
 
-    public function withHttpReferer( string $i_stHttpReferer ) : static;
+    public function withHttpReferer( ?string $i_nstHttpReferer ) : static;
 
 
-    public function withHttpUserAgent( string $i_stHttpUserAgent ) : static;
+    public function withHttpUserAgent( ?string $i_nstHttpUserAgent ) : static;
 
 
     public function withHttps( bool $i_bHttps ) : static;

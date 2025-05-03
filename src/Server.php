@@ -13,9 +13,9 @@ readonly class Server implements ServerInterface {
 
     protected const array DEFAULTS = [
         'DOCUMENT_ROOT' => '',
-        'HTTP_HOST' => '',
-        'HTTP_REFERER' => '',
-        'HTTP_USER_AGENT' => '',
+        'HTTP_HOST' => null,
+        'HTTP_REFERER' => null,
+        'HTTP_USER_AGENT' => null,
         'HTTPS' => false,
         'PATH_INFO' => '',
         'PHP_SELF' => '',
@@ -33,11 +33,11 @@ readonly class Server implements ServerInterface {
 
     private string $stDocumentRoot;
 
-    private string $stHttpHost;
+    private ?string $nstHttpHost;
 
-    private string $stHttpReferer;
+    private ?string $nstHttpReferer;
 
-    private string $stHttpUserAgent;
+    private ?string $nstHttpUserAgent;
 
     private bool $bHttps;
 
@@ -64,13 +64,13 @@ readonly class Server implements ServerInterface {
     private string $stServerName;
 
 
-    /** @param array<string, string>|null $i_nrDefaults */
+    /** @param array<string, ?string>|null $i_nrDefaults */
     public function __construct( ?array $i_nrDefaults = null ) {
         $i_nrDefaults ??= $_SERVER;
         $this->stDocumentRoot = $i_nrDefaults[ 'DOCUMENT_ROOT' ] ?? static::DEFAULTS[ 'DOCUMENT_ROOT' ];
-        $this->stHttpHost = $i_nrDefaults[ 'HTTP_HOST' ] ?? static::DEFAULTS[ 'HTTP_HOST' ];
-        $this->stHttpReferer = $i_nrDefaults[ 'HTTP_REFERER' ] ?? static::DEFAULTS[ 'HTTP_REFERER' ];
-        $this->stHttpUserAgent = $i_nrDefaults[ 'HTTP_USER_AGENT' ] ?? static::DEFAULTS[ 'HTTP_USER_AGENT' ];
+        $this->nstHttpHost = $i_nrDefaults[ 'HTTP_HOST' ] ?? static::DEFAULTS[ 'HTTP_HOST' ];
+        $this->nstHttpReferer = $i_nrDefaults[ 'HTTP_REFERER' ] ?? static::DEFAULTS[ 'HTTP_REFERER' ];
+        $this->nstHttpUserAgent = $i_nrDefaults[ 'HTTP_USER_AGENT' ] ?? static::DEFAULTS[ 'HTTP_USER_AGENT' ];
         $this->bHttps = isset( $i_nrDefaults[ 'HTTPS' ] )
             ? ( $i_nrDefaults[ 'HTTPS' ] === 'on' )
             : static::DEFAULTS[ 'HTTPS' ];
@@ -95,18 +95,45 @@ readonly class Server implements ServerInterface {
     }
 
 
-    public function httpHost() : string {
-        return $this->stHttpHost;
+    public function httpHost() : ?string {
+        return $this->nstHttpHost;
     }
 
 
-    public function httpReferer() : string {
-        return $this->stHttpReferer;
+    public function httpHostEx() : string {
+        $nst = $this->httpHost();
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new \RuntimeException( 'HTTP_HOST is required but not set' );
     }
 
 
-    public function httpUserAgent() : string {
-        return $this->stHttpUserAgent;
+    public function httpReferer() : ?string {
+        return $this->nstHttpReferer;
+    }
+
+
+    public function httpRefererEx() : string {
+        $nst = $this->httpReferer();
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new \RuntimeException( 'HTTP_REFERER is required but not set' );
+    }
+
+
+    public function httpUserAgent() : ?string {
+        return $this->nstHttpUserAgent;
+    }
+
+
+    public function httpUserAgentEx() : string {
+        $nst = $this->httpUserAgent();
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new \RuntimeException( 'HTTP_USER_AGENT is required but not set' );
     }
 
 
@@ -177,23 +204,23 @@ readonly class Server implements ServerInterface {
     }
 
 
-    public function withHttpHost( string $i_stHttpHost ) : static {
+    public function withHttpHost( ?string $i_nstHttpHost ) : static {
         $r = $this->_export();
-        $r[ 'HTTP_HOST' ] = $i_stHttpHost;
+        $r[ 'HTTP_HOST' ] = $i_nstHttpHost;
         return new static( $r );
     }
 
 
-    public function withHttpReferer( string $i_stHttpReferer ) : static {
+    public function withHttpReferer( ?string $i_nstHttpReferer ) : static {
         $r = $this->_export();
-        $r[ 'HTTP_REFERER' ] = $i_stHttpReferer;
+        $r[ 'HTTP_REFERER' ] = $i_nstHttpReferer;
         return new static( $r );
     }
 
 
-    public function withHttpUserAgent( string $i_stHttpUserAgent ) : static {
+    public function withHttpUserAgent( ?string $i_nstHttpUserAgent ) : static {
         $r = $this->_export();
-        $r[ 'HTTP_USER_AGENT' ] = $i_stHttpUserAgent;
+        $r[ 'HTTP_USER_AGENT' ] = $i_nstHttpUserAgent;
         return new static( $r );
     }
 
@@ -226,9 +253,9 @@ readonly class Server implements ServerInterface {
     }
 
 
-    public function withRemotePort( int $i_iRemotePort ) : static {
+    public function withRemotePort( int $i_uRemotePort ) : static {
         $r = $this->_export();
-        $r[ 'REMOTE_PORT' ] = strval( $i_iRemotePort );
+        $r[ 'REMOTE_PORT' ] = strval( $i_uRemotePort );
         return new static( $r );
     }
 
@@ -282,13 +309,13 @@ readonly class Server implements ServerInterface {
     }
 
 
-    /** @return array<string, string> */
+    /** @return array<string, ?string> */
     private function _export() : array {
         return [
             'DOCUMENT_ROOT' => $this->stDocumentRoot,
-            'HTTP_HOST' => $this->stHttpHost,
-            'HTTP_REFERER' => $this->stHttpReferer,
-            'HTTP_USER_AGENT' => $this->stHttpUserAgent,
+            'HTTP_HOST' => $this->nstHttpHost,
+            'HTTP_REFERER' => $this->nstHttpReferer,
+            'HTTP_USER_AGENT' => $this->nstHttpUserAgent,
             'HTTPS' => $this->bHttps ? 'on' : 'off',
             'PATH_INFO' => $this->stPathInfo,
             'PHP_SELF' => $this->stPhpSelf,

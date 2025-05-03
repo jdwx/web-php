@@ -35,7 +35,7 @@ interface RequestInterface {
     public function _POST() : IParameterSet;
 
 
-    public function cookieEx( string $i_stName ) : IParameter;
+    public function cookieEx( string $i_stName, mixed $i_xDefault = null ) : IParameter;
 
 
     /** @param string ...$i_rstNames */

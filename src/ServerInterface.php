@@ -17,22 +17,22 @@ interface ServerInterface {
     public function documentRoot() : string;
 
 
-    public function httpHost() : ?string;
+    public function httpHost( ?string $i_nstDefault = null ) : ?string;
 
 
-    public function httpHostEx() : string;
+    public function httpHostEx( ?string $i_nstDefault = null ) : string;
 
 
-    public function httpReferer() : ?string;
+    public function httpReferer( ?string $i_nstDefault = null ) : ?string;
 
 
-    public function httpRefererEx() : string;
+    public function httpRefererEx( ?string $i_nstDefault = null ) : string;
 
 
-    public function httpUserAgent() : ?string;
+    public function httpUserAgent( ?string $i_nstDefault = null ) : ?string;
 
 
-    public function httpUserAgentEx() : string;
+    public function httpUserAgentEx( ?string $i_nstDefault = null ) : string;
 
 
     public function https() : bool;

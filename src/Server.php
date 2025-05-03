@@ -95,13 +95,13 @@ readonly class Server implements ServerInterface {
     }
 
 
-    public function httpHost() : ?string {
-        return $this->nstHttpHost;
+    public function httpHost( ?string $i_nstDefault = null ) : ?string {
+        return $this->nstHttpHost ?? $i_nstDefault;
     }
 
 
-    public function httpHostEx() : string {
-        $nst = $this->httpHost();
+    public function httpHostEx( ?string $i_nstDefault = null ) : string {
+        $nst = $this->httpHost( $i_nstDefault );
         if ( is_string( $nst ) ) {
             return $nst;
         }
@@ -109,13 +109,13 @@ readonly class Server implements ServerInterface {
     }
 
 
-    public function httpReferer() : ?string {
-        return $this->nstHttpReferer;
+    public function httpReferer( ?string $i_nstDefault = null ) : ?string {
+        return $this->nstHttpReferer ?? $i_nstDefault;
     }
 
 
-    public function httpRefererEx() : string {
-        $nst = $this->httpReferer();
+    public function httpRefererEx( ?string $i_nstDefault = null ) : string {
+        $nst = $this->httpReferer( $i_nstDefault );
         if ( is_string( $nst ) ) {
             return $nst;
         }
@@ -123,13 +123,13 @@ readonly class Server implements ServerInterface {
     }
 
 
-    public function httpUserAgent() : ?string {
-        return $this->nstHttpUserAgent;
+    public function httpUserAgent( ?string $i_nstDefault = null ) : ?string {
+        return $this->nstHttpUserAgent ?? $i_nstDefault;
     }
 
 
-    public function httpUserAgentEx() : string {
-        $nst = $this->httpUserAgent();
+    public function httpUserAgentEx( ?string $i_nstDefault = null ) : string {
+        $nst = $this->httpUserAgent( $i_nstDefault );
         if ( is_string( $nst ) ) {
             return $nst;
         }

@@ -30,6 +30,10 @@ class ServerTest extends TestCase {
 
         $srv = $srv->withHttpHost( 'bar' );
         self::assertSame( 'bar', $srv->httpHost() );
+
+        $srv = $srv->withHttpHost( null );
+        self::assertNull( $srv->httpHost() );
+        self::assertSame( 'baz', $srv->httpHost( 'baz' ) );
     }
 
 
@@ -40,6 +44,7 @@ class ServerTest extends TestCase {
         self::assertSame( 'foo', $srv->httpHostEx() );
 
         $srv = $srv->withHttpHost( null );
+        self::assertSame( 'bar', $srv->httpHostEx( 'bar' ) );
         self::expectException( RuntimeException::class );
         $srv->httpHostEx();
     }
@@ -53,6 +58,10 @@ class ServerTest extends TestCase {
 
         $srv = $srv->withHttpReferer( 'bar' );
         self::assertSame( 'bar', $srv->httpReferer() );
+
+        $srv = $srv->withHttpReferer( null );
+        self::assertNull( $srv->httpReferer() );
+        self::assertSame( 'baz', $srv->httpReferer( 'baz' ) );
     }
 
 
@@ -63,6 +72,7 @@ class ServerTest extends TestCase {
         self::assertSame( 'foo', $srv->httpRefererEx() );
 
         $srv = $srv->withHttpReferer( null );
+        self::assertSame( 'bar', $srv->httpRefererEx( 'bar' ) );
         self::expectException( RuntimeException::class );
         $srv->httpRefererEx();
     }
@@ -76,6 +86,10 @@ class ServerTest extends TestCase {
 
         $srv = $srv->withHttpUserAgent( 'bar' );
         self::assertSame( 'bar', $srv->httpUserAgent() );
+
+        $srv = $srv->withHttpUserAgent( null );
+        self::assertNull( $srv->httpUserAgent() );
+        self::assertSame( 'baz', $srv->httpUserAgent( 'baz' ) );
     }
 
 
@@ -86,6 +100,7 @@ class ServerTest extends TestCase {
         self::assertSame( 'foo', $srv->httpUserAgentEx() );
 
         $srv = $srv->withHttpUserAgent( null );
+        self::assertSame( 'bar', $srv->httpUserAgentEx( 'bar' ) );
         self::expectException( RuntimeException::class );
         $srv->httpUserAgentEx();
     }

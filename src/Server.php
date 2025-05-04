@@ -100,17 +100,22 @@ readonly class Server implements ServerInterface {
     }
 
 
+    public function httpHeaderEx( string $i_stKey, ?string $i_nstDefault = null ) : string {
+        $nst = $this->httpHeader( $i_stKey, $i_nstDefault );
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new \RuntimeException( "{$i_stKey} is required but not set" );
+    }
+
+
     public function httpHost( ?string $i_nstDefault = null ) : ?string {
         return $this->httpHeader( 'HTTP_HOST', $i_nstDefault );
     }
 
 
     public function httpHostEx( ?string $i_nstDefault = null ) : string {
-        $nst = $this->httpHost( $i_nstDefault );
-        if ( is_string( $nst ) ) {
-            return $nst;
-        }
-        throw new \RuntimeException( 'HTTP_HOST is required but not set' );
+        return $this->httpHeaderEx( 'HTTP_HOST', $i_nstDefault );
     }
 
 
@@ -120,11 +125,7 @@ readonly class Server implements ServerInterface {
 
 
     public function httpRefererEx( ?string $i_nstDefault = null ) : string {
-        $nst = $this->httpReferer( $i_nstDefault );
-        if ( is_string( $nst ) ) {
-            return $nst;
-        }
-        throw new \RuntimeException( 'HTTP_REFERER is required but not set' );
+        return $this->httpHeaderEx( 'HTTP_REFERER', $i_nstDefault );
     }
 
 
@@ -134,11 +135,7 @@ readonly class Server implements ServerInterface {
 
 
     public function httpUserAgentEx( ?string $i_nstDefault = null ) : string {
-        $nst = $this->httpUserAgent( $i_nstDefault );
-        if ( is_string( $nst ) ) {
-            return $nst;
-        }
-        throw new \RuntimeException( 'HTTP_USER_AGENT is required but not set' );
+        return $this->httpHeaderEx( 'HTTP_USER_AGENT', $i_nstDefault );
     }
 
 

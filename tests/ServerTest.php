@@ -37,6 +37,17 @@ class ServerTest extends TestCase {
     }
 
 
+    public function testHttpHeaderEx() : void {
+        $srv = new Server( [
+            'HTTP_FOO' => 'bar',
+        ] );
+        self::assertSame( 'bar', $srv->httpHeaderEx( 'HTTP_FOO' ) );
+        self::assertSame( 'baz', $srv->httpHeaderEx( 'HTTP_BAR', 'baz' ) );
+        self::expectException( RuntimeException::class );
+        $srv->httpHeaderEx( 'HTTP_BAR' );
+    }
+
+
     public function testHttpHost() : void {
         $srv = new Server( [
             'HTTP_HOST' => 'foo',

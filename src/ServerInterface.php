@@ -27,6 +27,9 @@ interface ServerInterface {
     public function httpHeader( string $i_stKey, ?string $i_nstDefault = null ) : ?string;
 
 
+    public function httpHeaderEx( string $i_stKey, ?string $i_nstDefault = null ) : string;
+
+
     public function httpHost( ?string $i_nstDefault = null ) : ?string;
 
 

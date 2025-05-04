@@ -66,6 +66,14 @@ final class PanelPageTest extends TestCase {
     }
 
 
+    public function testConstructForSinglePanel() : void {
+        $panel = new SimplePanel( 'Hello' );
+        $page = new PanelPage( $panel );
+        $st = '<body>Hello</body>';
+        self::assertStringContainsString( $st, $page->render() );
+    }
+
+
     public function testEmpty() : void {
         $page = new PanelPage();
         $st = "<!DOCTYPE html>\n"

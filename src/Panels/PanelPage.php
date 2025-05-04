@@ -23,8 +23,11 @@ class PanelPage extends AbstractHtmlPage {
     use PanelContainerTrait;
 
 
-    /** @param list<PanelInterface>|null $i_nrPanels */
-    public function __construct( ?array $i_nrPanels = null, ?string $i_nstLanguage = null ) {
+    /** @param list<PanelInterface>|PanelInterface|null $i_nrPanels */
+    public function __construct( array|PanelInterface|null $i_nrPanels = null, ?string $i_nstLanguage = null ) {
+        if ( $i_nrPanels instanceof PanelInterface ) {
+            $i_nrPanels = [ $i_nrPanels ];
+        }
         if ( is_array( $i_nrPanels ) ) {
             $this->setPanels( $i_nrPanels );
         }

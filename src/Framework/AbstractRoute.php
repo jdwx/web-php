@@ -7,17 +7,24 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Framework;
 
 
+use Ds\Set;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotImplementedException;
+use JDWX\Web\JsonPage;
+use JDWX\Web\PageInterface;
+use JDWX\Web\Panels\PanelInterface;
+use JDWX\Web\Panels\PanelPage;
 use JDWX\Web\RequestInterface;
 use JDWX\Web\ServerInterface;
+use JDWX\Web\SimpleHtmlPage;
+use JDWX\Web\TextPage;
 use Psr\Log\LoggerInterface;
 
 
 abstract class AbstractRoute implements RouteInterface {
 
 
-    public function __construct( private readonly RouterInterface $router ) {}
+    public function __construct( private readonly RouterInterface $router ) { }
 
 
     public function handle( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
@@ -90,9 +97,49 @@ abstract class AbstractRoute implements RouteInterface {
     }
 
 
+    /** @param ?Set<string> $i_setHeaders */
+    protected function respondHtml( string $i_stContent, int $i_uStatus = 200,
+                                    ?Set   $i_setHeaders = null ) : ResponseInterface {
+        return $this->respondPage( new SimpleHtmlPage( $i_stContent ), $i_uStatus, $i_setHeaders );
+    }
+
+
+    /** @param ?Set<string> $i_setHeaders */
+    protected function respondJson( mixed $i_content, int $i_uStatus = 200, bool $i_bPretty = false,
+                                    ?Set  $i_setHeaders = null ) : ResponseInterface {
+        return $this->respondPage( new JsonPage( $i_content, $i_bPretty ), $i_uStatus, $i_setHeaders );
+    }
+
+
+    /** @param ?Set<string> $i_setHeaders */
+    protected function respondPage( PageInterface $i_page, int $i_nstStatus = 200,
+                                    ?Set          $i_setHeaders = null ) : ResponseInterface {
+        return Response::page( $i_page, $i_nstStatus, $i_setHeaders );
+    }
+
+
+    /**
+     * @param list<PanelInterface>|PanelInterface $i_rPanels
+     * @param ?Set<string> $i_setHeaders
+     */
+    protected function respondPanel( array|PanelInterface $i_rPanels, int $i_uStatus = 200,
+                                     ?Set                 $i_setHeaders = null,
+                                     ?string              $i_nstLanguage = null ) : ResponseInterface {
+        return $this->respondPage( new PanelPage( $i_rPanels, $i_nstLanguage ), $i_uStatus, $i_setHeaders );
+    }
+
+
+    /** @param ?Set<string> $i_setHeaders */
+    protected function respondText( string $i_stContent, int $i_uStatus = 200,
+                                    ?Set   $i_setHeaders = null ) : ResponseInterface {
+        return $this->respondPage( new TextPage( $i_stContent ), $i_uStatus, $i_setHeaders );
+    }
+
+
     protected function router() : RouterInterface {
         return $this->router;
     }
+
 
     protected function server() : ServerInterface {
         return $this->router()->server();

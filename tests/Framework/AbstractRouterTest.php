@@ -15,6 +15,7 @@ use JDWX\Web\Framework\Exceptions\InternalServerException;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\HttpError;
 use JDWX\Web\Http;
+use JDWX\Web\Panels\SimplePanel;
 use JDWX\Web\Request;
 use JDWX\Web\TextPage;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -183,6 +184,28 @@ final class AbstractRouterTest extends MyTestCase {
         self::assertSame( 'TEST_CONTENT', $result );
         self::assertSame( 200, $http->getResponseCode() );
         self::assertSame( 'text/plain', $http->getHeader( 'Content-Type' ) );
+    }
+
+
+    public function testRespondPanel() : void {
+        $http = new MockHttpBackend();
+        Http::init( $http );
+        $req = $this->newRequest();
+        $router = new class( i_req: $req ) extends AbstractRouter {
+
+
+            public function route() : bool {
+                $panel = new SimplePanel( 'Hello World' );
+                $this->respondPanel( $panel );
+                return true;
+            }
+
+
+        };
+        ob_start();
+        $router->run();
+        $result = ob_get_clean();
+        self::assertStringContainsString( '<body>Hello World</body>', $result );
     }
 
 

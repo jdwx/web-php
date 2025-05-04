@@ -11,7 +11,9 @@ use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\AbstractRoute;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotImplementedException;
+use JDWX\Web\Framework\ResponseInterface;
 use JDWX\Web\Framework\RouterInterface;
+use JDWX\Web\Panels\SimplePanel;
 use JDWX\Web\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -83,6 +85,88 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'GET' );
         $route = new MyRoute( $router );
         self::assertSame( $router->logger(), $route->loggerPub() );
+    }
+
+
+    public function testRespondHtml() : void {
+        $srv = new MockServer();
+        $srv = $srv->withRequestMethod( 'GET' )->withRequestUri( '/' );
+        $req = Request::synthetic( [], [], [], [], $srv );
+        $router = new MyRouter( i_req: $req );
+        $route = new class( $router ) extends AbstractRoute {
+
+
+            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+                return $this->respondHtml( 'Hello World' );
+            }
+
+
+        };
+        self::assertStringContainsString(
+            '<body>Hello World</body>',
+            strval( $route->handle( '/', '/' ) )
+        );
+    }
+
+
+    public function testRespondJson() : void {
+        $srv = new MockServer();
+        $srv = $srv->withRequestMethod( 'GET' )->withRequestUri( '/' );
+        $req = Request::synthetic( [], [], [], [], $srv );
+        $router = new MyRouter( i_req: $req );
+        $route = new class( $router ) extends AbstractRoute {
+
+
+            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+                return $this->respondJson( [ 'key' => 'value' ] );
+            }
+
+
+        };
+        self::assertSame(
+            '{"key":"value"}',
+            trim( strval( $route->handle( '/', '/' ) ) )
+        );
+    }
+
+
+    public function testRespondPanel() : void {
+        $srv = new MockServer();
+        $srv = $srv->withRequestMethod( 'GET' )->withRequestUri( '/' );
+        $req = Request::synthetic( [], [], [], [], $srv );
+        $router = new MyRouter( i_req: $req );
+        $route = new class( $router ) extends AbstractRoute {
+
+
+            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+                $panel = new SimplePanel( 'Hello World' );
+                return $this->respondPanel( $panel );
+            }
+
+
+        };
+        self::assertStringContainsString(
+            '<body>Hello World</body>',
+            strval( $route->handle( '/', '/' ) )
+        );
+    }
+
+
+    public function testRespondText() : void {
+        $srv = new MockServer();
+        $srv = $srv->withRequestMethod( 'GET' )->withRequestUri( '/' );
+        $req = Request::synthetic( [], [], [], [], $srv );
+        $router = new MyRouter( i_req: $req );
+        $route = new class( $router ) extends AbstractRoute {
+
+
+            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+                return $this->respondText( 'Hello World' );
+            }
+
+
+        };
+        self::assertSame( 'Hello World', strval( $route->handle( '/', '/' ) ) );
     }
 
 

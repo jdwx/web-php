@@ -17,6 +17,16 @@ interface ServerInterface {
     public function documentRoot() : string;
 
 
+    /**
+     * @param string $i_stKey The value to retrieve. (E.g., "HTTP_HOST")
+     * @param string|null $i_nstDefault The default value to return if the key is not found.
+     * @return string|null The value associated with the key, or null if not found.
+     *
+     * Used to retrieve arbitrary server variables set based on the HTTP request.
+     */
+    public function httpHeader( string $i_stKey, ?string $i_nstDefault = null ) : ?string;
+
+
     public function httpHost( ?string $i_nstDefault = null ) : ?string;
 
 
@@ -72,6 +82,9 @@ interface ServerInterface {
 
 
     public function withDocumentRoot( string $i_stDocumentRoot ) : static;
+
+
+    public function withHttpHeader( string $i_stKey, ?string $i_nstValue ) : static;
 
 
     public function withHttpHost( ?string $i_nstHttpHost ) : static;

@@ -22,6 +22,21 @@ class ServerTest extends TestCase {
     }
 
 
+    public function testHttpHeader() : void {
+        $srv = new Server( [
+            'HTTP_FOO' => 'bar',
+        ] );
+        self::assertSame( 'bar', $srv->httpHeader( 'HTTP_FOO' ) );
+        self::assertNull( $srv->httpHeader( 'HTTP_BAR' ) );
+        self::assertSame( 'baz', $srv->httpHeader( 'HTTP_BAR', 'baz' ) );
+
+        $srv = $srv->withHttpHeader( 'HTTP_BAR', 'qux' );
+        self::assertSame( 'qux', $srv->httpHeader( 'HTTP_BAR' ) );
+        $srv = $srv->withHttpHeader( 'HTTP_BAR', null );
+        self::assertNull( $srv->httpHeader( 'HTTP_BAR' ) );
+    }
+
+
     public function testHttpHost() : void {
         $srv = new Server( [
             'HTTP_HOST' => 'foo',

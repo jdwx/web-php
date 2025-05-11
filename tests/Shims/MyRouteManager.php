@@ -16,6 +16,7 @@ use LogicException;
 class MyRouteManager implements RouteManagerInterface {
 
 
+    /** @var array<string, RouteMatch|list<RouteMatch>> */
     public array $routes = [];
 
 

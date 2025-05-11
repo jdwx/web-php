@@ -30,51 +30,51 @@ abstract class AbstractRoute implements RouteInterface {
     public function __construct( private readonly RouterInterface $router ) { }
 
 
-    public function handle( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    public function handle( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         return match ( $this->method() ) {
-            'get' => $this->handleGET( $i_stUri, $i_stPath, $i_rParameters ),
-            'post' => $this->handlePOST( $i_stUri, $i_stPath, $i_rParameters ),
-            'put' => $this->handlePUT( $i_stUri, $i_stPath, $i_rParameters ),
-            'delete' => $this->handleDELETE( $i_stUri, $i_stPath, $i_rParameters ),
-            'head' => $this->handleHEAD( $i_stUri, $i_stPath, $i_rParameters ),
-            'patch' => $this->handlePATCH( $i_stUri, $i_stPath, $i_rParameters ),
+            'get' => $this->handleGET( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'post' => $this->handlePOST( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'put' => $this->handlePUT( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'delete' => $this->handleDELETE( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'head' => $this->handleHEAD( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'patch' => $this->handlePATCH( $i_stUri, $i_stPath, $i_rUriParameters ),
             default => throw new NotImplementedException(),
         };
     }
 
 
     /** @suppress PhanTypeMissingReturnReal */
-    protected function handleDELETE( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handleDELETE( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
     /** @suppress PhanTypeMissingReturnReal */
-    protected function handleGET( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handleGET( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
     /** @suppress PhanTypeMissingReturnReal */
-    protected function handleHEAD( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handleHEAD( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
     /** @suppress PhanTypeMissingReturnReal */
-    protected function handlePATCH( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handlePATCH( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
     /** @suppress PhanTypeMissingReturnReal */
-    protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
     /** @suppress PhanTypeMissingReturnReal */
-    protected function handlePUT( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handlePUT( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 

@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-/** This class encapsulates the $_SERVER superglobal to allow type & error checking. */
+/** This class encapsulates the $_SERVER superglobal to allow type and error checking. */
 readonly class Server implements ServerInterface {
 
 
@@ -141,6 +141,11 @@ readonly class Server implements ServerInterface {
 
     public function https() : bool {
         return $this->bHttps;
+    }
+
+
+    public function isRequestMethod( string $i_stMethod ) : bool {
+        return strtolower( trim( $i_stMethod ) ) === strtolower( trim( $this->requestMethod() ) );
     }
 
 

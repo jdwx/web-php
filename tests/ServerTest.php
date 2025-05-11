@@ -143,6 +143,17 @@ class ServerTest extends TestCase {
     }
 
 
+    public function testIsRequestMethod() : void {
+        $srv = new Server( [
+            'REQUEST_METHOD' => 'foo',
+        ] );
+        self::assertTrue( $srv->isRequestMethod( 'foo' ) );
+        self::assertTrue( $srv->isRequestMethod( 'Foo' ) );
+        self::assertTrue( $srv->isRequestMethod( 'FOO' ) );
+        self::assertFalse( $srv->isRequestMethod( 'bar' ) );
+    }
+
+
     public function testPathInfo() : void {
         $srv = new Server( [
             'PATH_INFO' => 'foo',

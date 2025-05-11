@@ -30,6 +30,7 @@ class TrieRouteManager implements RouteManagerInterface {
     }
 
 
+    /** @return iterable<RouteMatch> */
     public function matches( string $i_stUri ) : iterable {
 
         foreach ( $this->routes->match( $i_stUri ) as $match ) {
@@ -41,7 +42,7 @@ class TrieRouteManager implements RouteManagerInterface {
             if ( $stRest && ! str_starts_with( $stRest, '/' ) ) {
                 $stRest = '/' . $stRest;
             }
-            yield new RouteMatch( $stUri, $match->value(), $stRest, $match->rMatches );
+            yield new RouteMatch( $stUri, $match->value(), $stRest, $match->variables() );
         }
     }
 

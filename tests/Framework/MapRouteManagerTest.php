@@ -26,7 +26,7 @@ final class MapRouteManagerTest extends TestCase {
     }
 
 
-    public function testMatchesForMultipleMatches() : void {
+    public function testMatches() : void {
         $router = new MapRouteManager();
         $router->add( '/foo', MyRoute::class );
         $router->add( '/foobar', MyRoute::class );

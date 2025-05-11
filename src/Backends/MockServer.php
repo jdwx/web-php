@@ -33,4 +33,10 @@ readonly class MockServer extends Server {
     ];
 
 
+    public static function POST( array $i_rDefaults = [] ) : self {
+        $i_rDefaults[ 'REQUEST_METHOD' ] = 'POST';
+        return new self( $i_rDefaults );
+    }
+
+
 }

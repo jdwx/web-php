@@ -4,11 +4,13 @@
 declare( strict_types = 1 );
 
 
+use JDWX\Web\AbstractHtmlPage;
 use JDWX\Web\HtmlPage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( AbstractHtmlPage::class )]
 #[CoversClass( HtmlPage::class )]
 final class HtmlPageTest extends TestCase {
 
@@ -18,6 +20,15 @@ final class HtmlPageTest extends TestCase {
         $page->addCssUri( 'TEST_CSS' );
         $st = $page->render();
         self::assertMatchesRegularExpression( '#<head>.*TEST_CSS.*</head>#', $st );
+    }
+
+
+    public function testAddCSSUriForDuplicate() : void {
+        $page = $this->newHtmlPage();
+        $page->addCssUri( 'TEST_CSS' );
+        $page->addCssUri( 'TEST_CSS' );
+        $st = $page->render();
+        self::assertSame( 1, substr_count( $st, 'TEST_CSS' ) );
     }
 
 

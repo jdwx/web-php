@@ -16,7 +16,7 @@ use JDWX\Web\SimpleHtmlPage;
 class ExampleRouteHome extends AbstractRoute {
 
 
-    protected function handleGET( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handleGET( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $page = new SimpleHtmlPage();
         $page->addCssUri( '/example.css' );
         $page->setTitle( 'Example Web Application' );

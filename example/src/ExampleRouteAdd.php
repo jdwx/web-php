@@ -15,7 +15,7 @@ use JDWX\Web\Framework\ResponseInterface;
 class ExampleRouteAdd extends AbstractRoute {
 
 
-    protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+    protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $req = $this->request();
         $num1 = $req->postEx( 'num1' )->asFloat();
         $num2 = $req->postEx( 'num2' )->asFloat();

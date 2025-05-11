@@ -29,7 +29,7 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'DELETE' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
-        $route->handle( '/', '' );
+        $route->handle( '/', '', [] );
     }
 
 
@@ -37,7 +37,7 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'INVALID' );
         $route = new MyRoute( $router );
         self::expectException( NotImplementedException::class );
-        $route->handle( '/', '' );
+        $route->handle( '/', '', [] );
     }
 
 
@@ -45,7 +45,7 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'GET' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
-        $route->handle( '/', '' );
+        $route->handle( '/', '', [] );
     }
 
 
@@ -53,7 +53,7 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'HEAD' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
-        $route->handle( '/', '' );
+        $route->handle( '/', '', [] );
     }
 
 
@@ -61,7 +61,7 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'PATCH' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
-        $route->handle( '/', '' );
+        $route->handle( '/', '', [] );
     }
 
 
@@ -69,7 +69,7 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'POST' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
-        $route->handle( '/', '' );
+        $route->handle( '/', '', [] );
     }
 
 
@@ -77,7 +77,7 @@ final class AbstractRouteTest extends TestCase {
         $router = $this->newRouter( 'PUT' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
-        $route->handle( '/', '' );
+        $route->handle( '/', '', [] );
     }
 
 
@@ -96,7 +96,9 @@ final class AbstractRouteTest extends TestCase {
         $route = new class( $router ) extends AbstractRoute {
 
 
-            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+            /** @param array<string, string> $i_rParameters */
+            protected function handleGET( string $i_stUri, string $i_stPath,
+                                          array  $i_rParameters ) : ResponseInterface {
                 return $this->respondHtml( 'Hello World' );
             }
 
@@ -104,7 +106,7 @@ final class AbstractRouteTest extends TestCase {
         };
         self::assertStringContainsString(
             '<body>Hello World</body>',
-            strval( $route->handle( '/', '/' ) )
+            strval( $route->handle( '/', '/', [] ) )
         );
     }
 
@@ -117,7 +119,9 @@ final class AbstractRouteTest extends TestCase {
         $route = new class( $router ) extends AbstractRoute {
 
 
-            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+            /** @param array<string, string> $i_rParameters */
+            protected function handleGET( string $i_stUri, string $i_stPath,
+                                          array  $i_rParameters ) : ResponseInterface {
                 return $this->respondJson( [ 'key' => 'value' ] );
             }
 
@@ -125,7 +129,7 @@ final class AbstractRouteTest extends TestCase {
         };
         self::assertSame(
             '{"key":"value"}',
-            trim( strval( $route->handle( '/', '/' ) ) )
+            trim( strval( $route->handle( '/', '/', [] ) ) )
         );
     }
 
@@ -138,7 +142,9 @@ final class AbstractRouteTest extends TestCase {
         $route = new class( $router ) extends AbstractRoute {
 
 
-            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+            /** @param array<string, string> $i_rParameters */
+            protected function handleGET( string $i_stUri, string $i_stPath,
+                                          array  $i_rParameters ) : ResponseInterface {
                 $panel = new SimplePanel( 'Hello World' );
                 return $this->respondPanel( $panel );
             }
@@ -147,7 +153,7 @@ final class AbstractRouteTest extends TestCase {
         };
         self::assertStringContainsString(
             '<body>Hello World</body>',
-            strval( $route->handle( '/', '/' ) )
+            strval( $route->handle( '/', '/', [] ) )
         );
     }
 
@@ -160,13 +166,15 @@ final class AbstractRouteTest extends TestCase {
         $route = new class( $router ) extends AbstractRoute {
 
 
-            protected function handleGET( string $i_stUri, string $i_stPath ) : ResponseInterface {
+            /** @param array<string, string> $i_rParameters */
+            protected function handleGET( string $i_stUri, string $i_stPath,
+                                          array  $i_rParameters ) : ResponseInterface {
                 return $this->respondText( 'Hello World' );
             }
 
 
         };
-        self::assertSame( 'Hello World', strval( $route->handle( '/', '/' ) ) );
+        self::assertSame( 'Hello World', strval( $route->handle( '/', '/', [] ) ) );
     }
 
 

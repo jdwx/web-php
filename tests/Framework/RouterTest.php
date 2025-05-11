@@ -8,6 +8,7 @@ namespace Framework;
 
 
 require_once __DIR__ . '/../Shims/MyRoute.php';
+require_once __DIR__ . '/../Shims/MyRouteManager.php';
 require_once __DIR__ . '/../Shims/MyRouter.php';
 
 
@@ -17,17 +18,22 @@ use JDWX\Web\Backends\MockHttpBackend;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Response;
+use JDWX\Web\Framework\RouteMatch;
 use JDWX\Web\Framework\Router;
+use JDWX\Web\Framework\RouteRouter;
 use JDWX\Web\Http;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shims\MyRoute;
+use Shims\MyRouteManager;
 use Shims\MyRouter;
 
 
 #[CoversClass( Router::class )]
+#[CoversClass( RouteRouter::class )]
 final class RouterTest extends TestCase {
 
 
@@ -54,15 +60,39 @@ final class RouterTest extends TestCase {
     }
 
 
+    public function testRouteForAmbiguousPrefix() : void {
+        $req = $this->newRequest( 'GET', '/foo/bar' );
+        $mgr = new MyRouteManager();
+        $mgr->routes[ '/foo/bar' ] = [
+            new RouteMatch( '/foo/bar', MyRoute::class, '', [] ),
+            new RouteMatch( '/foo/bar', MyRoute::class, '', [] ),
+        ];
+        $router = new RouteRouter( $mgr, i_req: $req );
+        self::expectException( LogicException::class );
+        $router->route();
+    }
+
+
+    public function testRouteForBadPrefix() : void {
+        $req = $this->newRequest( 'GET', '/foobar' );
+        $mgr = new MyRouteManager();
+        $mgr->routes[ '/foobar' ] = new RouteMatch( '/foo', MyRoute::class, 'bar', [] );
+        $router = new RouteRouter( $mgr, i_req: $req );
+        self::assertFalse( $router->route() );
+    }
+
+
     public function testRouteForFailure() : void {
         $http = new MockHttpBackend();
         $log = new BufferLogger();
         Http::init( $http );
         $req = $this->newRequest( 'GET', '/test' );
         $router = new MyRouter( $log, i_req: $req );
-        $route = new MyRoute( $router, [ 'get' => function () {
-            return null;
-        } ] );
+        $route = new MyRoute( $router, [
+            'get' => function () {
+                return null;
+            },
+        ] );
         $router->addRoutePub( '/test', $route );
 
         self::assertFalse( $router->route() );
@@ -72,9 +102,11 @@ final class RouterTest extends TestCase {
     public function testRouteForLongestPrefix() : void {
         $req = $this->newRequest( 'GET', '/test/this/that/these' );
         $router = new MyRouter( i_req: $req );
-        $route = new MyRoute( $router, [ 'get' => function ( $stPath, $stUri ) {
-            return Response::text( "{$stPath}:{$stUri}" );
-        } ] );
+        $route = new MyRoute( $router, [
+            'get' => function ( $stPath, $stUri ) {
+                return Response::text( "{$stPath}:{$stUri}" );
+            },
+        ] );
         $router->addRoutePub( '/test', $route );
         $router->addRoutePub( '/test/', $route );
         $router->addRoutePub( '/test/this/that/', $route );
@@ -88,9 +120,11 @@ final class RouterTest extends TestCase {
     public function testRouteForPrefix() : void {
         $req = $this->newRequest( 'GET', '/test/this' );
         $router = new MyRouter( i_req: $req );
-        $route = new MyRoute( $router, [ 'get' => function ( $stPath, $stUri ) {
-            return Response::text( "{$stPath}:{$stUri}" );
-        } ] );
+        $route = new MyRoute( $router, [
+            'get' => function ( $stPath, $stUri ) {
+                return Response::text( "{$stPath}:{$stUri}" );
+            },
+        ] );
         $router->addRoutePub( '/test/', $route );
         self::assertSame( '/test/:/this', $router->routeOutput() );
     }
@@ -99,9 +133,11 @@ final class RouterTest extends TestCase {
     public function testRouteForRootNotPrefix() : void {
         $req = $this->newRequest( 'GET', '/nope' );
         $router = new MyRouter( i_req: $req );
-        $route = new MyRoute( $router, [ 'get' => function () {
-            return Response::text( 'TEST_GET_ROOT' );
-        } ] );
+        $route = new MyRoute( $router, [
+            'get' => function () {
+                return Response::text( 'TEST_GET_ROOT' );
+            },
+        ] );
         $router->addRoutePub( '/', $route );
         self::assertFalse( $router->routeQuiet() );
     }
@@ -111,9 +147,11 @@ final class RouterTest extends TestCase {
         $req = $this->newRequest( 'POST', '/nope' );
         $router = new MyRouter( i_req: $req );
         $router->setRootIsPrefixPub();
-        $route = new MyRoute( $router, [ 'post' => function ( string $stPath, string $stUri ) {
-            return Response::text( $stPath . ':' . $stUri );
-        } ] );
+        $route = new MyRoute( $router, [
+            'post' => function ( string $stPath, string $stUri ) {
+                return Response::text( $stPath . ':' . $stUri );
+            },
+        ] );
         $router->addRoutePub( '/', $route );
         self::assertSame( '/:/nope', $router->routeOutput() );
     }
@@ -134,9 +172,11 @@ final class RouterTest extends TestCase {
     public function testRouteForSuccess() : void {
         $req = $this->newRequest( 'GET', '/test' );
         $router = new MyRouter( i_req: $req );
-        $route = new MyRoute( $router, [ 'get' => function () {
-            return Response::text( 'TEST_GET' );
-        } ] );
+        $route = new MyRoute( $router, [
+            'get' => function () {
+                return Response::text( 'TEST_GET' );
+            },
+        ] );
         $router->addRoutePub( '/test', $route );
         self::assertSame( 'TEST_GET', $router->routeOutput() );
     }

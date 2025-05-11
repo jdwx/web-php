@@ -15,12 +15,14 @@ use JDWX\Web\Framework\ResponseInterface;
 class ExampleRouteRedirect extends AbstractRoute {
 
 
-    protected function handleGET( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
+    protected function handleGET( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
         return Response::redirectTemporaryWithSameMethod( '/' );
     }
 
-    protected function handlePOST( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
-        return $this->handleGET( $i_stUri, $i_stPath );
+
+    protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+        return $this->handleGET( $i_stUri, $i_stPath, $i_rParameters );
     }
+
 
 }

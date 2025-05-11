@@ -29,54 +29,6 @@ class MyRoute extends AbstractRoute {
     }
 
 
-    protected function handleDELETE( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
-        if ( isset( $this->mapCallbacks[ 'delete' ] ) ) {
-            return call_user_func( $this->mapCallbacks[ 'delete' ], $i_stUri, $i_stPath );
-        }
-        return parent::handleDELETE( $i_stUri, $i_stPath );
-    }
-
-
-    protected function handleGET( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
-        if ( isset( $this->mapCallbacks[ 'get' ] ) ) {
-            return call_user_func( $this->mapCallbacks[ 'get' ], $i_stUri, $i_stPath );
-        }
-        return parent::handleGET( $i_stUri, $i_stPath );
-    }
-
-
-    protected function handleHEAD( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
-        if ( isset( $this->mapCallbacks[ 'head' ] ) ) {
-            return call_user_func( $this->mapCallbacks[ 'head' ], $i_stUri, $i_stPath );
-        }
-        return parent::handleHEAD( $i_stUri, $i_stPath );
-    }
-
-
-    protected function handlePATCH( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
-        if ( isset( $this->mapCallbacks[ 'patch' ] ) ) {
-            return call_user_func( $this->mapCallbacks[ 'patch' ], $i_stUri, $i_stPath );
-        }
-        return parent::handlePATCH( $i_stUri, $i_stPath );
-    }
-
-
-    protected function handlePOST( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
-        if ( isset( $this->mapCallbacks[ 'post' ] ) ) {
-            return call_user_func( $this->mapCallbacks[ 'post' ], $i_stUri, $i_stPath );
-        }
-        return parent::handlePOST( $i_stUri, $i_stPath );
-    }
-
-
-    protected function handlePUT( string $i_stUri, string $i_stPath ) : ?ResponseInterface {
-        if ( isset( $this->mapCallbacks[ 'put' ] ) ) {
-            return call_user_func( $this->mapCallbacks[ 'put' ], $i_stUri, $i_stPath );
-        }
-        return parent::handlePUT( $i_stUri, $i_stPath );
-    }
-
-
     public function loggerPub() : LoggerInterface {
         return $this->logger();
     }
@@ -84,6 +36,60 @@ class MyRoute extends AbstractRoute {
 
     public function serverPub() : ServerInterface {
         return $this->server();
+    }
+
+
+    /** @param array<string, string> $i_rParameters */
+    protected function handleDELETE( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+        if ( isset( $this->mapCallbacks[ 'delete' ] ) ) {
+            return call_user_func( $this->mapCallbacks[ 'delete' ], $i_stUri, $i_stPath, $i_rParameters );
+        }
+        return parent::handleDELETE( $i_stUri, $i_stPath, $i_rParameters );
+    }
+
+
+    /** @param array<string, string> $i_rParameters */
+    protected function handleGET( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+        if ( isset( $this->mapCallbacks[ 'get' ] ) ) {
+            return call_user_func( $this->mapCallbacks[ 'get' ], $i_stUri, $i_stPath, $i_rParameters );
+        }
+        return parent::handleGET( $i_stUri, $i_stPath, $i_rParameters );
+    }
+
+
+    /** @param array<string, string> $i_rParameters */
+    protected function handleHEAD( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+        if ( isset( $this->mapCallbacks[ 'head' ] ) ) {
+            return call_user_func( $this->mapCallbacks[ 'head' ], $i_stUri, $i_stPath, $i_rParameters );
+        }
+        return parent::handleHEAD( $i_stUri, $i_stPath, $i_rParameters );
+    }
+
+
+    /** @param array<string, string> $i_rParameters */
+    protected function handlePATCH( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+        if ( isset( $this->mapCallbacks[ 'patch' ] ) ) {
+            return call_user_func( $this->mapCallbacks[ 'patch' ], $i_stUri, $i_stPath, $i_rParameters );
+        }
+        return parent::handlePATCH( $i_stUri, $i_stPath, $i_rParameters );
+    }
+
+
+    /** @param array<string, string> $i_rParameters */
+    protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+        if ( isset( $this->mapCallbacks[ 'post' ] ) ) {
+            return call_user_func( $this->mapCallbacks[ 'post' ], $i_stUri, $i_stPath, $i_rParameters );
+        }
+        return parent::handlePOST( $i_stUri, $i_stPath, $i_rParameters );
+    }
+
+
+    /** @param array<string, string> $i_rParameters */
+    protected function handlePUT( string $i_stUri, string $i_stPath, array $i_rParameters ) : ?ResponseInterface {
+        if ( isset( $this->mapCallbacks[ 'put' ] ) ) {
+            return call_user_func( $this->mapCallbacks[ 'put' ], $i_stUri, $i_stPath );
+        }
+        return parent::handlePUT( $i_stUri, $i_stPath, $i_rParameters );
     }
 
 

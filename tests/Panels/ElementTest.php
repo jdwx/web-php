@@ -34,6 +34,25 @@ class ElementTest extends TestCase {
     }
 
 
+    public function testNthChild() : void {
+        $el = new Element( i_body: [ 'foo', 'bar', 'baz' ] );
+        self::assertSame( 'foo', strval( $el->nthChild( 0 ) ) );
+        self::assertSame( 'bar', strval( $el->nthChild( 1 ) ) );
+        self::assertSame( 'baz', strval( $el->nthChild( 2 ) ) );
+        self::assertNull( $el->nthChild( 3 ) );
+    }
+
+
+    public function testNthChildElement() : void {
+        $elChild1 = new Element( i_body: 'foo' );
+        $elChild2 = new Element( i_body: 'bar' );
+        $el = new Element( i_body: [ 'baz', $elChild1, 'qux', $elChild2, 'corge' ] );
+        self::assertSame( $elChild1, $el->nthChildElement( 0 ) );
+        self::assertSame( $elChild2, $el->nthChildElement( 1 ) );
+        self::assertNull( $el->nthChildElement( 2 ) );
+    }
+
+
     public function testPrependChild() : void {
         $el = new Element( i_body: 'bar' );
         $el->prependChild( 'foo' );

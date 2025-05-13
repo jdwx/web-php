@@ -56,6 +56,24 @@ class Element implements Stringable {
     }
 
 
+    public function nthChild( int $i_n ) : string|Stringable|null {
+        return $this->rChildren[ $i_n ] ?? null;
+    }
+
+
+    public function nthChildElement( int $i_n ) : Element|null {
+        foreach ( $this->rChildren as $child ) {
+            if ( $child instanceof Element ) {
+                if ( 0 === $i_n ) {
+                    return $child;
+                }
+                $i_n--;
+            }
+        }
+        return null;
+    }
+
+
     public function prependChild( string|Stringable $i_stBody ) : void {
         array_unshift( $this->rChildren, $i_stBody );
     }

@@ -27,8 +27,9 @@ class Element implements Stringable {
     }
 
 
-    public function appendChild( string|Stringable $i_stBody ) : void {
+    public function appendChild( string|Stringable $i_stBody ) : static {
         $this->rChildren[] = $i_stBody;
+        return $this;
     }
 
 

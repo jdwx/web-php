@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use Stringable;
+
+
 trait ElementTrait {
 
 
@@ -15,15 +18,11 @@ trait ElementTrait {
 
     private string $stTagName;
 
+    private bool $bAlwaysClose = true;
+
 
     public function __toString() : string {
-        $st = '<' . $this->getTagName() . $this->attributeString() . '>';
-        $nst = $this->inner();
-        if ( is_string( $nst ) ) {
-            $st .= $nst;
-            $st .= '</' . $this->stTagName . '>';
-        }
-        return $st;
+        return join( '', iterator_to_array( $this->stream(), false ) );
     }
 
 
@@ -32,12 +31,41 @@ trait ElementTrait {
     }
 
 
+    public function setAlwaysClose( bool $i_bAlwaysClose ) : void {
+        $this->bAlwaysClose = $i_bAlwaysClose;
+    }
+
+
     public function setTagName( string $i_stTagName ) : void {
         $this->stTagName = $i_stTagName;
     }
 
 
-    protected function inner() : ?string {
+    /** @return iterable<string|Stringable> */
+    public function stream() : iterable {
+        assert( strval( null ) === '' );
+        yield '<' . $this->getTagName() . $this->attributeString() . '>';
+
+        $inner = $this->inner();
+        /** @phpstan-ignore-next-line */
+        if ( is_iterable( $inner ) ) {
+            /** @phpstan-ignore-next-line */
+            yield from $inner;
+        } else {
+            $inner = strval( $inner );
+            if ( '' !== $inner ) {
+                yield $inner;
+            } elseif ( ! $this->bAlwaysClose ) {
+                return;
+            }
+        }
+
+        yield '</' . $this->stTagName . '>';
+    }
+
+
+    /** @return iterable<string|Stringable>|string|Stringable|null */
+    protected function inner() : iterable|string|Stringable|null {
         return null;
     }
 

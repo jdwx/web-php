@@ -27,8 +27,10 @@ class Element implements Stringable {
     }
 
 
-    public function appendChild( string|Stringable $i_stBody ) : static {
-        $this->rChildren[] = $i_stBody;
+    public function appendChild( string|Stringable|null $i_stBody ) : static {
+        if ( ! is_null( $i_stBody ) ) {
+            $this->rChildren[] = $i_stBody;
+        }
         return $this;
     }
 
@@ -75,8 +77,11 @@ class Element implements Stringable {
     }
 
 
-    public function prependChild( string|Stringable $i_stBody ) : void {
-        array_unshift( $this->rChildren, $i_stBody );
+    public function prependChild( string|Stringable|null $i_stBody ) : static {
+        if ( ! is_null( $i_stBody ) ) {
+            array_unshift( $this->rChildren, $i_stBody );
+        }
+        return $this;
     }
 
 

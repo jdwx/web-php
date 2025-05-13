@@ -18,6 +18,11 @@ class ElementTest extends TestCase {
         $el = new Element( i_body: 'foo' );
         $el->appendChild( 'bar' );
         self::assertSame( '<div>foobar</div>', strval( $el ) );
+
+        $el = new Element( i_body: 'foo' );
+        $el->appendChild( null )
+            ->appendChild( new Element( i_body: 'bar' ) );
+        self::assertSame( '<div>foo<div>bar</div></div>', strval( $el ) );
     }
 
 
@@ -57,6 +62,11 @@ class ElementTest extends TestCase {
         $el = new Element( i_body: 'bar' );
         $el->prependChild( 'foo' );
         self::assertSame( '<div>foobar</div>', strval( $el ) );
+
+        $el = new Element( i_body: 'bar' );
+        $el->prependChild( null )
+            ->prependChild( new Element( i_body: 'foo' ) );
+        self::assertSame( '<div><div>foo</div>bar</div>', strval( $el ) );
     }
 
 

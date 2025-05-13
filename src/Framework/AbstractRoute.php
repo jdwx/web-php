@@ -27,7 +27,7 @@ abstract class AbstractRoute implements RouteInterface {
     use DownstreamRouteTrait;
 
 
-    public function __construct( private readonly RouterInterface $router ) { }
+    public function __construct( private readonly RouterInterface $router ) {}
 
 
     public function handle( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
@@ -43,37 +43,55 @@ abstract class AbstractRoute implements RouteInterface {
     }
 
 
-    /** @suppress PhanTypeMissingReturnReal */
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
     protected function handleDELETE( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
-    /** @suppress PhanTypeMissingReturnReal */
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
     protected function handleGET( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
-    /** @suppress PhanTypeMissingReturnReal */
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
     protected function handleHEAD( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
-    /** @suppress PhanTypeMissingReturnReal */
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
     protected function handlePATCH( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
-    /** @suppress PhanTypeMissingReturnReal */
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
     protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
-    /** @suppress PhanTypeMissingReturnReal */
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
     protected function handlePUT( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }

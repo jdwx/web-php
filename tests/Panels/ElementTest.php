@@ -21,6 +21,19 @@ class ElementTest extends TestCase {
     }
 
 
+    public function testChildElements() : void {
+        $elChild = new Element( i_body: 'foo' );
+        $elParent = new Element( i_body: [ $elChild, 'bar' ] );
+        self::assertSame( [ $elChild ], iterator_to_array( $elParent->childElements(), false ) );
+    }
+
+
+    public function testChildren() : void {
+        $el = new Element( i_body: [ 'foo', 'bar', 'baz' ] );
+        self::assertSame( [ 'foo', 'bar', 'baz' ], iterator_to_array( $el->children(), false ) );
+    }
+
+
     public function testPrependChild() : void {
         $el = new Element( i_body: 'bar' );
         $el->prependChild( 'foo' );

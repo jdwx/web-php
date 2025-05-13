@@ -40,6 +40,12 @@ final class AttributeTest extends TestCase {
     }
 
 
+    public function testFluent() : void {
+        $obj = $this->newObject()->setAttribute( 'foo', 'bar' )->addAttribute( 'foo', 'baz' );
+        self::assertEquals( 'bar baz', $obj->getAttribute( 'foo' ) );
+    }
+
+
     public function testGetAttributeEx() : void {
         $obj = $this->newObject();
         $obj->setAttribute( 'foo', 'bar' );

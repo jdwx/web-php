@@ -14,12 +14,14 @@ trait AttributeTrait {
     private array $rAttributes = [];
 
 
-    public function addAttribute( string $i_stName, string $i_stValue ) : void {
+    /** @suppress PhanTypeMismatchReturn */
+    public function addAttribute( string $i_stName, string $i_stValue ) : static {
         if ( empty( $this->rAttributes[ $i_stName ] ) || true === $this->rAttributes[ $i_stName ] ) {
             $this->rAttributes[ $i_stName ] = $i_stValue;
-            return;
+            return $this;
         }
         $this->rAttributes[ $i_stName ] .= ' ' . $i_stValue;
+        return $this;
     }
 
 
@@ -64,13 +66,14 @@ trait AttributeTrait {
     }
 
 
-    public function removeAttribute( string $i_stName, ?string $i_nstValue = null ) : void {
+    /** @suppress PhanTypeMismatchReturn */
+    public function removeAttribute( string $i_stName, ?string $i_nstValue = null ) : static {
         if ( ! is_string( $i_nstValue ) ) {
             unset( $this->rAttributes[ $i_stName ] );
-            return;
+            return $this;
         }
         if ( empty( $this->rAttributes[ $i_stName ] ) ) {
-            return;
+            return $this;
         }
         $stValue = $this->rAttributes[ $i_stName ];
         /** @phpstan-ignore-next-line */
@@ -79,18 +82,21 @@ trait AttributeTrait {
         $rValue = array_diff( $rValue, [ $i_nstValue ] );
         if ( empty( $rValue ) ) {
             unset( $this->rAttributes[ $i_stName ] );
-            return;
+            return $this;
         }
         $this->rAttributes[ $i_stName ] = implode( ' ', $rValue );
+        return $this;
     }
 
 
-    public function setAttribute( string $i_stName, bool|string $i_value = true ) : void {
+    /** @suppress PhanTypeMismatchReturn */
+    public function setAttribute( string $i_stName, bool|string $i_value = true ) : static {
         if ( false === $i_value ) {
             $this->removeAttribute( $i_stName );
-            return;
+            return $this;
         }
         $this->rAttributes[ $i_stName ] = $i_value;
+        return $this;
     }
 
 

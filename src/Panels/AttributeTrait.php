@@ -17,7 +17,7 @@ trait AttributeTrait {
     /** @suppress PhanTypeMismatchReturn */
     public function addAttribute( string $i_stName, string ...$i_rstValues ) : static {
         if ( empty( $this->rAttributes[ $i_stName ] ) || true === $this->rAttributes[ $i_stName ] ) {
-            $this->rAttributes[ $i_stName ] = join( ' ', $i_rstValues );;
+            $this->rAttributes[ $i_stName ] = join( ' ', $i_rstValues );
             return $this;
         }
         $this->rAttributes[ $i_stName ] .= ' ' . join( ' ', $i_rstValues );
@@ -61,8 +61,21 @@ trait AttributeTrait {
     }
 
 
-    public function hasAttribute( string $i_stName ) : bool {
-        return isset( $this->rAttributes[ $i_stName ] );
+    public function hasAttribute( string $i_stName, true|string|null $i_value = null ) : bool {
+        if ( ! isset( $this->rAttributes[ $i_stName ] ) ) {
+            return false;
+        }
+        if ( is_null( $i_value ) ) {
+            return true;
+        }
+        if ( true === $i_value && true === $this->rAttributes[ $i_stName ] ) {
+            return true;
+        }
+        if ( ! is_string( $this->rAttributes[ $i_stName ] ) ) {
+            return false;
+        }
+        $r = preg_split( '/\s+/', trim( $this->rAttributes[ $i_stName ] ) );
+        return in_array( $i_value, $r, true );
     }
 
 

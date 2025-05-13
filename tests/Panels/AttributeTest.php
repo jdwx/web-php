@@ -71,6 +71,31 @@ final class AttributeTest extends TestCase {
         self::assertTrue( $obj->hasAttribute( 'foo' ) );
         $obj->removeAttribute( 'foo' );
         self::assertFalse( $obj->hasAttribute( 'foo' ) );
+
+        $obj = $this->newObject();
+        $obj->setAttribute( 'foo', 'bar' );
+        self::assertTrue( $obj->hasAttribute( 'foo', 'bar' ) );
+        $obj->addAttribute( 'foo', 'baz' );
+        self::assertTrue( $obj->hasAttribute( 'foo', 'bar' ) );
+        self::assertTrue( $obj->hasAttribute( 'foo', 'baz' ) );
+
+        $obj = $this->newObject();
+        $obj->setAttribute( 'foo', 'bar' );
+        self::assertFalse( $obj->hasAttribute( 'foo', 'baz' ) );
+        self::assertFalse( $obj->hasAttribute( 'foo', 'qux' ) );
+
+        $obj = $this->newObject();
+        $obj->setAttribute( 'baz', 'foobar' );
+        self::assertTrue( $obj->hasAttribute( 'baz' ) );
+        self::assertTrue( $obj->hasAttribute( 'baz', 'foobar' ) );
+        self::assertFalse( $obj->hasAttribute( 'baz', 'foo' ) );
+        self::assertFalse( $obj->hasAttribute( 'baz', 'bar' ) );
+
+        $obj = $this->newObject();
+        $obj->setAttribute( 'foo' );
+        self::assertTrue( $obj->hasAttribute( 'foo' ) );
+        self::assertTrue( $obj->hasAttribute( 'foo', true ) );
+        self::assertFalse( $obj->hasAttribute( 'foo', 'foo' ) );
     }
 
 

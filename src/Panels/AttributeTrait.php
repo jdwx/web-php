@@ -15,12 +15,12 @@ trait AttributeTrait {
 
 
     /** @suppress PhanTypeMismatchReturn */
-    public function addAttribute( string $i_stName, string $i_stValue ) : static {
+    public function addAttribute( string $i_stName, string ...$i_rstValues ) : static {
         if ( empty( $this->rAttributes[ $i_stName ] ) || true === $this->rAttributes[ $i_stName ] ) {
-            $this->rAttributes[ $i_stName ] = $i_stValue;
+            $this->rAttributes[ $i_stName ] = join( ' ', $i_rstValues );;
             return $this;
         }
-        $this->rAttributes[ $i_stName ] .= ' ' . $i_stValue;
+        $this->rAttributes[ $i_stName ] .= ' ' . join( ' ', $i_rstValues );
         return $this;
     }
 
@@ -90,12 +90,18 @@ trait AttributeTrait {
 
 
     /** @suppress PhanTypeMismatchReturn */
-    public function setAttribute( string $i_stName, bool|string $i_value = true ) : static {
-        if ( false === $i_value ) {
+    public function setAttribute( string $i_stName, bool|string ...$i_values ) : static {
+        if ( empty( $i_values ) || [ true ] === $i_values ) {
+            $this->rAttributes[ $i_stName ] = true;
+            return $this;
+        }
+
+        if ( [ false ] === $i_values ) {
             $this->removeAttribute( $i_stName );
             return $this;
         }
-        $this->rAttributes[ $i_stName ] = $i_value;
+
+        $this->rAttributes[ $i_stName ] = join( ' ', $i_values );
         return $this;
     }
 

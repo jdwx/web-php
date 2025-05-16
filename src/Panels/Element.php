@@ -85,4 +85,10 @@ class Element implements Stringable {
     }
 
 
+    public function removeAllChildren() : static {
+        $this->rChildren = [];
+        return $this;
+    }
+
+
 }

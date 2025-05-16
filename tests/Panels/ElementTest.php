@@ -21,7 +21,8 @@ class ElementTest extends TestCase {
 
         $el = new Element( i_body: 'foo' );
         $el->appendChild( null )
-            ->appendChild( new Element( i_body: 'bar' ) );
+            ->appendChild( new Element( i_body: 'bar' ) )
+        ;
         self::assertSame( '<div>foo<div>bar</div></div>', strval( $el ) );
     }
 
@@ -65,8 +66,16 @@ class ElementTest extends TestCase {
 
         $el = new Element( i_body: 'bar' );
         $el->prependChild( null )
-            ->prependChild( new Element( i_body: 'foo' ) );
+            ->prependChild( new Element( i_body: 'foo' ) )
+        ;
         self::assertSame( '<div><div>foo</div>bar</div>', strval( $el ) );
+    }
+
+
+    public function testRemoveAllChildren() : void {
+        $el = new Element( i_body: [ 'foo', 'bar', 'baz' ] );
+        $el->removeAllChildren();
+        self::assertSame( '<div></div>', strval( $el ) );
     }
 
 

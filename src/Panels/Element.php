@@ -27,6 +27,19 @@ class Element implements Stringable {
     }
 
 
+    /** @param iterable<string|Stringable|iterable<string|Stringable|null>|null>|string|Stringable|null ...$i_children */
+    public function append( iterable|string|Stringable|null ...$i_children ) : static {
+        foreach ( $i_children as $child ) {
+            if ( is_array( $child ) ) {
+                $this->append( ... $child );
+            } else {
+                $this->appendChild( $child );
+            }
+        }
+        return $this;
+    }
+
+
     public function appendChild( string|Stringable|null $i_stBody ) : static {
         if ( ! is_null( $i_stBody ) ) {
             $this->rChildren[] = $i_stBody;

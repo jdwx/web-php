@@ -8,11 +8,21 @@ namespace Panels;
 
 
 use JDWX\Web\Panels\Element;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 
 
-class ElementTest extends TestCase {
+#[CoversClass( Element::class )]
+final class ElementTest extends TestCase {
+
+
+    public function testAppend() : void {
+        $child = new Element( i_body: 'Quux' );
+        $el = new Element( i_body: 'Foo' );
+        $el->append( 'Bar', [ 'Baz', $child, [ 'Qux', null ] ] );
+        self::assertSame( '<div>FooBarBaz<div>Quux</div>Qux</div>', strval( $el ) );
+    }
 
 
     public function testAppendChild() : void {

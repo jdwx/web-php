@@ -64,6 +64,82 @@ final class ElementTest extends TestCase {
     }
 
 
+    public function testFilterByHasAttribute() : void {
+        $elChild1 = ( new Element( i_children: 'foo' ) )->setAttribute( 'pick' );
+        $elChild2 = new Element( i_children: 'bar' );
+        $elChild3 = ( new Element( i_children: 'baz' ) )->setAttribute( 'pick', 'yes' );
+        $elChild4 = new Element( i_children: 'qux' );
+        $elParent = new Element(
+            i_children: [ 'Quux', $elChild1, 'Corge', $elChild2, 'Grault', $elChild3, 'Garply', $elChild4 ]
+        );
+        $x = $elParent->children( Element::filterByHasAttribute( 'pick' ) );
+        self::assertSame( [ $elChild1, $elChild3 ], iterator_to_array( $x, false ) );
+        $x = $elParent->children( Element::filterByHasAttribute( 'pick', 'yes' ) );
+        self::assertSame( [ $elChild3 ], iterator_to_array( $x, false ) );
+    }
+
+
+    public function testFilterByHasTagName() : void {
+        $el1 = new Element( 'foo' );
+        $el2 = ( new Element( 'bar' ) )->setAttribute( 'class', 'foo' );
+        $el3 = new Element( 'foo', 'baz' );
+        $el4 = 'foo';
+        $el5 = new class() implements Stringable {
+
+
+            public function __toString() : string {
+                return 'foo';
+            }
+
+
+        };
+        $parent = new Element( 'foo', [ $el1, $el2, $el3, $el4, $el5 ] );
+        $x = $parent->children( Element::filterByTagName( 'foo' ) );
+        self::assertSame( [ $el1, $el3 ], iterator_to_array( $x, false ) );
+
+    }
+
+
+    public function testFilterByNotHasAttribute() : void {
+        $elChild1 = ( new Element() )->setAttribute( 'pick' );
+        $elChild2 = new Element();
+        $elChild3 = ( new Element() )->setAttribute( 'pick', 'yes' );
+        $elChild4 = new Element();
+        $elParent = new Element(
+            i_children: [ 'Quux', $elChild1, $elChild2, $elChild3, $elChild4 ]
+        );
+        $x = $elParent->children( Element::filterByNotHasAttribute( 'pick' ) );
+        self::assertSame( [ 'Quux', $elChild2, $elChild4 ], iterator_to_array( $x, false ) );
+
+        $x = $elParent->children( Element::filterByNotHasAttribute( 'pick', 'yes' ) );
+        self::assertSame( [ 'Quux', $elChild1, $elChild2, $elChild4 ], iterator_to_array( $x, false ) );
+
+        $x = $elParent->childElements( Element::filterByNotHasAttribute( 'pick' ) );
+        self::assertSame( [ $elChild2, $elChild4 ], iterator_to_array( $x, false ) );
+    }
+
+
+    public function testFilterByNotTagName() : void {
+        $el1 = new Element( 'foo' );
+        $el2 = ( new Element( 'bar' ) )->setAttribute( 'class', 'foo' );
+        $el3 = new Element( 'foo', 'baz' );
+        $el4 = 'foo';
+        $el5 = new class() implements Stringable {
+
+
+            public function __toString() : string {
+                return 'foo';
+            }
+
+
+        };
+        $parent = new Element( 'foo', [ $el1, $el2, $el3, $el4, $el5 ] );
+        $x = $parent->children( Element::filterByNotTagName( 'foo' ) );
+        self::assertSame( [ $el2, $el4, $el5 ], iterator_to_array( $x, false ) );
+
+    }
+
+
     public function testNthChild() : void {
         $el = new Element( i_children: [ 'foo', 'bar', 'baz' ] );
         self::assertSame( 'foo', strval( $el->nthChild( 0 ) ) );

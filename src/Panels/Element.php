@@ -27,6 +27,28 @@ class Element implements Stringable {
     }
 
 
+    public static function filterByHasAttribute( string           $i_stAttribute,
+                                                 true|string|null $i_value = null ) : callable {
+        return fn( $i_el ) => $i_el instanceof Element && $i_el->hasAttribute( $i_stAttribute, $i_value );
+    }
+
+
+    public static function filterByNotHasAttribute( string           $i_stAttribute,
+                                                    true|string|null $i_value = null ) : callable {
+        return fn( $i_el ) => ! $i_el instanceof Element || ! $i_el->hasAttribute( $i_stAttribute, $i_value );
+    }
+
+
+    public static function filterByNotTagName( string $i_stTagName ) : callable {
+        return fn( $i_el ) => ! $i_el instanceof Element || $i_el->getTagName() !== $i_stTagName;
+    }
+
+
+    public static function filterByTagName( string $i_stTagName ) : callable {
+        return fn( $i_el ) => $i_el instanceof Element && $i_el->getTagName() === $i_stTagName;
+    }
+
+
     /** @param iterable<string|Stringable|iterable<string|Stringable|null>|null>|string|Stringable|null ...$i_children */
     public function append( iterable|string|Stringable|null ...$i_children ) : static {
         foreach ( $i_children as $child ) {
@@ -61,16 +83,18 @@ class Element implements Stringable {
 
 
     /** @return iterable<string|Stringable> */
-    public function children() : iterable {
+    public function children( ?callable $i_fnFilter = null ) : iterable {
         foreach ( $this->rChildren as $child ) {
-            yield $child;
+            if ( ! $i_fnFilter || $i_fnFilter( $child ) ) {
+                yield $child;
+            }
         }
     }
 
 
     /** @return iterable<string|Stringable> */
     public function inner() : iterable {
-        return $this->rChildren;
+        return $this->children();
     }
 
 

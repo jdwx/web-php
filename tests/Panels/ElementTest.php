@@ -35,6 +35,20 @@ class ElementTest extends TestCase {
     }
 
 
+    public function testChildElementsWithFilter() : void {
+        $elChild1 = ( new Element( i_body: 'foo' ) )->setAttribute( 'pick' );
+        $elChild2 = new Element( i_body: 'bar' );
+        $elChild3 = ( new Element( i_body: 'baz' ) )->setAttribute( 'pick' );
+        $elChild4 = new Element( i_body: 'qux' );
+        $elParent =
+            new Element( i_body: [ 'Quux', $elChild1, 'Corge', $elChild2, 'Grault', $elChild3, 'Garply', $elChild4 ] );
+        $fn = function ( Element $child ) : bool {
+            return $child->hasAttribute( 'pick' );
+        };
+        self::assertSame( [ $elChild1, $elChild3 ], iterator_to_array( $elParent->childElements( $fn ), false ) );
+    }
+
+
     public function testChildren() : void {
         $el = new Element( i_body: [ 'foo', 'bar', 'baz' ] );
         self::assertSame( [ 'foo', 'bar', 'baz' ], iterator_to_array( $el->children(), false ) );
@@ -77,6 +91,29 @@ class ElementTest extends TestCase {
         $el = new Element( i_body: [ 'foo', 'bar', 'baz' ] );
         $el->removeAllChildren();
         self::assertSame( '<div></div>', strval( $el ) );
+    }
+
+
+    public function testRemoveChildForElement() : void {
+        $child = new ELement( i_body: 'Foo' );
+        $parent = new Element( i_body: [ 'Bar', $child, 'Baz' ] );
+        $parent->removeChild( $child );
+        self::assertSame( '<div>BarBaz</div>', strval( $parent ) );
+    }
+
+
+    public function testRemoveChildForNotPresent() : void {
+        $child = new Element( i_body: 'Foo' );
+        $parent = new Element( i_body: [ 'Bar', 'Baz' ] );
+        $parent->removeChild( $child );
+        self::assertSame( '<div>BarBaz</div>', strval( $parent ) );
+    }
+
+
+    public function testRemoveChildForString() : void {
+        $el = new Element( i_body: [ 'Foo', 'Bar', 'Baz' ] );
+        $el->removeChild( 'Bar' );
+        self::assertSame( '<div>FooBaz</div>', strval( $el ) );
     }
 
 

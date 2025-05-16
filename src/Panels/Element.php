@@ -36,10 +36,12 @@ class Element implements Stringable {
 
 
     /** @return iterable<Element> */
-    public function childElements() : iterable {
+    public function childElements( ?callable $i_fnFilter = null ) : iterable {
         foreach ( $this->rChildren as $child ) {
             if ( $child instanceof Element ) {
-                yield $child;
+                if ( ! $i_fnFilter || $i_fnFilter( $child ) ) {
+                    yield $child;
+                }
             }
         }
     }
@@ -87,6 +89,17 @@ class Element implements Stringable {
 
     public function removeAllChildren() : static {
         $this->rChildren = [];
+        return $this;
+    }
+
+
+    public function removeChild( string|Stringable $i_child ) : static {
+        foreach ( $this->rChildren as $i => $child ) {
+            if ( $child === $i_child ) {
+                unset( $this->rChildren[ $i ] );
+                return $this;
+            }
+        }
         return $this;
     }
 

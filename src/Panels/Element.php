@@ -91,4 +91,34 @@ class Element implements Stringable {
     }
 
 
+    public function removeChildren( callable $i_fnCallback ) : static {
+        $this->rChildren = array_filter( $this->rChildren,
+            fn( string|Stringable $i_child ) => ! $i_fnCallback( $i_child )
+        );
+        return $this;
+    }
+
+
+    public function removeNthChild( int $i_n = 0 ) : static {
+        if ( isset( $this->rChildren[ $i_n ] ) ) {
+            unset( $this->rChildren[ $i_n ] );
+        }
+        return $this;
+    }
+
+
+    public function removeNthChildElement( int $i_n = 0 ) : static {
+        foreach ( $this->rChildren as $i => $child ) {
+            if ( $child instanceof Element ) {
+                if ( 0 === $i_n ) {
+                    unset( $this->rChildren[ $i ] );
+                    return $this;
+                }
+                $i_n--;
+            }
+        }
+        return $this;
+    }
+
+
 }

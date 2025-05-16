@@ -9,6 +9,7 @@ namespace Panels;
 
 use JDWX\Web\Panels\Element;
 use PHPUnit\Framework\TestCase;
+use Stringable;
 
 
 class ElementTest extends TestCase {
@@ -76,6 +77,52 @@ class ElementTest extends TestCase {
         $el = new Element( i_body: [ 'foo', 'bar', 'baz' ] );
         $el->removeAllChildren();
         self::assertSame( '<div></div>', strval( $el ) );
+    }
+
+
+    public function testRemoveChildren() : void {
+        $el = new Element( i_body: [ 'Foo', 'Bar', 'Baz' ] );
+        $fn = function ( string|Stringable $child ) : bool {
+            return 'Bar' === strval( $child );
+        };
+        $el->removeChildren( $fn );
+        self::assertSame( '<div>FooBaz</div>', strval( $el ) );
+    }
+
+
+    public function testRemoveNthChild() : void {
+        $el = new Element( i_body: [ 'Foo', 'Bar', 'Baz' ] );
+        $el->removeNthChild();
+        self::assertSame( '<div>BarBaz</div>', strval( $el ) );
+
+        $el = new Element( i_body: [ 'Foo', 'Bar', 'Baz' ] );
+        $el->removeNthChild( 1 );
+        self::assertSame( '<div>FooBaz</div>', strval( $el ) );
+
+        $el = new Element( i_body: [ 'Foo', 'Bar', 'Baz' ] );
+        $el->removeNthChild( 2 );
+        self::assertSame( '<div>FooBar</div>', strval( $el ) );
+
+        $el = new Element( i_body: [ 'Foo', 'Bar', 'Baz' ] );
+        $el->removeNthChild( 3 );
+        self::assertSame( '<div>FooBarBaz</div>', strval( $el ) );
+    }
+
+
+    public function testRemoveNthChildElement() : void {
+        $elChild1 = new Element( i_body: 'Foo' );
+        $elChild2 = new Element( i_body: 'Bar' );
+        $el = new Element( i_body: [ 'Baz', $elChild1, 'Qux', $elChild2, 'Corge' ] );
+        $el->removeNthChildElement();
+        self::assertSame( '<div>BazQux<div>Bar</div>Corge</div>', strval( $el ) );
+
+        $el = new Element( i_body: [ 'Baz', $elChild1, 'Qux', $elChild2, 'Corge' ] );
+        $el->removeNthChildElement( 1 );
+        self::assertSame( '<div>Baz<div>Foo</div>QuxCorge</div>', strval( $el ) );
+
+        $el = new Element( i_body: [ 'Baz', $elChild1, 'Qux', $elChild2, 'Corge' ] );
+        $el->removeNthChildElement( 2 );
+        self::assertSame( '<div>Baz<div>Foo</div>Qux<div>Bar</div>Corge</div>', strval( $el ) );
     }
 
 

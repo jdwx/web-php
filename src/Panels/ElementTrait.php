@@ -47,20 +47,23 @@ trait ElementTrait {
         yield '<' . $this->getTagName() . $this->attributeString() . '>';
 
         $inner = $this->inner();
+        $bAny = false;
         /** @phpstan-ignore-next-line */
         if ( is_iterable( $inner ) ) {
-            /** @phpstan-ignore-next-line */
-            yield from $inner;
+            foreach ( $inner as $child ) {
+                yield $child;
+                $bAny = true;
+            }
         } else {
             $inner = strval( $inner );
             if ( '' !== $inner ) {
                 yield $inner;
-            } elseif ( ! $this->bAlwaysClose ) {
-                return;
+                $bAny = true;
             }
         }
-
-        yield '</' . $this->stTagName . '>';
+        if ( $this->bAlwaysClose || $bAny ) {
+            yield '</' . $this->stTagName . '>';
+        }
     }
 
 

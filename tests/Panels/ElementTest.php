@@ -169,6 +169,17 @@ class ElementTest extends TestCase {
     }
 
 
+    public function testToStringForNoClose() : void {
+        $el = new Element( i_body: 'foo' );
+        $el->setAlwaysClose( false );
+        self::assertSame( '<div>foo</div>', strval( $el ) );
+
+        $el = new Element();
+        $el->setAlwaysClose( false );
+        self::assertSame( '<div>', strval( $el ) );
+    }
+
+
     public function testToStringForString() : void {
         $el = new Element( i_body: 'foo' );
         self::assertSame( '<div>foo</div>', strval( $el ) );

@@ -92,6 +92,16 @@ class Element implements Stringable {
     }
 
 
+    public function countChildElements() : int {
+        return iterator_count( $this->childElements() );
+    }
+
+
+    public function countChildren() : int {
+        return count( $this->rChildren );
+    }
+
+
     /** @return iterable<string|Stringable> */
     public function inner() : iterable {
         return $this->children();

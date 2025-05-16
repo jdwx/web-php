@@ -74,6 +74,42 @@ final class ElementTest extends TestCase {
     }
 
 
+    public function testCountChildElements() : void {
+        $el1 = new Element();
+        $el2 = new Element();
+        $el3 = 'Foo';
+        $el4 = new class() implements Stringable {
+
+
+            public function __toString() : string {
+                return 'Bar';
+            }
+
+
+        };
+        $parent = new Element( 'foo', [ $el1, $el2, $el3, $el4 ] );
+        self::assertSame( 2, $parent->countChildElements() );;
+    }
+
+
+    public function testCountChildren() : void {
+        $el1 = new Element();
+        $el2 = new Element();
+        $el3 = 'Foo';
+        $el4 = new class() implements Stringable {
+
+
+            public function __toString() : string {
+                return 'Bar';
+            }
+
+
+        };
+        $parent = new Element( 'foo', [ $el1, $el2, $el3, $el4 ] );
+        self::assertSame( 4, $parent->countChildren() );
+    }
+
+
     public function testFilterByHasAttribute() : void {
         $elChild1 = ( new Element( i_children: 'foo' ) )->setAttribute( 'pick' );
         $elChild2 = new Element( i_children: 'bar' );

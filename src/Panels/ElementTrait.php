@@ -26,6 +26,11 @@ trait ElementTrait {
     }
 
 
+    public function getAlwaysClose() : bool {
+        return $this->bAlwaysClose;
+    }
+
+
     public function getTagName() : string {
         return $this->stTagName;
     }

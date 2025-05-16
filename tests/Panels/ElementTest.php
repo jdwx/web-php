@@ -17,6 +17,16 @@ use Stringable;
 final class ElementTest extends TestCase {
 
 
+    public function testAlwaysClose() : void {
+        $el = new Element();
+        self::assertTrue( $el->getAlwaysClose() );
+        $el->setAlwaysClose( false );
+        self::assertFalse( $el->getAlwaysClose() );
+        $el->setAlwaysClose( true );
+        self::assertTrue( $el->getAlwaysClose() );
+    }
+
+
     public function testAppend() : void {
         $child = new Element( i_children: 'Quux' );
         $el = new Element( i_children: 'Foo' );

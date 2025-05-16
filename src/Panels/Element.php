@@ -20,10 +20,10 @@ class Element implements Stringable {
     private array $rChildren;
 
 
-    /** @param list<string|Stringable>|string|Stringable $i_body */
-    public function __construct( string $i_stElement = 'div', array|string|Stringable $i_body = [] ) {
+    /** @param list<string|Stringable>|string|Stringable $i_children */
+    public function __construct( string $i_stElement = 'div', array|string|Stringable $i_children = [] ) {
         $this->setTagName( $i_stElement );
-        $this->rChildren = is_array( $i_body ) ? $i_body : [ $i_body ];
+        $this->rChildren = is_array( $i_children ) ? $i_children : [ $i_children ];
     }
 
 

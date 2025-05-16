@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use Stringable;
+
+
 class SimpleElementPanel extends ElementPanel {
 
 
@@ -14,8 +17,8 @@ class SimpleElementPanel extends ElementPanel {
     private array $rBody;
 
 
-    /** @param list<string>|string $i_body */
-    public function __construct( string $stElement = 'div', array|string $i_body = [] ) {
+    /** @param list<string|Stringable>|string|Stringable $i_body */
+    public function __construct( string $stElement = 'div', array|string|Stringable $i_body = [] ) {
         parent::__construct( $stElement );
         if ( is_string( $i_body ) ) {
             $i_body = [ $i_body ];
@@ -24,15 +27,13 @@ class SimpleElementPanel extends ElementPanel {
     }
 
 
-    public function addBody( string $stBody ) : void {
+    public function addBody( string|Stringable $stBody ) : void {
         $this->rBody[] = $stBody;
     }
 
 
-    /**
-     * @inheritDoc
-     */
-    protected function innerBody() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    protected function innerBody() : iterable|string|Stringable {
         return $this->rBody;
     }
 

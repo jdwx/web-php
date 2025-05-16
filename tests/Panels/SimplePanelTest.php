@@ -16,10 +16,27 @@ use PHPUnit\Framework\TestCase;
 final class SimplePanelTest extends TestCase {
 
 
-    public function testAddBody() : void {
+    public function testAddBodyForString() : void {
         $panel = new SimplePanel( 'Hello' );
         $panel->addBody( 'World' );
         self::assertSame( [ 'Hello', 'World' ], $panel->body() );
+    }
+
+
+    public function testAddBodyForStringable() : void {
+        $panel = new SimplePanel( 'Hello' );
+        $panel->addBody( new class() {
+
+
+            public function __toString() : string {
+                return 'World';
+            }
+
+
+        } );
+        $body = $panel->body();
+        assert( is_array( $body ) );
+        self::assertSame( 'HelloWorld', join( '', $body ) );
     }
 
 

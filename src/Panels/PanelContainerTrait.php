@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use Stringable;
+
+
 trait PanelContainerTrait {
 
 
@@ -33,7 +36,7 @@ trait PanelContainerTrait {
     }
 
 
-    /** @return iterable<iterable<string>|string> */
+    /** @return iterable<iterable<string|Stringable>|string|Stringable> */
     protected function _body() : iterable {
         foreach ( $this->rPanels as $panel ) {
             yield from $this->yield( $panel->body() );
@@ -41,7 +44,7 @@ trait PanelContainerTrait {
     }
 
 
-    /** @return iterable<iterable<string>|string> */
+    /** @return iterable<iterable<string|Stringable>|string|Stringable> */
     protected function _bodyEarly() : iterable {
         foreach ( $this->rPanels as $panel ) {
             yield from $this->yield( $panel->bodyEarly() );
@@ -49,7 +52,7 @@ trait PanelContainerTrait {
     }
 
 
-    /** @return iterable<iterable<string>|string> */
+    /** @return iterable<iterable<string|Stringable>|string|Stringable> */
     protected function _bodyLate() : iterable {
         foreach ( $this->rPanels as $panel ) {
             yield from $this->yield( $panel->bodyLate() );
@@ -72,7 +75,7 @@ trait PanelContainerTrait {
     }
 
 
-    /** @return iterable<string> */
+    /** @return iterable<string|Stringable> */
     protected function _head() : iterable {
         foreach ( $this->rPanels as $panel ) {
             yield from $this->yield( $panel->head() );
@@ -80,7 +83,7 @@ trait PanelContainerTrait {
     }
 
 
-    /** @return iterable<string> */
+    /** @return iterable<string|Stringable> */
     protected function _headerList() : iterable {
         foreach ( $this->rPanels as $panel ) {
             foreach ( $panel->headerList() as $header ) {

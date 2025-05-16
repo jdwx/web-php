@@ -19,7 +19,7 @@ abstract class AbstractPanel implements PanelInterface {
     }
 
 
-    /** @return iterable<string> */
+    /** @return iterable<string|\Stringable> */
     public function headerList() : iterable {
         return [];
     }

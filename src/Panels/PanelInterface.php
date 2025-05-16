@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use Stringable;
+
+
 /**
  * Panels represent chunks or modules that appear on an HTML page.
  * They are designed to be self-contained.
@@ -14,16 +17,16 @@ namespace JDWX\Web\Panels;
 interface PanelInterface {
 
 
-    /** @return iterable<string>|string */
-    public function body() : iterable|string;
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function body() : iterable|string|Stringable;
 
 
-    /** @return iterable<string>|string */
-    public function bodyEarly() : iterable|string;
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function bodyEarly() : iterable|string|Stringable;
 
 
-    /** @return iterable<string>|string */
-    public function bodyLate() : iterable|string;
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function bodyLate() : iterable|string|Stringable;
 
 
     /** @return iterable<CssInterface> */
@@ -33,11 +36,11 @@ interface PanelInterface {
     public function first() : void;
 
 
-    /** @return iterable<string>|string */
-    public function head() : iterable|string;
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function head() : iterable|string|Stringable;
 
 
-    /** @return iterable<string> */
+    /** @return iterable<string|Stringable> */
     public function headerList() : iterable;
 
 

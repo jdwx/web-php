@@ -9,6 +9,7 @@ namespace Shims;
 
 use JDWX\Web\Panels\BodyPanelTrait;
 use JDWX\Web\Panels\PanelInterface;
+use Stringable;
 
 
 class MyBodyPanel implements PanelInterface {
@@ -36,20 +37,20 @@ class MyBodyPanel implements PanelInterface {
     public $fnLast = null;
 
 
-    /**
-     * @inheritDoc
-     */
-    public function body() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function body() : iterable|string|Stringable {
         return $this->stBody;
     }
 
 
-    public function bodyEarly() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function bodyEarly() : iterable|string|Stringable {
         return $this->stBodyEarly;
     }
 
 
-    public function bodyLate() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function bodyLate() : iterable|string|Stringable {
         return $this->stBodyLate;
     }
 
@@ -62,7 +63,8 @@ class MyBodyPanel implements PanelInterface {
     }
 
 
-    public function head() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function head() : iterable|string|Stringable {
         return $this->stHead;
     }
 

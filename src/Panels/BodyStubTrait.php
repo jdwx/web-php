@@ -7,15 +7,20 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use Stringable;
+
+
 trait BodyStubTrait {
 
 
-    public function bodyEarly() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function bodyEarly() : iterable|string|Stringable {
         return '';
     }
 
 
-    public function bodyLate() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function bodyLate() : iterable|string|Stringable {
         return '';
     }
 
@@ -23,7 +28,8 @@ trait BodyStubTrait {
     public function first() : void {}
 
 
-    public function head() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function head() : iterable|string|Stringable {
         return '';
     }
 

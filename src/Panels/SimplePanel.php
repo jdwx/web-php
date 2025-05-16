@@ -7,15 +7,18 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use Stringable;
+
+
 class SimplePanel extends AbstractBodyPanel {
 
 
-    /** @var list<string> */
+    /** @var list<string|Stringable> */
     private array $rBody;
 
 
-    /** @param string|list<string> $i_body */
-    public function __construct( array|string $i_body = [] ) {
+    /** @param list<string|Stringable>|string|Stringable $i_body */
+    public function __construct( array|string|Stringable $i_body = [] ) {
         if ( is_string( $i_body ) ) {
             $i_body = [ $i_body ];
         }
@@ -23,12 +26,13 @@ class SimplePanel extends AbstractBodyPanel {
     }
 
 
-    public function addBody( string $i_stBody ) : void {
+    public function addBody( string|Stringable $i_stBody ) : void {
         $this->rBody[] = $i_stBody;
     }
 
 
-    public function body() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function body() : iterable|string|Stringable {
         return $this->rBody;
     }
 

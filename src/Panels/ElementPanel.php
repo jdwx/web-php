@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use Stringable;
+
+
 abstract class ElementPanel extends AbstractBodyPanel {
 
 
@@ -16,10 +19,8 @@ abstract class ElementPanel extends AbstractBodyPanel {
     public function __construct( private string $stElement = 'div' ) {}
 
 
-    /**
-     * @inheritDoc
-     */
-    public function body() : iterable|string {
+    /** @return iterable<string|Stringable>|string|Stringable */
+    public function body() : iterable|string|Stringable {
         $stAttributes = $this->attributeString();
         if ( $stAttributes !== '' ) {
             yield "<{$this->stElement}{$stAttributes}>";
@@ -41,8 +42,8 @@ abstract class ElementPanel extends AbstractBodyPanel {
     }
 
 
-    /** @return iterable<string>|string */
-    abstract protected function innerBody() : iterable|string;
+    /** @return iterable<string|Stringable>|string|Stringable */
+    abstract protected function innerBody() : iterable|string|Stringable;
 
 
 }

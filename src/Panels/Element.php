@@ -105,9 +105,9 @@ class Element implements Stringable {
 
 
     public function removeChildren( callable $i_fnCallback ) : static {
-        $this->rChildren = array_filter( $this->rChildren,
+        $this->rChildren = array_values( array_filter( $this->rChildren,
             fn( string|Stringable $i_child ) => ! $i_fnCallback( $i_child )
-        );
+        ) );
         return $this;
     }
 

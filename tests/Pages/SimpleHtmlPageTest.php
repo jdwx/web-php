@@ -4,11 +4,16 @@
 declare( strict_types = 1 );
 
 
-use JDWX\Web\SimpleHtmlPage;
+namespace Pages;
+
+
+use JDWX\Web\Pages\AbstractHtmlPage;
+use JDWX\Web\Pages\SimpleHtmlPage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( AbstractHtmlPage::class )]
 #[CoversClass( SimpleHtmlPage::class )]
 final class SimpleHtmlPageTest extends TestCase {
 
@@ -19,6 +24,23 @@ final class SimpleHtmlPageTest extends TestCase {
         $page->addContent( '_' );
         $page->addContent( 'CONTENT' );
         self::assertSame( 'TEST_CONTENT', $page->getContent() );
+    }
+
+
+    public function testCharsetForNoCharset() : void {
+        $page = new class() extends SimpleHtmlPage {
+
+
+            public const ?string DEFAULT_CHARSET = null;
+
+
+            public function charsetPeek() : string {
+                return $this->charset();
+            }
+
+
+        };
+        self::assertSame( '', $page->charsetPeek() );
     }
 
 
@@ -63,6 +85,15 @@ final class SimpleHtmlPageTest extends TestCase {
     }
 
 
+    public function testSetLanguage() : void {
+        $page = new SimpleHtmlPage();
+        self::assertSame( 'en', $page->getLanguage() );
+        $page->setLanguage( 'foo' );
+        self::assertSame( 'foo', $page->getLanguage() );
+
+    }
+
+
     public function testSuffix() : void {
         $page = new class( 'CONTENT' ) extends SimpleHtmlPage {
 
@@ -79,6 +110,24 @@ final class SimpleHtmlPageTest extends TestCase {
 
         };
         self::assertStringContainsString( 'CONTENT_TEST', $page->render() );
+    }
+
+
+    public function testTitle() : void {
+        $page = new class() extends SimpleHtmlPage {
+
+
+            public function titlePeek() : string {
+                return $this->title();
+            }
+
+
+        };
+        self::assertNull( $page->getTitle() );
+        self::assertSame( '', $page->titlePeek() );
+        $page->setTitle( 'TEST_TITLE' );
+        self::assertSame( 'TEST_TITLE', $page->getTitle() );
+        self::assertSame( '<title>TEST_TITLE</title>', $page->titlePeek() );
     }
 
 

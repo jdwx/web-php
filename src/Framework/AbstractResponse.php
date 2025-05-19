@@ -8,7 +8,7 @@ namespace JDWX\Web\Framework;
 
 
 use Ds\Set;
-use JDWX\Web\PageInterface;
+use JDWX\Web\Pages\PageInterface;
 
 
 abstract readonly class AbstractResponse implements ResponseInterface {

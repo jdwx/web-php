@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use JDWX\Web\Stream\StringableStreamTrait;
 use Stringable;
 
 
@@ -14,16 +15,12 @@ trait ElementTrait {
 
 
     use AttributeTrait;
+    use StringableStreamTrait;
 
 
     private string $stTagName;
 
     private bool $bAlwaysClose = true;
-
-
-    public function __toString() : string {
-        return join( '', iterator_to_array( $this->stream(), false ) );
-    }
 
 
     public function getAlwaysClose() : bool {

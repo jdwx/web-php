@@ -7,10 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Framework;
 
 
-use JDWX\Web\JsonPage;
-use JDWX\Web\PageInterface;
-use JDWX\Web\SimpleHtmlPage;
-use JDWX\Web\TextPage;
+use JDWX\Web\Pages\PageInterface;
+use JDWX\Web\Pages\SimpleHtmlPage;
+use JDWX\Web\Pages\SimpleJsonPage;
+use JDWX\Web\Pages\SimpleTextPage;
 
 
 /**
@@ -30,7 +30,7 @@ readonly class Response extends AbstractResponse {
 
     /** @param ?iterable<string> $i_rHeaders */
     public static function json( mixed $i_rContent, int $i_uStatusCode = 200, ?iterable $i_rHeaders = null ) : self {
-        return static::page( new JsonPage( $i_rContent ), $i_uStatusCode, $i_rHeaders );
+        return static::page( new SimpleJsonPage( $i_rContent ), $i_uStatusCode, $i_rHeaders );
     }
 
 
@@ -74,7 +74,7 @@ readonly class Response extends AbstractResponse {
 
     /** @param ?iterable<string> $i_rHeaders */
     public static function text( string $i_stContent, int $i_uStatusCode = 200, ?iterable $i_rHeaders = null ) : self {
-        return static::page( new TextPage( $i_stContent ), $i_uStatusCode, $i_rHeaders );
+        return static::page( new SimpleTextPage( $i_stContent ), $i_uStatusCode, $i_rHeaders );
     }
 
 

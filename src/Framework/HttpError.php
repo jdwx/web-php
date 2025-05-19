@@ -8,7 +8,7 @@ namespace JDWX\Web\Framework;
 
 
 use JDWX\Web\Framework\Exceptions\HttpStatusException;
-use JDWX\Web\SimpleHtmlPage;
+use JDWX\Web\Pages\SimpleHtmlPage;
 
 
 class HttpError {

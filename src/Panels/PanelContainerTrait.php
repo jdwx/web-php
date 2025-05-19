@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
+use JDWX\Web\Stream\YieldTrait;
 use Stringable;
 
 

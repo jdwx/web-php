@@ -4,18 +4,18 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web;
+namespace JDWX\Web\Pages;
 
 
-use Generator;
 use JDWX\Json\Json;
+use JDWX\Web\Stream\StringStreamTrait;
 use JsonSerializable;
 
 
-class JsonPage extends AbstractPage {
+class SimpleJsonPage extends AbstractJsonPage {
 
 
-    private string $stContent;
+    use StringStreamTrait;
 
 
     /**
@@ -25,17 +25,12 @@ class JsonPage extends AbstractPage {
      */
     public function __construct( int|array|string|float|bool|null|JsonSerializable $i_content,
                                  bool                                              $i_bPretty = false ) {
-        parent::__construct( 'application/json' );
+        parent::__construct();
         if ( $i_bPretty ) {
-            $this->stContent = Json::encodePretty( $i_content );
+            $this->setStream( Json::encodePretty( $i_content ) . "\n" );
         } else {
-            $this->stContent = Json::encode( $i_content );
+            $this->setStream( Json::encode( $i_content ) . "\n" );
         }
-    }
-
-
-    public function stream() : Generator {
-        yield $this->stContent . "\n";
     }
 
 

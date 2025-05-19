@@ -4,14 +4,24 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web;
+namespace JDWX\Web\Pages;
 
 
-class SimpleHtmlPage extends HtmlPage {
+use JDWX\Web\Panels\CssListTrait;
 
 
-    public function __construct( private ?string $nstContent = null, ?string $i_nstLanguage = null ) {
-        parent::__construct( $i_nstLanguage );
+class SimpleHtmlPage extends AbstractHtmlPage {
+
+
+    use CssListTrait;
+    use HtmlHeadTrait;
+    use HtmlPageTrait;
+
+
+    public function __construct( private ?string $nstContent = null, ?string $i_nstLanguage = null,
+                                 ?string         $i_nstCharset = null ) {
+        parent::__construct( i_nstCharset: $i_nstCharset );
+        $this->setLanguage( $i_nstLanguage );
     }
 
 
@@ -38,13 +48,15 @@ class SimpleHtmlPage extends HtmlPage {
     }
 
 
-    /** @return string|iterable<string> */
-    protected function content() : string|iterable {
+    /** @return iterable<string> */
+    protected function body() : iterable {
         $nst = $this->prefix();
         if ( is_string( $nst ) ) {
             yield $nst;
         }
-        yield $this->nstContent ?? '';
+        if ( is_string( $this->nstContent ) ) {
+            yield $this->nstContent;
+        }
         $nst = $this->suffix();
         if ( is_string( $nst ) ) {
             yield $nst;

@@ -7,7 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
-use JDWX\Web\AbstractHtmlPage;
+use JDWX\Web\Pages\AbstractHtmlPage;
+use JDWX\Web\Pages\HtmlHeadTrait;
+use JDWX\Web\Pages\HtmlPageTrait;
+use Stringable;
 
 
 /**
@@ -20,21 +23,34 @@ use JDWX\Web\AbstractHtmlPage;
 class PanelPage extends AbstractHtmlPage {
 
 
+    use HtmlHeadTrait {
+        HtmlHeadTrait::head as traitHead;
+    }
+    use HtmlPageTrait;
     use PanelContainerTrait;
 
 
     /** @param list<PanelInterface>|PanelInterface|null $i_nrPanels */
     public function __construct( array|PanelInterface|null $i_nrPanels = null, ?string $i_nstLanguage = null ) {
+        parent::__construct();
+        $this->setLanguage( $i_nstLanguage );
         if ( $i_nrPanels instanceof PanelInterface ) {
             $i_nrPanels = [ $i_nrPanels ];
         }
         if ( is_array( $i_nrPanels ) ) {
             $this->setPanels( $i_nrPanels );
         }
-        parent::__construct( $i_nstLanguage );
     }
 
 
+    /** @return iterable<string> */
+    public function getHeaders() : iterable {
+        yield from parent::getHeaders();
+        yield from $this->_headerList();
+    }
+
+
+    /** @return iterable<string|Stringable> */
     protected function body() : iterable {
         yield from $this->_bodyEarly();
         yield from $this->_body();
@@ -43,6 +59,7 @@ class PanelPage extends AbstractHtmlPage {
     }
 
 
+    /** @return iterable<CssInterface> */
     protected function cssList() : iterable {
         yield from $this->_cssList();
     }
@@ -53,15 +70,10 @@ class PanelPage extends AbstractHtmlPage {
     }
 
 
+    /** @return iterable<string|Stringable> */
     protected function head() : iterable {
-        yield from parent::head();
+        yield from $this->traitHead();
         yield from $this->_head();
-    }
-
-
-    /** @return iterable<string> */
-    protected function headerList() : iterable {
-        yield from $this->_headerList();
     }
 
 

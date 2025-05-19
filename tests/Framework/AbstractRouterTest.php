@@ -15,9 +15,9 @@ use JDWX\Web\Framework\Exceptions\InternalServerException;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\HttpError;
 use JDWX\Web\Http;
+use JDWX\Web\Pages\SimpleTextPage;
 use JDWX\Web\Panels\SimplePanel;
 use JDWX\Web\Request;
-use JDWX\Web\TextPage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Log\LoggerInterface;
 use Shims\MyAbstractRouter;
@@ -172,7 +172,7 @@ final class AbstractRouterTest extends MyTestCase {
 
 
             public function route() : bool {
-                $this->respondPage( new TextPage( 'TEST_CONTENT' ) );
+                $this->respondPage( new SimpleTextPage( 'TEST_CONTENT' ) );
                 return true;
             }
 

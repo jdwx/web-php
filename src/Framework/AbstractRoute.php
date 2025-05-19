@@ -10,14 +10,14 @@ namespace JDWX\Web\Framework;
 use Ds\Set;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotImplementedException;
-use JDWX\Web\JsonPage;
-use JDWX\Web\PageInterface;
+use JDWX\Web\Pages\PageInterface;
+use JDWX\Web\Pages\SimpleHtmlPage;
+use JDWX\Web\Pages\SimpleJsonPage;
+use JDWX\Web\Pages\SimpleTextPage;
 use JDWX\Web\Panels\PanelInterface;
 use JDWX\Web\Panels\PanelPage;
 use JDWX\Web\RequestInterface;
 use JDWX\Web\ServerInterface;
-use JDWX\Web\SimpleHtmlPage;
-use JDWX\Web\TextPage;
 use Psr\Log\LoggerInterface;
 
 
@@ -128,7 +128,7 @@ abstract class AbstractRoute implements RouteInterface {
     /** @param ?Set<string> $i_setHeaders */
     protected function respondJson( mixed $i_content, int $i_uStatus = 200, bool $i_bPretty = false,
                                     ?Set  $i_setHeaders = null ) : ResponseInterface {
-        return $this->respondPage( new JsonPage( $i_content, $i_bPretty ), $i_uStatus, $i_setHeaders );
+        return $this->respondPage( new SimpleJsonPage( $i_content, $i_bPretty ), $i_uStatus, $i_setHeaders );
     }
 
 
@@ -153,7 +153,7 @@ abstract class AbstractRoute implements RouteInterface {
     /** @param ?Set<string> $i_setHeaders */
     protected function respondText( string $i_stContent, int $i_uStatus = 200,
                                     ?Set   $i_setHeaders = null ) : ResponseInterface {
-        return $this->respondPage( new TextPage( $i_stContent ), $i_uStatus, $i_setHeaders );
+        return $this->respondPage( new SimpleTextPage( $i_stContent ), $i_uStatus, $i_setHeaders );
     }
 
 

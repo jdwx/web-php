@@ -140,8 +140,11 @@ final class PanelPageTest extends TestCase {
             '#<script async>FOO</script>.*<script defer src="/bar.js"></script>#s',
             $st
         );
-        self::assertSame( 'X-Foo: Foo', $http->rHeaders[ 0 ] );
-        self::assertSame( 'X-Bar: Bar', $http->rHeaders[ 1 ] );
+        $rHeaders = iterator_to_array( $page->getHeaders(), false );
+        self::assertCount( 3, $rHeaders );
+        self::assertSame( 'Content-Type: text/html; charset=UTF-8', $rHeaders[ 0 ] );;
+        self::assertSame( 'X-Foo: Foo', $rHeaders[ 1 ] );
+        self::assertSame( 'X-Bar: Bar', $rHeaders[ 2 ] );
 
     }
 
@@ -155,8 +158,11 @@ final class PanelPageTest extends TestCase {
         $panel2->addHeader( 'X-Baz: Qux' );
         $page = new PanelPage( [ $panel1, $panel2 ] );
         $page->render();
-        self::assertSame( 'X-Foo: Bar', $http->rHeaders[ 0 ] );
-        self::assertSame( 'X-Baz: Qux', $http->rHeaders[ 1 ] );
+        $rHeaders = iterator_to_array( $page->getHeaders(), false );
+        self::assertCount( 3, $rHeaders );
+        self::assertSame( 'Content-Type: text/html; charset=UTF-8', $rHeaders[ 0 ] );
+        self::assertSame( 'X-Foo: Bar', $rHeaders[ 1 ] );
+        self::assertSame( 'X-Baz: Qux', $rHeaders[ 2 ] );
     }
 
 

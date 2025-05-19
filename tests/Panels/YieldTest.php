@@ -17,7 +17,7 @@ class YieldTest extends TestCase {
         $page = new class() {
 
 
-            use \JDWX\Web\Panels\YieldTrait;
+            use \JDWX\Web\Stream\YieldTrait;
 
 
             /**

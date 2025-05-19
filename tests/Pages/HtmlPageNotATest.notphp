@@ -4,15 +4,20 @@
 declare( strict_types = 1 );
 
 
-use JDWX\Web\AbstractHtmlPage;
-use JDWX\Web\HtmlPage;
+namespace Pages;
+
+
+use JDWX\Web\Pages\AbstractHtmlPage;
+use JDWX\Web\Pages\ContentHtmlPage;
+use JDWX\Web\Pages\HtmlPage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
 #[CoversClass( AbstractHtmlPage::class )]
 #[CoversClass( HtmlPage::class )]
-final class HtmlPageTest extends TestCase {
+#[CoversClass( ContentHtmlPage::class )]
+final class HtmlPageNotATest  {
 
 
     public function testAddCSSUri() : void {
@@ -52,13 +57,6 @@ final class HtmlPageTest extends TestCase {
 
         $page = $this->newHtmlPage( '', 'bar' );
         self::assertSame( 'bar', $page->getLanguage() );
-    }
-
-
-    public function testGetTitle() : void {
-        $page = $this->newHtmlPage();
-        $page->setTitle( 'TEST_TITLE' );
-        self::assertSame( 'TEST_TITLE', $page->getTitle() );
     }
 
 
@@ -118,8 +116,8 @@ final class HtmlPageTest extends TestCase {
     /**
      * @param string|iterable<string> $i_content
      */
-    private function newHtmlPage( string|iterable $i_content = '', ?string $i_nstLanguage = null ) : HtmlPage {
-        return new class( $i_nstLanguage, $i_content ) extends HtmlPage {
+    private function newHtmlPage( string|iterable $i_content = '', ?string $i_nstLanguage = null ) : ContentHtmlPage {
+        return new class( $i_nstLanguage, $i_content ) extends ContentHtmlPage {
 
 
             /** @param string|iterable<string> $content */

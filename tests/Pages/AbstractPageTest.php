@@ -4,7 +4,10 @@
 declare( strict_types = 1 );
 
 
-use JDWX\Web\AbstractPage;
+namespace Pages;
+
+
+use JDWX\Web\Pages\AbstractPage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
@@ -22,9 +25,45 @@ final class AbstractPageTest extends TestCase {
     }
 
 
+    public function testGetCharset() : void {
+        $page = $this->newAbstractPage( 'text/html' );
+        self::assertNull( $page->getCharset() );
+        $page->setCharset( 'foo' );
+        self::assertSame( 'foo', $page->getCharset() );
+        $page->setCharset( null );
+        self::assertNull( $page->getCharset() );
+    }
+
+
     public function testGetContentType() : void {
         $page = $this->newAbstractPage( 'text/html' );
         self::assertEquals( 'text/html', $page->getContentType() );
+    }
+
+
+    public function testGetFullContentType() : void {
+        $page = $this->newAbstractPage( 'foo' );
+        self::assertEquals( 'foo', $page->getFullContentType() );
+        $page->setCharset( 'bar' );
+        self::assertEquals( 'foo; charset=bar', $page->getFullContentType() );
+    }
+
+
+    public function testGetHeaders() : void {
+        $page = $this->newAbstractPage( 'foo' );
+        $r = iterator_to_array( $page->getHeaders(), false );
+        self::assertCount( 1, $r );
+        self::assertEquals( 'Content-Type: foo', $r[ 0 ] );
+    }
+
+
+    public function testHasCharset() : void {
+        $page = $this->newAbstractPage( 'text/html' );
+        self::assertFalse( $page->hasCharset() );
+        $page->setCharset( 'foo' );
+        self::assertTrue( $page->hasCharset() );
+        $page->setCharset( null );
+        self::assertFalse( $page->hasCharset() );
     }
 
 
@@ -45,7 +84,7 @@ final class AbstractPageTest extends TestCase {
             }
 
 
-            public function stream() : Generator {
+            public function stream() : \Generator {
                 if ( is_string( $this->content ) ) {
                     yield $this->content;
                     return;

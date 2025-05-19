@@ -10,7 +10,7 @@ namespace JDWX\Web\Example;
 use JDWX\Web\Framework\AbstractRoute;
 use JDWX\Web\Framework\Response;
 use JDWX\Web\Framework\ResponseInterface;
-use JDWX\Web\SimpleHtmlPage;
+use JDWX\Web\Pages\SimpleHtmlPage;
 
 
 class ExampleRouteHome extends AbstractRoute {

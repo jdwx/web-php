@@ -14,6 +14,7 @@ namespace JDWX\Web\Stream;
 class StringStream implements StringableStreamInterface {
 
 
+    use StreamTrait;
     use StringableStreamTrait;
     use StringStreamTrait;
 

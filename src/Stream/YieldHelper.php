@@ -10,14 +10,14 @@ namespace JDWX\Web\Stream;
 use Stringable;
 
 
-trait YieldTrait {
+final class YieldHelper {
 
 
     /**
      * @param iterable<string|Stringable>|string|Stringable $i_chunk
      * @return iterable<string|Stringable>
      */
-    protected function yield( iterable|string|Stringable $i_chunk ) : iterable {
+    public static function yield( iterable|string|Stringable $i_chunk ) : iterable {
         if ( is_string( $i_chunk ) || $i_chunk instanceof Stringable ) {
             yield $i_chunk;
             return;
@@ -30,13 +30,13 @@ trait YieldTrait {
      * @param iterable<string|Stringable|iterable<string|Stringable>>|string|Stringable $i_chunk
      * @return iterable<string|Stringable>
      */
-    protected function yieldDeep( iterable|string|Stringable $i_chunk ) : iterable {
+    public static function yieldDeep( iterable|string|Stringable $i_chunk ) : iterable {
         if ( is_string( $i_chunk ) || $i_chunk instanceof Stringable ) {
             yield $i_chunk;
             return;
         }
         foreach ( $i_chunk as $stChunk ) {
-            yield from $this->yieldDeep( $stChunk );
+            yield from self::yieldDeep( $stChunk );
         }
     }
 

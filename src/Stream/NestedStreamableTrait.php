@@ -13,14 +13,11 @@ use Stringable;
 trait NestedStreamableTrait {
 
 
-    use YieldTrait;
-
-
     /** @return iterable<string|Stringable> */
     public function stream() : iterable {
-        yield from $this->yield( $this->prefix() );
-        yield from $this->yield( $this->infix() );
-        yield from $this->yield( $this->postfix() );
+        yield from YieldHelper::yield( $this->prefix() );
+        yield from YieldHelper::yield( $this->infix() );
+        yield from YieldHelper::yield( $this->postfix() );
     }
 
 

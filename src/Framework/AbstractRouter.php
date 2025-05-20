@@ -18,8 +18,6 @@ use JDWX\Web\Pages\PageInterface;
 use JDWX\Web\Pages\SimpleHtmlPage;
 use JDWX\Web\Pages\SimpleJsonPage;
 use JDWX\Web\Pages\SimpleTextPage;
-use JDWX\Web\Panels\PanelInterface;
-use JDWX\Web\Panels\PanelPage;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
 use JDWX\Web\ServerInterface;
@@ -170,17 +168,6 @@ abstract class AbstractRouter implements RouterInterface {
     protected function respondPage( PageInterface $i_page, int $i_uStatus = 200,
                                     ?Set          $i_setHeaders = null ) : true {
         return $this->respond( new Response( $i_page, $i_uStatus, $i_setHeaders ) );
-    }
-
-
-    /**
-     * @param list<PanelInterface>|PanelInterface $i_rPanels
-     * @param ?Set<string> $i_setHeaders
-     */
-    protected function respondPanel( array|PanelInterface $i_rPanels, int $i_uStatus = 200,
-                                     ?Set                 $i_setHeaders = null,
-                                     ?string              $i_nstLanguage = null ) : true {
-        return $this->respondPage( new PanelPage( $i_rPanels, $i_nstLanguage ), $i_uStatus, $i_setHeaders );
     }
 
 

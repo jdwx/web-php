@@ -27,6 +27,33 @@ final class SimpleHtmlPageTest extends TestCase {
     }
 
 
+    public function testAddCssUri() : void {
+        $page = new SimpleHtmlPage();
+        $page->addCssUri( 'foo' );
+        /** @noinspection HtmlUnknownTarget */
+        self::assertStringContainsString( '<link rel="stylesheet" href="foo">', $page->render() );
+    }
+
+
+    /** @noinspection HtmlUnknownTarget */
+    public function testAddCssUriForDuplicate() : void {
+        $page = new SimpleHtmlPage();
+        $page->addCssUri( 'foo' );
+        $page->addCssUri( 'foo' );
+        /** @noinspection HtmlUnknownTarget */
+
+        $st = $page->render();
+        # Appears at least once.
+        $u = strpos( $st, '<link rel="stylesheet" href="foo">' );
+        self::assertNotFalse( $u );
+
+        # But not twice.
+        $u = strpos( $st, '<link rel="stylesheet" href="foo">', $u + 1 );
+        self::assertFalse( $u );
+
+    }
+
+
     public function testCharsetForNoCharset() : void {
         $page = new class() extends SimpleHtmlPage {
 

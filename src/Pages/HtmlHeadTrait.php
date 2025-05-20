@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Pages;
 
 
-use JDWX\Web\Panels\CssInterface;
+use Stringable;
 
 
 /**
@@ -59,7 +59,7 @@ trait HtmlHeadTrait {
     }
 
 
-    /** @return iterable<CssInterface> */
+    /** @return iterable<string|Stringable> */
     abstract protected function cssList() : iterable;
 
 

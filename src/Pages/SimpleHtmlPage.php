@@ -7,15 +7,14 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Pages;
 
 
-use JDWX\Web\Panels\CssListTrait;
-
-
 class SimpleHtmlPage extends AbstractHtmlPage {
 
 
-    use CssListTrait;
     use HtmlHeadTrait;
     use HtmlPageTrait;
+
+
+    private array $rCssUris = [];
 
 
     public function __construct( private ?string $nstContent = null, ?string $i_nstLanguage = null,
@@ -28,6 +27,17 @@ class SimpleHtmlPage extends AbstractHtmlPage {
     public function addContent( string $i_stContent ) : static {
         $this->nstContent = ( $this->nstContent ?? '' ) . $i_stContent;
         return $this;
+    }
+
+
+    public function addCssUri( string $i_stUri ) : static {
+        $this->rCssUris[] = "<link rel=\"stylesheet\" href=\"{$i_stUri}\">";
+        return $this;
+    }
+
+
+    public function cssList() : iterable {
+        return $this->rCssUris;
     }
 
 

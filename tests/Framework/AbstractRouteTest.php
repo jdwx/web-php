@@ -13,7 +13,6 @@ use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotImplementedException;
 use JDWX\Web\Framework\ResponseInterface;
 use JDWX\Web\Framework\RouterInterface;
-use JDWX\Web\Panels\SimplePanel;
 use JDWX\Web\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -96,9 +95,9 @@ final class AbstractRouteTest extends TestCase {
         $route = new class( $router ) extends AbstractRoute {
 
 
-            /** @param array<string, string> $i_rParameters */
+            /** @param array<string, string> $i_rUriParameters */
             protected function handleGET( string $i_stUri, string $i_stPath,
-                                          array  $i_rParameters ) : ResponseInterface {
+                                          array  $i_rUriParameters ) : ResponseInterface {
                 return $this->respondHtml( 'Hello World' );
             }
 
@@ -119,9 +118,9 @@ final class AbstractRouteTest extends TestCase {
         $route = new class( $router ) extends AbstractRoute {
 
 
-            /** @param array<string, string> $i_rParameters */
+            /** @param array<string, string> $i_rUriParameters */
             protected function handleGET( string $i_stUri, string $i_stPath,
-                                          array  $i_rParameters ) : ResponseInterface {
+                                          array  $i_rUriParameters ) : ResponseInterface {
                 return $this->respondJson( [ 'key' => 'value' ] );
             }
 
@@ -134,30 +133,6 @@ final class AbstractRouteTest extends TestCase {
     }
 
 
-    public function testRespondPanel() : void {
-        $srv = new MockServer();
-        $srv = $srv->withRequestMethod( 'GET' )->withRequestUri( '/' );
-        $req = Request::synthetic( [], [], [], [], $srv );
-        $router = new MyRouter( i_req: $req );
-        $route = new class( $router ) extends AbstractRoute {
-
-
-            /** @param array<string, string> $i_rParameters */
-            protected function handleGET( string $i_stUri, string $i_stPath,
-                                          array  $i_rParameters ) : ResponseInterface {
-                $panel = new SimplePanel( 'Hello World' );
-                return $this->respondPanel( $panel );
-            }
-
-
-        };
-        self::assertStringContainsString(
-            '<body>Hello World</body>',
-            strval( $route->handle( '/', '/', [] ) )
-        );
-    }
-
-
     public function testRespondText() : void {
         $srv = new MockServer();
         $srv = $srv->withRequestMethod( 'GET' )->withRequestUri( '/' );
@@ -166,9 +141,9 @@ final class AbstractRouteTest extends TestCase {
         $route = new class( $router ) extends AbstractRoute {
 
 
-            /** @param array<string, string> $i_rParameters */
+            /** @param array<string, string> $i_rUriParameters */
             protected function handleGET( string $i_stUri, string $i_stPath,
-                                          array  $i_rParameters ) : ResponseInterface {
+                                          array  $i_rUriParameters ) : ResponseInterface {
                 return $this->respondText( 'Hello World' );
             }
 

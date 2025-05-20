@@ -8,7 +8,7 @@ namespace Panels;
 
 
 use JDWX\Web\Panels\AbstractBodyPanel;
-use JDWX\Web\Panels\CssStylesheet;
+use JDWX\Web\Panels\CssLink;
 use JDWX\Web\Panels\ScriptUri;
 use JDWX\Web\Panels\SimplePanel;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -21,10 +21,10 @@ final class AbstractBodyPanelTest extends TestCase {
 
     public function testAddCss() : void {
         $panel = new SimplePanel( 'foo' );
-        $css = new CssStylesheet( 'URI' );
+        $css = new CssLink( 'URI' );
         $panel->addCss( $css );
         self::assertSame( [ $css ], iterator_to_array( $panel->cssList() ) );
-        $css2 = new CssStylesheet( 'URI2' );
+        $css2 = new CssLink( 'URI2' );
         $panel->addCss( $css2 );
         self::assertSame(
             [ $css, $css2 ],

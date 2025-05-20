@@ -10,9 +10,7 @@ namespace JDWX\Web\Panels;
 class ScriptBody extends AbstractScript {
 
 
-    public function __construct( private readonly string $stBody ) {
-        parent::__construct();
-    }
+    public function __construct( private readonly string $stBody ) {}
 
 
     protected function inner() : string {

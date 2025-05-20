@@ -8,8 +8,8 @@ namespace Panels;
 
 
 use JDWX\Web\Panels\CssInline;
+use JDWX\Web\Panels\CssLink;
 use JDWX\Web\Panels\CssListTrait;
-use JDWX\Web\Panels\CssStylesheet;
 use PHPUnit\Framework\TestCase;
 
 
@@ -18,7 +18,7 @@ final class CssListTest extends TestCase {
 
     public function testAddCss() : void {
         $obj = $this->newObject();
-        $css = new CssStylesheet( 'URI' );
+        $css = new CssLink( 'URI' );
         $obj->addCss( $css );
         self::assertSame( [ $css ], iterator_to_array( $obj->cssList() ) );
         $css2 = new CssInline( 'URI2' );

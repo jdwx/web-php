@@ -25,7 +25,7 @@ trait CssListTrait {
 
 
     public function addCssUri( string $i_stCssUri ) : void {
-        $this->rCss[] = new CssStylesheet( $i_stCssUri );
+        $this->rCss[] = new CssLink( $i_stCssUri );
     }
 
 

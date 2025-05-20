@@ -10,21 +10,43 @@ namespace JDWX\Web\Panels;
 abstract class AbstractScript implements ScriptInterface {
 
 
-    use ElementTrait;
+    private bool $bAsync = false;
+
+    private bool $bDefer = false;
+
+    private ?string $nstSrc = null;
 
 
-    public function __construct() {
-        $this->setTagName( 'script' );
+    public function __toString() : string {
+        $st = '<script';
+        if ( $this->bAsync ) {
+            $st .= ' async';
+        }
+        if ( $this->bDefer ) {
+            $st .= ' defer';
+        }
+        if ( is_string( $this->nstSrc ) ) {
+            $st .= " src=\"{$this->nstSrc}\"";
+        }
+        $st .= '>';
+        $st .= $this->inner();
+        $st .= '</script>';
+        return $st;
     }
 
 
     public function setAsync( bool $bAsync = true ) : void {
-        $this->setAttribute( 'async', $bAsync );
+        $this->bAsync = $bAsync;
     }
 
 
     public function setDefer( bool $bDefer = true ) : void {
-        $this->setAttribute( 'defer', $bDefer );
+        $this->bDefer = $bDefer;
+    }
+
+
+    public function setSrc( string $stSrc ) : void {
+        $this->nstSrc = $stSrc;
     }
 
 

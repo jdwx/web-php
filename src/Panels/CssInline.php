@@ -7,19 +7,14 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Panels;
 
 
-class CssInline implements CssInterface {
+readonly class CssInline implements CssInterface {
 
 
-    use ElementTrait;
+    public function __construct( private string $stBody ) {}
 
 
-    public function __construct( private readonly string $stBody ) {
-        $this->setTagName( 'style' );
-    }
-
-
-    protected function inner() : ?string {
-        return $this->stBody;
+    public function __toString() : string {
+        return '<style>' . $this->stBody . '</style>';
     }
 
 

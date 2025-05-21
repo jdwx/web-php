@@ -14,6 +14,7 @@ class SimpleHtmlPage extends AbstractHtmlPage {
     use HtmlPageTrait;
 
 
+    /** @var list<string> */
     private array $rCssUris = [];
 
 
@@ -36,6 +37,7 @@ class SimpleHtmlPage extends AbstractHtmlPage {
     }
 
 
+    /** @return iterable<string> */
     public function cssList() : iterable {
         return $this->rCssUris;
     }

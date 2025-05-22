@@ -63,8 +63,9 @@ abstract class AbstractRoute implements RouteInterface {
      * @suppress PhanTypeMissingReturnReal
      * @param array<string, string|list<string>> $i_rUriParameters
      */
-    protected function handleHEAD( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
-        $this->methodNotAllowed( $i_stUri, $i_stPath );
+    protected function handleHEAD( string $i_stUri, string $i_stPath,
+                                   array  $i_rUriParameters ) : ?ResponseInterface {
+        return $this->handleGET( $i_stUri, $i_stPath, $i_rUriParameters );
     }
 
 

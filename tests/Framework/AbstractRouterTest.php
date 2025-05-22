@@ -14,6 +14,7 @@ use JDWX\Web\Framework\AbstractRouter;
 use JDWX\Web\Framework\Exceptions\InternalServerException;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\HttpError;
+use JDWX\Web\Framework\Response;
 use JDWX\Web\Http;
 use JDWX\Web\Pages\SimpleTextPage;
 use JDWX\Web\Request;
@@ -91,11 +92,29 @@ final class AbstractRouterTest extends MyTestCase {
     }
 
 
+    public function testGET() : void {
+        $req = $this->newRequest( 'GET', '/foo/bar' );
+        $router = new MyAbstractRouter( i_req: $req );
+        $router->response = Response::text( 'FOO' );
+        $st = $router->routeOutput( '/foo/bar' );
+        self::assertSame( 'FOO', $st );
+    }
+
+
     public function testGetHttpError() : void {
         $req = $this->newRequest( 'GET', '/foo/bar' );
         $error = new HttpError();
         $router = new MyAbstractRouter( i_error: $error, i_req: $req );
         self::assertSame( $error, $router->getHttpError() );
+    }
+
+
+    public function testHEAD() : void {
+        $req = $this->newRequest( 'HEAD', '/foo/bar' );
+        $router = new MyAbstractRouter( i_req: $req );
+        $router->response = Response::text( 'FOO' );
+        $st = $router->routeOutput( '/foo/bar' );
+        self::assertSame( '', $st );
     }
 
 

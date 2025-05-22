@@ -10,11 +10,11 @@ namespace Shims;
 use JDWX\Web\Framework\RouteRouter;
 
 
-require_once __DIR__ . '/MyRouterTrait.php';
+require_once __DIR__ . '/MyRouteRouterTrait.php';
 
 
 class MyRouteRouter extends RouteRouter {
 
 
-    use MyRouterTrait;
+    use MyRouteRouterTrait;
 }

@@ -8,11 +8,18 @@ namespace Shims;
 
 
 use JDWX\Web\Framework\AbstractRouter;
+use JDWX\Web\Framework\ResponseInterface;
 use JDWX\Web\RequestInterface;
 use JDWX\Web\UrlParts;
 
 
+require_once __DIR__ . '/MyRouterTrait.php';
+
+
 class MyAbstractRouter extends AbstractRouter {
+
+
+    use MyRouterTrait;
 
 
     /** @var ?callable */
@@ -29,11 +36,15 @@ class MyAbstractRouter extends AbstractRouter {
 
     public RequestInterface $requestCheck;
 
+    public ?ResponseInterface $response = null;
+
 
     public function route( ?string $i_nstOverride = null ) : bool {
         $fnRoute = $this->fnRoute;
         if ( $fnRoute ) {
             $fnRoute( $i_nstOverride );
+        } elseif ( $this->response instanceof ResponseInterface ) {
+            $this->respond( $this->response );
         }
         return $this->bReturn;
     }

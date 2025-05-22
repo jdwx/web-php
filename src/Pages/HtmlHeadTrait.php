@@ -83,7 +83,7 @@ trait HtmlHeadTrait {
 
 
     protected function viewport() : string {
-        return '<meta content="width=device-width, initial-scale=1" name="viewport">';
+        return '<meta content="width=device-width, initial-scale=1.0" name="viewport">';
     }
 
 

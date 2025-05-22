@@ -90,6 +90,11 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
+    public function isHEAD() : bool {
+        return 'head' === $this->method();
+    }
+
+
     public function isPOST() : bool {
         return 'post' === $this->method();
     }

@@ -52,6 +52,9 @@ interface RequestInterface {
     public function isGET() : bool;
 
 
+    public function isHEAD() : bool;
+
+
     public function isPOST() : bool;
 
 

@@ -137,7 +137,9 @@ abstract class AbstractRouter implements RouterInterface {
             Http::setHeader( $header );
         }
         Http::setResponseCode( $i_response->getStatusCode() );
-        $page->echo();
+        if ( ! $this->request->isHEAD() ) {
+            $page->echo();
+        }
         return true;
     }
 

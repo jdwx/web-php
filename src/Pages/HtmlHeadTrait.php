@@ -12,7 +12,7 @@ use Stringable;
 
 /**
  * Provides a simple implementation of the HTML <head> block with the
- * most common options. (E.g., title, CSS links, meta tags.)
+ * most common options. (E.g., title, CSS links, <meta> tags.)
  */
 trait HtmlHeadTrait {
 

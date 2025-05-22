@@ -54,6 +54,21 @@ final class SimpleHtmlPageTest extends TestCase {
     }
 
 
+    public function testCharset() : void {
+        $page = new class() extends SimpleHtmlPage {
+
+
+            public function charsetPeek() : string {
+                return $this->charset();
+            }
+
+
+        };
+        self::assertSame( 'UTF-8', $page->getCharset() );
+        self::assertSame( '<meta charset="UTF-8">', $page->charsetPeek() );
+    }
+
+
     public function testCharsetForNoCharset() : void {
         $page = new class() extends SimpleHtmlPage {
 

@@ -29,8 +29,8 @@ class RouteRouter extends AbstractRouter {
     /**
      * @inheritDoc
      */
-    public function route() : bool {
-        $stUri = $this->uri();
+    public function route( ?string $i_nstUriOverride = null ) : bool {
+        $stUri = $i_nstUriOverride ?? $this->uri();
 
         $rBestMatches = [];
         $uBestMatchLength = 0;

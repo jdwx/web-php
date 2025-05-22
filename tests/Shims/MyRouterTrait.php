@@ -18,7 +18,7 @@ trait MyRouterTrait {
     }
 
 
-    abstract public function route() : bool;
+    abstract public function route( ?string $i_nstOverride = null ) : bool;
 
 
     public function routeOutput() : ?string {

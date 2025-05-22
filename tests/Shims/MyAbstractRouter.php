@@ -30,10 +30,10 @@ class MyAbstractRouter extends AbstractRouter {
     public RequestInterface $requestCheck;
 
 
-    public function route() : bool {
+    public function route( ?string $i_nstOverride = null ) : bool {
         $fnRoute = $this->fnRoute;
         if ( $fnRoute ) {
-            $fnRoute();
+            $fnRoute( $i_nstOverride );
         }
         return $this->bReturn;
     }

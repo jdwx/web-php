@@ -8,6 +8,7 @@ namespace Framework;
 
 
 use JDWX\Web\Backends\MockServer;
+use JDWX\Web\Framework\Response;
 use JDWX\Web\Framework\RouteMatch;
 use JDWX\Web\Framework\RouteRouter;
 use JDWX\Web\Request;
@@ -17,6 +18,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shims\MyRoute;
 use Shims\MyRouteManager;
+use Shims\MyRouteRouter;
+
+
+require_once __DIR__ . '/../Shims/MyRoute.php';
+require_once __DIR__ . '/../Shims/MyRouteManager.php';
+require_once __DIR__ . '/../Shims/MyRouteRouter.php';
 
 
 #[CoversClass( RouteRouter::class )]
@@ -42,6 +49,21 @@ final class RouteRouterTest extends TestCase {
         $mgr->routes[ '/foobar' ] = new RouteMatch( '/foo', MyRoute::class, 'bar', [] );
         $router = new RouteRouter( $mgr, i_req: $req );
         self::assertFalse( $router->route() );
+    }
+
+
+    public function testRouteForOverride() : void {
+        $req = $this->newRequest( 'GET', '/foo/bar' );
+        $mgr = new MyRouteManager();
+        $router = new MyRouteRouter( $mgr, i_req: $req );
+        $route = new MyRoute( $router, [
+            'get' => function () {
+                return Response::text( 'Yup.' );
+            },
+        ] );
+        $mgr->routes[ '/foo' ] = [ new RouteMatch( '/foo', $route, '', [] ) ];
+        self::assertFalse( $router->route() );
+        self::assertTrue( $router->route( '/foo' ) );
     }
 
 

@@ -1,0 +1,20 @@
+<?php
+
+
+declare( strict_types = 1 );
+
+
+namespace Shims;
+
+
+use JDWX\Web\Framework\RouteRouter;
+
+
+require_once __DIR__ . '/MyRouterTrait.php';
+
+
+class MyRouteRouter extends RouteRouter {
+
+
+    use MyRouterTrait;
+}

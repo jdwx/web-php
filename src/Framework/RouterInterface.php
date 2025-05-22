@@ -38,9 +38,12 @@ interface RouterInterface {
      * higher-level handler that might be trying multiple ways
      * to handle the request. Performs minimal error handling.
      *
+     * @param ?string $i_nstOverride Can be used to override the Uri
+     *                          from the request, for example, to remap
+     *                          it to a different route.
      * @return bool True if this handled the request, otherwise false.
      */
-    public function route() : bool;
+    public function route( ?string $i_nstOverride = null ) : bool;
 
 
     /**

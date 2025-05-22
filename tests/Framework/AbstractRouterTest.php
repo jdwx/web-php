@@ -38,7 +38,7 @@ final class AbstractRouterTest extends MyTestCase {
         $router = new class( i_req: $req ) extends AbstractRouter {
 
 
-            public function route() : bool {
+            public function route( ?string $i_nstOverride = null ) : bool {
                 $this->addHeader( 'X-Foo: Bar' );
                 return $this->respondText( 'OK' );
             }
@@ -59,7 +59,7 @@ final class AbstractRouterTest extends MyTestCase {
         $router = new class( i_req: $req ) extends AbstractRouter {
 
 
-            public function route() : bool {
+            public function route( ?string $i_nstOverride = null ) : bool {
                 $this->addHeader( 'X-Foo', 'Bar' );
                 return $this->respondText( 'OK' );
             }
@@ -127,7 +127,7 @@ final class AbstractRouterTest extends MyTestCase {
         $router = new class( i_req: $req ) extends AbstractRouter {
 
 
-            public function route() : bool {
+            public function route( ?string $i_nstOverride = null ) : bool {
                 $this->respondHtml( '<html lang="en"><body>TEST_HTML</body></html>' );
                 return true;
             }
@@ -148,7 +148,7 @@ final class AbstractRouterTest extends MyTestCase {
         $router = new class( i_req: $req ) extends AbstractRouter {
 
 
-            public function route() : bool {
+            public function route( ?string $i_nstOverride = null ) : bool {
                 return $this->respondJson( [ 'foo' => 'bar' ] );
             }
 
@@ -170,7 +170,7 @@ final class AbstractRouterTest extends MyTestCase {
         $router = new class( i_req: $req ) extends AbstractRouter {
 
 
-            public function route() : bool {
+            public function route( ?string $i_nstOverride = null ) : bool {
                 $this->respondPage( new SimpleTextPage( 'TEST_CONTENT' ) );
                 return true;
             }
@@ -193,7 +193,7 @@ final class AbstractRouterTest extends MyTestCase {
         $router = new class( i_req: $req ) extends AbstractRouter {
 
 
-            public function route() : bool {
+            public function route( ?string $i_nstOverride = null ) : bool {
                 $this->respondText( 'TEST_CONTENT' );
                 return true;
             }

@@ -28,6 +28,9 @@ class RouteRouter extends AbstractRouter {
 
     /**
      * @inheritDoc
+     * @param ?string $i_nstUriOverride Can be used to override the Uri
+     *                           from the request, for example, to remap
+     *                           it to a different route.
      */
     public function route( ?string $i_nstUriOverride = null ) : bool {
         $stUri = $i_nstUriOverride ?? $this->uri();

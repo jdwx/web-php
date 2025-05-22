@@ -10,6 +10,10 @@ namespace Shims;
 use JDWX\Web\Framework\RouteInterface;
 
 
+/**
+ * Can't declare an abstract route() method in this class because
+ * static analysis loses its mind.
+ */
 trait MyRouterTrait {
 
 
@@ -18,20 +22,19 @@ trait MyRouterTrait {
     }
 
 
-    abstract public function route( ?string $i_nstOverride = null ) : bool;
-
-
-    public function routeOutput() : ?string {
+    /** @suppress PhanUndeclaredMethod */
+    public function routeOutput( mixed ...$x ) : ?string {
         ob_start();
-        $b = $this->route();
+        $b = $this->route( ...$x );
         $st = ob_get_clean();
         return $b ? $st : null;
     }
 
 
-    public function routeQuiet() : bool {
+    /** @suppress PhanUndeclaredMethod */
+    public function routeQuiet( mixed ...$x ) : bool {
         ob_start();
-        $b = $this->route();
+        $b = $this->route( ...$x );
         ob_end_clean();
         return $b;
     }

@@ -42,7 +42,7 @@ class RouteRouter extends AbstractRouter {
             if ( ! $match->isExact() ) {
 
                 # Discard matches for the root URI that have path info unless
-                # we the root URI is explicitly allowed to be a prefix.
+                # the root URI is explicitly allowed to be a prefix.
                 if ( '/' === $match->stUri && ! $this->bRootIsPrefix ) {
                     continue;
                 }
@@ -93,7 +93,13 @@ class RouteRouter extends AbstractRouter {
 
 
     protected function handle( RouteMatch $i_match ) : bool {
-        $response = $i_match->route( $this )->handle( $i_match->stUri, $i_match->stPathInfo, $i_match->rParameters );
+        $route = $i_match->route( $this );
+        if ( ! $i_match->isExact() && ! $route->allowPathInfo() ) {
+            return false;
+        }
+        $response = $i_match->route( $this )->handle(
+            $i_match->stUri, $i_match->stPathInfo, $i_match->rParameters
+        );
         if ( ! $response instanceof ResponseInterface ) {
             return false;
         }

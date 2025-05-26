@@ -23,9 +23,11 @@ class MyRoute extends AbstractRoute {
 
 
     /** @param iterable<string, callable> $i_rCallbacks */
-    public function __construct( RouterInterface $router, iterable $i_rCallbacks = [] ) {
+    public function __construct( RouterInterface $router, iterable $i_rCallbacks = [],
+                                 bool            $i_bAllowPathInfo = false ) {
         parent::__construct( $router );
         $this->mapCallbacks = new Map( $i_rCallbacks );
+        $this->setAllowPathInfo( $i_bAllowPathInfo );
     }
 
 

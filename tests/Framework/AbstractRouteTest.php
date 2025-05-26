@@ -24,6 +24,16 @@ use Shims\MyRouter;
 final class AbstractRouteTest extends TestCase {
 
 
+    public function testAllowPathInfo() : void {
+        $router = $this->newRouter( 'GET' );
+        $route = new MyRoute( $router );
+        self::assertFalse( $route->allowPathInfo() );
+
+        $route = new MyRoute( $router, [], true );
+        self::assertTrue( $route->allowPathInfo() );
+    }
+
+
     public function testHandleDELETE() : void {
         $router = $this->newRouter( 'DELETE' );
         $route = new MyRoute( $router );

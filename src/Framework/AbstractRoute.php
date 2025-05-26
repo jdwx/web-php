@@ -25,7 +25,15 @@ abstract class AbstractRoute implements RouteInterface {
     use DownstreamRouteTrait;
 
 
+    private bool $bAllowPathInfo = false;
+
+
     public function __construct( private readonly RouterInterface $router ) {}
+
+
+    public function allowPathInfo() : bool {
+        return $this->bAllowPathInfo;
+    }
 
 
     public function handle( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
@@ -152,6 +160,11 @@ abstract class AbstractRoute implements RouteInterface {
 
     protected function server() : ServerInterface {
         return $this->router()->server();
+    }
+
+
+    protected function setAllowPathInfo( bool $i_bAllowPathInfo ) : void {
+        $this->bAllowPathInfo = $i_bAllowPathInfo;
     }
 
 

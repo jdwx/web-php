@@ -8,7 +8,6 @@ namespace Shims;
 
 
 use InvalidArgumentException;
-use JDWX\Log\BufferLogger;
 use JDWX\Web\Backends\MockHttpBackend;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
@@ -68,7 +67,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
             'get' => function ( $stPath, $stUri ) {
                 return Response::text( "{$stPath}:{$stUri}" );
             },
-        ] );
+        ], true );
         $router->addRoutePub( '/test', $route );
         $router->addRoutePub( '/test/', $route );
         $router->addRoutePub( '/test/this/that/', $route );
@@ -79,6 +78,24 @@ abstract class MyRouteRouterTestBase extends TestCase {
     }
 
 
+    public function testRouteForPathInfoNotAllowed() : void {
+        $req = $this->newRequest( 'GET', '/test/' );
+        $router = $this->newRouter( i_req: $req );
+        $route = new MyRoute( $router, [
+            'get' => function () {
+                return Response::text( 'TEST_GET' );
+            },
+        ] );
+        $router->addRoutePub( '/test/', $route );
+        self::assertSame( 'TEST_GET', $router->routeOutput() );
+
+        $req = $this->newRequest( 'GET', '/test/this' );
+        $router = $this->newRouter( i_req: $req );
+        $router->addRoutePub( '/test/', $route );
+        self::assertFalse( $router->routeQuiet() );
+    }
+
+
     public function testRouteForPrefix() : void {
         $req = $this->newRequest( 'GET', '/test/this' );
         $router = $this->newRouter( i_req: $req );
@@ -86,7 +103,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
             'get' => function ( $stPath, $stUri ) {
                 return Response::text( "{$stPath}:{$stUri}" );
             },
-        ] );
+        ], true );
         $router->addRoutePub( '/test/', $route );
         self::assertSame( '/test/:/this', $router->routeOutput() );
     }
@@ -113,7 +130,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
             'post' => function ( string $stPath, string $stUri ) {
                 return Response::text( $stPath . ':' . $stUri );
             },
-        ] );
+        ], true );
         $router->addRoutePub( '/', $route );
         self::assertSame( '/:/nope', $router->routeOutput() );
     }
@@ -122,7 +139,6 @@ abstract class MyRouteRouterTestBase extends TestCase {
     public function testRouteForStringRoute() : void {
         $http = new MockHttpBackend();
         Http::init( $http );
-        $log = new BufferLogger();
         $req = $this->newRequest( 'GET', '/test' );
         $router = $this->newRouter( i_req: $req );
         $router->addRoutePub( '/test', MyRoute::class );
@@ -133,7 +149,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
 
     public function testRouteForSuccess() : void {
         $req = $this->newRequest( 'GET', '/test' );
-        $router = $this->newRouter();
+        $router = $this->newRouter( $req );
         $route = new MyRoute( $router, [
             'get' => function () {
                 return Response::text( 'TEST_GET' );

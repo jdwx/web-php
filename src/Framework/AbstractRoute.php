@@ -25,6 +25,8 @@ abstract class AbstractRoute implements RouteInterface {
     use DownstreamRouteTrait;
 
 
+    protected const bool ALLOW_POST = false;
+
     private bool $bAllowPathInfo = false;
 
 
@@ -90,7 +92,11 @@ abstract class AbstractRoute implements RouteInterface {
      * @suppress PhanTypeMissingReturnReal
      * @param array<string, string|list<string>> $i_rUriParameters
      */
-    protected function handlePOST( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
+    protected function handlePOST( string $i_stUri, string $i_stPath,
+                                   array  $i_rUriParameters ) : ?ResponseInterface {
+        if ( static::ALLOW_POST ) {
+            return $this->handleGET( $i_stUri, $i_stPath, $i_rUriParameters );
+        }
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 

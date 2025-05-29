@@ -82,6 +82,25 @@ final class AbstractRouteTest extends TestCase {
     }
 
 
+    public function testHandlePOSTForAllowPOST() : void {
+        $router = $this->newRouter( 'POST' );
+        $route = new class( $router ) extends MyRoute {
+
+
+            protected const bool ALLOW_POST = true;
+
+
+            protected function handleGET( string $i_stUri, string $i_stPath,
+                                          array  $i_rUriParameters ) : ?ResponseInterface {
+                return $this->respondText( 'GET' );
+            }
+
+
+        };
+        self::assertSame( 'GET', strval( $route->handle( '/', '', [] ) ) );
+    }
+
+
     public function testHandlePUT() : void {
         $router = $this->newRouter( 'PUT' );
         $route = new MyRoute( $router );

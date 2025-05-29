@@ -84,9 +84,24 @@ final class AbstractRequestTest extends TestCase {
 
 
     public function testIsHEAD() : void {
-        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'HEAD' ) );
+        $req = $this->newAbstractRequest(
+            i_server: ( new MockServer() )->withRequestMethod( 'HEAD' )
+        );
         self::assertTrue( $req->isHEAD() );
-        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ) );
+
+        $req = $this->newAbstractRequest(
+            i_server: ( new MockServer() )->withRequestMethod( 'Head' )
+        );
+        self::assertTrue( $req->isHEAD() );
+
+        $req = $this->newAbstractRequest(
+            i_server: ( new MockServer() )->withRequestMethod( 'head' )
+        );
+        self::assertTrue( $req->isHEAD() );
+
+        $req = $this->newAbstractRequest(
+            i_server: ( new MockServer() )->withRequestMethod( 'POST' )
+        );
         self::assertFalse( $req->isHEAD() );
     }
 

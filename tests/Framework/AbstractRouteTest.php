@@ -91,7 +91,7 @@ final class AbstractRouteTest extends TestCase {
 
 
             protected function handleGET( string $i_stUri, string $i_stPath,
-                                          array  $i_rUriParameters ) : ?ResponseInterface {
+                                          array  $i_rUriParameters ) : ResponseInterface {
                 return $this->respondText( 'GET' );
             }
 

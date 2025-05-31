@@ -36,7 +36,7 @@ class SimpleFilePage extends AbstractBinaryPage {
     public function __construct( private readonly string $stFilename,
                                  ?string                 $i_nstContentType = null,
                                  ?int                    $nuReadSize = null ) {
-        parent::__construct( $i_nstContentType ?? $this->inferType( $stFilename ) );
+        parent::__construct( $i_nstContentType ?? static::inferType( $stFilename ) );
         $this->uReadSize = $nuReadSize ?? self::DEFAULT_READ_SIZE;
     }
 

@@ -27,12 +27,6 @@ trait StreamTrait {
     }
 
 
-    /** @return \Traversable<string|Stringable> */
-    public function getIterator() : \Traversable {
-        yield from $this->stream();
-    }
-
-
     /** @return iterable<string|Stringable> */
     abstract public function stream() : iterable;
 

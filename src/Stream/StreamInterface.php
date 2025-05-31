@@ -8,22 +8,16 @@ namespace JDWX\Web\Stream;
 
 
 use Stringable;
-use Traversable;
 
 
 /**
- * @extends \IteratorAggregate<string|Stringable>
  * @suppress PhanAccessWrongInheritanceCategoryInternal
  */
-interface StreamInterface extends \IteratorAggregate {
+interface StreamInterface {
 
 
     /** @return list<string|Stringable> */
     public function asArray() : array;
-
-
-    /** @return Traversable<string|Stringable> */
-    public function getIterator() : Traversable;
 
 
     /** @return iterable<string|Stringable> */

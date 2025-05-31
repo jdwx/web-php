@@ -4,8 +4,12 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
 use JDWX\Web\Url;
 use JDWX\Web\UrlParts;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

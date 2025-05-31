@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 require_once __DIR__ . '/../Shims/MyRoute.php';
@@ -16,10 +16,10 @@ require_once __DIR__ . '/../Shims/MyRouter.php';
 use JDWX\Web\Framework\Router;
 use JDWX\Web\Framework\RouteRouter;
 use JDWX\Web\RequestInterface;
+use JDWX\Web\Tests\Shims\MyRouter;
+use JDWX\Web\Tests\Shims\MyRouterInterface;
+use JDWX\Web\Tests\Shims\MyRouteRouterTestBase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Shims\MyRouter;
-use Shims\MyRouterInterface;
-use Shims\MyRouteRouterTestBase;
 
 
 #[CoversClass( Router::class )]

@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Web\Backends\MockServer;
@@ -13,12 +13,12 @@ use JDWX\Web\Framework\RouteMatch;
 use JDWX\Web\Framework\RouteRouter;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
+use JDWX\Web\Tests\Shims\MyRoute;
+use JDWX\Web\Tests\Shims\MyRouteManager;
+use JDWX\Web\Tests\Shims\MyRouteRouter;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shims\MyRoute;
-use Shims\MyRouteManager;
-use Shims\MyRouteRouter;
 
 
 require_once __DIR__ . '/../Shims/MyRoute.php';

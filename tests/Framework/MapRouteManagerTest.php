@@ -4,14 +4,14 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use InvalidArgumentException;
 use JDWX\Web\Framework\MapRouteManager;
+use JDWX\Web\Tests\Shims\MyRoute;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
-use Shims\MyRoute;
 
 
 #[UsesClass( MapRouteManager::class )]

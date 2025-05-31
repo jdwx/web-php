@@ -4,11 +4,15 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
 use JDWX\Param\ParameterSet;
 use JDWX\Web\AbstractRequest;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\FilesHandler;
 use JDWX\Web\ServerInterface;
+use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

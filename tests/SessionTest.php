@@ -4,13 +4,20 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
+use InvalidArgumentException;
 use JDWX\Web\Backends\MockSessionBackend;
 use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use JDWX\Web\Request;
 use JDWX\Web\Session;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use TypeError;
 
 
 #[CoversClass( Session::class )]

@@ -4,10 +4,14 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
 use JDWX\Web\Backends\MockFilesBackend;
 use JDWX\Web\FilesHandler;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 
 #[CoversClass( FilesHandler::class )]

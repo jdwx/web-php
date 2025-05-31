@@ -4,15 +4,15 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\StaticShim;
 use JDWX\Web\Http;
 use JDWX\Web\Request;
-use Shims\MyStaticShim;
-use Shims\MyTestCase;
+use JDWX\Web\Tests\Shims\MyStaticShim;
+use JDWX\Web\Tests\Shims\MyTestCase;
 
 
 require_once __DIR__ . '/../Shims/MyStaticShim.php';

@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Stream;
+namespace JDWX\Web\Tests\Stream;
 
 
 use JDWX\Web\Stream\AbstractNestedStringableStream;

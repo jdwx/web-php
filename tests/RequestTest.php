@@ -4,12 +4,16 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
+use JDWX\Web\Tests\Shims\MyRequest;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shims\MyRequest;
 
 
 require_once __DIR__ . '/Shims/MyRequest.php';

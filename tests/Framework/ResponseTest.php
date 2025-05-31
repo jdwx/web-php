@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Web\Framework\Response;

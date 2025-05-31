@@ -4,14 +4,14 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Web\Framework\RouteMatch;
+use JDWX\Web\Tests\Shims\MyRoute;
+use JDWX\Web\Tests\Shims\MyRouter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shims\MyRoute;
-use Shims\MyRouter;
 
 
 #[CoversClass( RouteMatch::class )]

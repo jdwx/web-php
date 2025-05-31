@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Shims;
+namespace JDWX\Web\Tests\Shims;
 
 
 require_once __DIR__ . '/MyRouterInterface.php';

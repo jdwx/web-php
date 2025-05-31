@@ -4,16 +4,16 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\PhpWsShim;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
+use JDWX\Web\Tests\Shims\MyAbstractRouter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shims\MyAbstractRouter;
 
 
 #[CoversClass( PhpWsShim::class )]

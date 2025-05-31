@@ -4,13 +4,13 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Web\Framework\Exceptions\NotFoundException;
 use JDWX\Web\Framework\HttpError;
+use JDWX\Web\Tests\Shims\MyTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Shims\MyTestCase;
 
 
 require_once __DIR__ . '/../Shims/MyTestCase.php';

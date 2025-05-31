@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
 use JDWX\Web\Backends\MockServer;
 use PHPUnit\Framework\TestCase;
 

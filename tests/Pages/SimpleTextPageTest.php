@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Pages;
+namespace JDWX\Web\Tests\Pages;
 
 
 use JDWX\Web\Pages\AbstractTextPage;

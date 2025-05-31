@@ -4,6 +4,9 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
 use JDWX\Web\Backends\MockFilesBackend;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -11,10 +14,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * We really can't guarantee that the live PHPFilesBackend class will do what
- * we want, but we can be darn sure that the mockup behaves as we expect so
+ * we want. But we can be darn sure that the mockup behaves as we expect so
  * that any discrepancies observed in the wild should be easier to detect.
- *
- *
  */
 #[CoversClass( MockFilesBackend::class )]
 final class MockFilesBackendTest extends TestCase {

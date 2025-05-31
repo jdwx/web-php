@@ -4,8 +4,12 @@
 declare( strict_types = 1 );
 
 
+namespace JDWX\Web\Tests;
+
+
 use JDWX\Web\Server;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 
 class ServerTest extends TestCase {

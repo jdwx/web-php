@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Framework\Exceptions;
+namespace JDWX\Web\Tests\Framework\Exceptions;
 
 
 use JDWX\Web\Framework\Exceptions\BadRequestException;

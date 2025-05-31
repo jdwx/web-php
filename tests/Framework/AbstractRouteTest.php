@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Web\Backends\MockServer;
@@ -14,10 +14,10 @@ use JDWX\Web\Framework\Exceptions\NotImplementedException;
 use JDWX\Web\Framework\ResponseInterface;
 use JDWX\Web\Framework\RouterInterface;
 use JDWX\Web\Request;
+use JDWX\Web\Tests\Shims\MyRoute;
+use JDWX\Web\Tests\Shims\MyRouter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shims\MyRoute;
-use Shims\MyRouter;
 
 
 #[CoversClass( AbstractRoute::class )]

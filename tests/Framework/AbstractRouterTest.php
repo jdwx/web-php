@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace Framework;
+namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Log\BufferLogger;
@@ -18,10 +18,10 @@ use JDWX\Web\Framework\Response;
 use JDWX\Web\Http;
 use JDWX\Web\Pages\SimpleTextPage;
 use JDWX\Web\Request;
+use JDWX\Web\Tests\Shims\MyAbstractRouter;
+use JDWX\Web\Tests\Shims\MyTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Log\LoggerInterface;
-use Shims\MyAbstractRouter;
-use Shims\MyTestCase;
 
 
 require_once __DIR__ . '/../Shims/MyAbstractRouter.php';

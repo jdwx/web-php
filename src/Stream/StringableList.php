@@ -10,7 +10,7 @@ namespace JDWX\Web\Stream;
 use Stringable;
 
 
-class StringableList implements StringableListInterface {
+class StringableList implements StringableListInterface, StringableStreamInterface {
 
 
     use StringableListTrait;

@@ -11,7 +11,7 @@ use Countable;
 use Stringable;
 
 
-interface StringableListInterface extends StringableStreamInterface, Countable {
+interface StringableListInterface extends Countable {
 
 
     /**

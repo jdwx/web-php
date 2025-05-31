@@ -49,7 +49,7 @@ final class StringableListTest extends TestCase {
     }
 
 
-    public function testCount() : void {
+    public function testCountChildren() : void {
         $el1 = new SimpleStringable();
         $el2 = new SimpleStringable();
         $el3 = 'Foo';

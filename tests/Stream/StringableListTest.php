@@ -38,7 +38,7 @@ final class StringableListTest extends TestCase {
         $list = new StringableList( 'Foo' );
         $list->appendChild( null )
             ->appendChild( new StringableList( 'Bar' ) );
-        self::assertCount( 2, $list );
+        self::assertSame( 2, $list->countChildren() );
         self::assertSame( 'FooBar', strval( $list ) );
     }
 
@@ -55,7 +55,7 @@ final class StringableListTest extends TestCase {
         $el3 = 'Foo';
         $el4 = new SimpleStringable( 'Bar' );
         $list = new StringableList( [ $el1, $el2, $el3, $el4 ] );
-        self::assertCount( 4, $list );
+        self::assertSame( 4, $list->countChildren() );
     }
 
 

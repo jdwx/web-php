@@ -49,13 +49,13 @@ trait StringableListTrait {
     }
 
 
-    public function count() : int {
+    public function countChildren() : int {
         return count( $this->rChildren );
     }
 
 
     public function hasChildren() : bool {
-        return 0 < $this->count();
+        return 0 < $this->countChildren();
     }
 
 

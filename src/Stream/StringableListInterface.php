@@ -7,11 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Stream;
 
 
-use Countable;
 use Stringable;
 
 
-interface StringableListInterface extends Countable {
+interface StringableListInterface extends Stringable {
 
 
     /**
@@ -29,7 +28,7 @@ interface StringableListInterface extends Countable {
     public function children( ?callable $i_fnFilter = null ) : iterable;
 
 
-    public function count() : int;
+    public function countChildren() : int;
 
 
     public function hasChildren() : bool;

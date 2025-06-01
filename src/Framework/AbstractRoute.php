@@ -46,7 +46,7 @@ abstract class AbstractRoute implements RouteInterface {
             'delete' => $this->handleDELETE( $i_stUri, $i_stPath, $i_rUriParameters ),
             'head' => $this->handleHEAD( $i_stUri, $i_stPath, $i_rUriParameters ),
             'patch' => $this->handlePATCH( $i_stUri, $i_stPath, $i_rUriParameters ),
-            default => throw new NotImplementedException(),
+            default => throw new NotImplementedException( "Method {$this->method()} not implemented." ),
         };
     }
 

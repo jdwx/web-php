@@ -17,7 +17,7 @@ class NotImplementedExceptionTest extends TestCase {
 
 
     public function testGetCode() : void {
-        $ex = new NotImplementedException();
+        $ex = new NotImplementedException( 'FOO' );
         self::assertSame( 501, $ex->getCode() );
     }
 

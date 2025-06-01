@@ -50,7 +50,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
         $req = $this->newRequest( 'GET', '/test' );
         $router = $this->newRouter( i_req: $req );
         $route = new MyRoute( $router, [
-            'get' => function () {
+            'GET' => function () {
                 return null;
             },
         ] );
@@ -64,7 +64,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
         $req = $this->newRequest( 'GET', '/test/this/that/these' );
         $router = $this->newRouter( i_req: $req );
         $route = new MyRoute( $router, [
-            'get' => function ( $stPath, $stUri ) {
+            'GET' => function ( $stPath, $stUri ) {
                 return Response::text( "{$stPath}:{$stUri}" );
             },
         ], true );
@@ -82,7 +82,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
         $req = $this->newRequest( 'GET', '/test/' );
         $router = $this->newRouter( i_req: $req );
         $route = new MyRoute( $router, [
-            'get' => function () {
+            'GET' => function () {
                 return Response::text( 'TEST_GET' );
             },
         ] );
@@ -100,7 +100,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
         $req = $this->newRequest( 'GET', '/test/this' );
         $router = $this->newRouter( i_req: $req );
         $route = new MyRoute( $router, [
-            'get' => function ( $stPath, $stUri ) {
+            'GET' => function ( $stPath, $stUri ) {
                 return Response::text( "{$stPath}:{$stUri}" );
             },
         ], true );
@@ -113,7 +113,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
         $req = $this->newRequest( 'GET', '/nope' );
         $router = $this->newRouter( i_req: $req );
         $route = new MyRoute( $router, [
-            'get' => function () {
+            'GET' => function () {
                 return Response::text( 'TEST_GET_ROOT' );
             },
         ] );
@@ -127,7 +127,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
         $router = $this->newRouter( i_req: $req );
         $router->setRootIsPrefixPub();
         $route = new MyRoute( $router, [
-            'post' => function ( string $stPath, string $stUri ) {
+            'POST' => function ( string $stPath, string $stUri ) {
                 return Response::text( $stPath . ':' . $stUri );
             },
         ], true );
@@ -151,7 +151,7 @@ abstract class MyRouteRouterTestBase extends TestCase {
         $req = $this->newRequest( 'GET', '/test' );
         $router = $this->newRouter( $req );
         $route = new MyRoute( $router, [
-            'get' => function () {
+            'GET' => function () {
                 return Response::text( 'TEST_GET' );
             },
         ] );

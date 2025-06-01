@@ -57,7 +57,7 @@ final class RouteRouterTest extends TestCase {
         $mgr = new MyRouteManager();
         $router = new MyRouteRouter( $mgr, i_req: $req );
         $route = new MyRoute( $router, [
-            'get' => function () {
+            'GET' => function () {
                 return Response::text( 'Yup.' );
             },
         ] );

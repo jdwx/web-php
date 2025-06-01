@@ -34,6 +34,14 @@ final class AbstractRouteTest extends TestCase {
     }
 
 
+    public function testHandleCONNECT() : void {
+        $router = $this->newRouter( 'CONNECT' );
+        $route = new MyRoute( $router );
+        self::expectException( MethodNotAllowedException::class );
+        $route->handle( '/', '', [] );
+    }
+
+
     public function testHandleDELETE() : void {
         $router = $this->newRouter( 'DELETE' );
         $route = new MyRoute( $router );
@@ -43,7 +51,7 @@ final class AbstractRouteTest extends TestCase {
 
 
     public function testHandleForInvalidMethod() : void {
-        $router = $this->newRouter( 'INVALID' );
+        $router = $this->newRouter( 'InVaLiD' );
         $route = new MyRoute( $router );
         self::expectException( NotImplementedException::class );
         $route->handle( '/', '', [] );
@@ -60,6 +68,14 @@ final class AbstractRouteTest extends TestCase {
 
     public function testHandleHEAD() : void {
         $router = $this->newRouter( 'HEAD' );
+        $route = new MyRoute( $router );
+        self::expectException( MethodNotAllowedException::class );
+        $route->handle( '/', '', [] );
+    }
+
+
+    public function testHandleOPTIONS() : void {
+        $router = $this->newRouter( 'OPTIONS' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
         $route->handle( '/', '', [] );
@@ -103,6 +119,14 @@ final class AbstractRouteTest extends TestCase {
 
     public function testHandlePUT() : void {
         $router = $this->newRouter( 'PUT' );
+        $route = new MyRoute( $router );
+        self::expectException( MethodNotAllowedException::class );
+        $route->handle( '/', '', [] );
+    }
+
+
+    public function testHandleTRACE() : void {
+        $router = $this->newRouter( 'TRACE' );
         $route = new MyRoute( $router );
         self::expectException( MethodNotAllowedException::class );
         $route->handle( '/', '', [] );

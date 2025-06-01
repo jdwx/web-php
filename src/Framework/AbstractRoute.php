@@ -8,7 +8,6 @@ namespace JDWX\Web\Framework;
 
 
 use Ds\Set;
-use JDWX\Web\Framework\Exceptions\MethodNotAllowedException;
 use JDWX\Web\Framework\Exceptions\NotImplementedException;
 use JDWX\Web\Pages\PageInterface;
 use JDWX\Web\Pages\SimpleHtmlPage;
@@ -40,12 +39,15 @@ abstract class AbstractRoute implements RouteInterface {
 
     public function handle( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
         return match ( $this->method() ) {
-            'get' => $this->handleGET( $i_stUri, $i_stPath, $i_rUriParameters ),
-            'post' => $this->handlePOST( $i_stUri, $i_stPath, $i_rUriParameters ),
-            'put' => $this->handlePUT( $i_stUri, $i_stPath, $i_rUriParameters ),
-            'delete' => $this->handleDELETE( $i_stUri, $i_stPath, $i_rUriParameters ),
-            'head' => $this->handleHEAD( $i_stUri, $i_stPath, $i_rUriParameters ),
-            'patch' => $this->handlePATCH( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'GET' => $this->handleGET( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'HEAD' => $this->handleHEAD( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'POST' => $this->handlePOST( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'PUT' => $this->handlePUT( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'DELETE' => $this->handleDELETE( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'CONNECT' => $this->handleCONNECT( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'OPTIONS' => $this->handleOPTIONS( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'PATCH' => $this->handlePATCH( $i_stUri, $i_stPath, $i_rUriParameters ),
+            'TRACE' => $this->handleTRACE( $i_stUri, $i_stPath, $i_rUriParameters ),
             default => throw new NotImplementedException( "Method {$this->method()} not implemented." ),
         };
     }
@@ -55,7 +57,18 @@ abstract class AbstractRoute implements RouteInterface {
      * @suppress PhanTypeMissingReturnReal
      * @param array<string, string|list<string>> $i_rUriParameters
      */
-    protected function handleDELETE( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
+    protected function handleCONNECT( string $i_stUri, string $i_stPath,
+                                      array  $i_rUriParameters ) : ?ResponseInterface {
+        $this->methodNotAllowed( $i_stUri, $i_stPath );
+    }
+
+
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
+    protected function handleDELETE( string $i_stUri, string $i_stPath,
+                                     array  $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
@@ -76,6 +89,16 @@ abstract class AbstractRoute implements RouteInterface {
     protected function handleHEAD( string $i_stUri, string $i_stPath,
                                    array  $i_rUriParameters ) : ?ResponseInterface {
         return $this->handleGET( $i_stUri, $i_stPath, $i_rUriParameters );
+    }
+
+
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
+    protected function handleOPTIONS( string $i_stUri, string $i_stPath,
+                                      array  $i_rUriParameters ) : ?ResponseInterface {
+        $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
 
@@ -105,7 +128,18 @@ abstract class AbstractRoute implements RouteInterface {
      * @suppress PhanTypeMissingReturnReal
      * @param array<string, string|list<string>> $i_rUriParameters
      */
-    protected function handlePUT( string $i_stUri, string $i_stPath, array $i_rUriParameters ) : ?ResponseInterface {
+    protected function handlePUT( string $i_stUri, string $i_stPath,
+                                  array  $i_rUriParameters ) : ?ResponseInterface {
+        $this->methodNotAllowed( $i_stUri, $i_stPath );
+    }
+
+
+    /**
+     * @suppress PhanTypeMissingReturnReal
+     * @param array<string, string|list<string>> $i_rUriParameters
+     */
+    protected function handleTRACE( string $i_stUri, string $i_stPath,
+                                    array  $i_rUriParameters ) : ?ResponseInterface {
         $this->methodNotAllowed( $i_stUri, $i_stPath );
     }
 
@@ -120,9 +154,9 @@ abstract class AbstractRoute implements RouteInterface {
     }
 
 
-    protected function methodNotAllowed( string $i_stUri, string $i_stPath ) : never {
-        $stMessage = sprintf( 'Method %s not allowed for URI: %s, Path: %s', $this->method(), $i_stUri, $i_stPath );
-        throw new MethodNotAllowedException( $stMessage );
+    protected function methodNotAllowed( ?string $i_nstUri = null, ?string $i_nstPath = null,
+                                         ?string $i_nstMessage = null ) : never {
+        $this->router->methodNotAllowed( $i_nstUri, $i_nstPath, $i_nstMessage );
     }
 
 

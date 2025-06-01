@@ -96,12 +96,12 @@ final class AbstractRequestTest extends TestCase {
         $req = $this->newAbstractRequest(
             i_server: ( new MockServer() )->withRequestMethod( 'Head' )
         );
-        self::assertTrue( $req->isHEAD() );
+        self::assertFalse( $req->isHEAD() );
 
         $req = $this->newAbstractRequest(
             i_server: ( new MockServer() )->withRequestMethod( 'head' )
         );
-        self::assertTrue( $req->isHEAD() );
+        self::assertFalse( $req->isHEAD() );
 
         $req = $this->newAbstractRequest(
             i_server: ( new MockServer() )->withRequestMethod( 'POST' )
@@ -121,7 +121,7 @@ final class AbstractRequestTest extends TestCase {
 
     public function testMethod() : void {
         $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'TEST_METHOD' ) );
-        self::assertSame( 'test_method', $req->method() );
+        self::assertSame( 'TEST_METHOD', $req->method() );
     }
 
 

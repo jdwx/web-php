@@ -74,7 +74,7 @@ abstract class AbstractRouter implements RouterInterface {
 
 
     public function methodNotAllowed( ?string $i_nstUri = null, ?string $i_nstPath = null,
-                                      string  $i_nstMessage = null ) : never {
+                                      ?string $i_nstMessage = null ) : never {
         $i_nstMessage ??= sprintf( 'Method {{ method }} not allowed for URI: %s, Path: %s',
             $i_nstUri ?? $this->uri(), $i_nstPath ?? $this->path() );
         throw new MethodNotAllowedException( $this->method(), $i_nstMessage );

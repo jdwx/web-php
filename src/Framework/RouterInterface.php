@@ -27,6 +27,10 @@ interface RouterInterface {
     public function logger() : LoggerInterface;
 
 
+    public function methodNotAllowed( ?string $i_nstUri = null, ?string $i_nstPath = null,
+                                      ?string $i_nstMessage = null ) : never;
+
+
     /**
      * Retrieve the Request object this router is using.
      */

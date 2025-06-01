@@ -54,18 +54,12 @@ abstract class AbstractRouter implements RouterInterface {
 
 
     public function assertGET( ?string $i_nstText = null ) : void {
-        if ( $this->request->isGET() ) {
-            return;
-        }
-        throw new MethodNotAllowedException( $i_nstText ?? 'GET required' );
+        $this->assertMethod( 'GET', $i_nstText );
     }
 
 
     public function assertPOST( ?string $i_nstText = null ) : void {
-        if ( $this->request->isPOST() ) {
-            return;
-        }
-        throw new MethodNotAllowedException( $i_nstText ?? 'POST required' );
+        $this->assertMethod( 'POST', $i_nstText );
     }
 
 
@@ -76,6 +70,14 @@ abstract class AbstractRouter implements RouterInterface {
 
     public function logger() : LoggerInterface {
         return $this->logger;
+    }
+
+
+    public function methodNotAllowed( ?string $i_nstUri = null, ?string $i_nstPath = null,
+                                      string  $i_nstMessage = null ) : never {
+        $i_nstMessage ??= sprintf( 'Method {{ method }} not allowed for URI: %s, Path: %s',
+            $i_nstUri ?? $this->uri(), $i_nstPath ?? $this->path() );
+        throw new MethodNotAllowedException( $this->method(), $i_nstMessage );
     }
 
 
@@ -121,6 +123,19 @@ abstract class AbstractRouter implements RouterInterface {
         } else {
             $this->setHeaders->add( $i_stHeader );
         }
+    }
+
+
+    protected function assertMethod( string $i_stMethod, ?string $i_nstText = null ) : void {
+        if ( $this->request->method() === $i_stMethod ) {
+            return;
+        }
+        $this->methodNotAllowed( $i_nstText ?? "{$i_stMethod} required" );
+    }
+
+
+    protected function method() : string {
+        return $this->request->method();
     }
 
 

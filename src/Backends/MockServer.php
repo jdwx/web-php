@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpLackOfCohesionInspection */
+<?php
 
 
 declare( strict_types = 1 );

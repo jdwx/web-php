@@ -35,6 +35,11 @@ class Url {
         . self::ALLOWED_UNRESERVED;
 
 
+    public static function parent( string $i_url ) : string {
+        return self::splitEx( $i_url )->parent()->__toString();
+    }
+
+
     public static function split( string $i_stUri ) : ?UrlParts {
 
         # We can't use filter_var with FILTER_VALIDATE_URL because it now requires

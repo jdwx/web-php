@@ -19,6 +19,27 @@ use PHPUnit\Framework\TestCase;
 final class UrlTest extends TestCase {
 
 
+    public function testParent() : void {
+        $st = 'https://user:pass@example.com:12345/path/to/resource?foo=bar&baz=qux#fragment';
+        $st = Url::parent( $st );
+        self::assertSame( 'https://user:pass@example.com:12345/path/to', $st );
+
+        $st = Url::parent( $st );
+        self::assertSame( 'https://user:pass@example.com:12345/path', $st );
+
+        $st = Url::parent( $st );
+        self::assertSame( 'https://user:pass@example.com:12345/', $st );
+
+        $st = Url::parent( $st );
+        self::assertSame( 'https://user:pass@example.com:12345/', $st );
+
+        self::assertSame( '/foo', Url::parent( '/foo/bar' ) );
+        self::assertSame( '/foo', Url::parent( '/foo/' ) );
+        self::assertSame( '/', Url::parent( '/foo' ) );
+        self::assertSame( '/', Url::parent( '/' ) );
+    }
+
+
     public function testPath() : void {
         $parts = Url::split( 'https://www.example.com:12345/a/b?foo=1&bar=baz' );
         self::assertSame( '/a/b', $parts->path() );

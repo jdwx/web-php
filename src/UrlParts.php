@@ -7,8 +7,11 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use Stringable;
+
+
 /** @implements \ArrayAccess<string, string|list<string>> */
-class UrlParts implements \ArrayAccess {
+class UrlParts implements \ArrayAccess, Stringable {
 
 
     public ?string $nstScheme = null;
@@ -30,6 +33,44 @@ class UrlParts implements \ArrayAccess {
     public array $rQuery = [];
 
     public ?string $nstFragment = null;
+
+
+    public function __toString() : string {
+        $st = '';
+        if ( is_string( $this->nstScheme ) ) {
+            $st .= $this->nstScheme . ':';
+        }
+        if ( is_string( $this->nstHost ) || is_string( $this->nstUser ) ) {
+            $st .= '//';
+        }
+        if ( is_string( $this->nstUser ) ) {
+            $st .= $this->nstUser;
+            if ( is_string( $this->nstPassword ) ) {
+                $st .= ':' . $this->nstPassword;
+            }
+            $st .= '@';
+        }
+        if ( is_string( $this->nstHost ) ) {
+            $st .= $this->nstHost;
+            if ( is_int( $this->nuPort ) ) {
+                $st .= ':' . $this->nuPort;
+            }
+        }
+        $st .= '/';
+        if ( ! empty( $this->subFolders ) ) {
+            $st .= join( '/', $this->subFolders ) . '/';
+        }
+        if ( is_string( $this->nstFile ) ) {
+            $st .= $this->nstFile;
+        }
+        if ( ! empty( $this->rQuery ) ) {
+            $st .= '?' . http_build_query( $this->rQuery );
+        }
+        if ( is_string( $this->nstFragment ) ) {
+            $st .= '#' . $this->nstFragment;
+        }
+        return $st;
+    }
 
 
     /** @param ?string $offset */
@@ -55,6 +96,15 @@ class UrlParts implements \ArrayAccess {
 
     public function offsetUnset( mixed $offset ) : void {
         throw new \LogicException( 'UriParts does not support unsetting parameters' );
+    }
+
+
+    public function parent() : static {
+        $parent = clone $this;
+        $parent->nstFile = array_pop( $parent->subFolders );
+        $parent->nstFragment = null;
+        $parent->rQuery = [];
+        return $parent;
     }
 
 

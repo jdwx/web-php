@@ -67,6 +67,12 @@ final class UrlPartsTest extends TestCase {
     }
 
 
+    public function testPathOnly() : void {
+        $url = Url::splitEx( 'https://user:pass@example.com:12345/path/to/resource?foo=bar&baz=qux#fragment' );
+        self::assertSame( '/path/to/resource', $url->pathOnly()->__toString() );
+    }
+
+
     public function testToString() : void {
         $st = 'https://user:pass@example.com:12345/path/to/resource?foo=bar&baz=qux#fragment';
         self::assertSame( $st, (string) Url::splitEx( $st ) );

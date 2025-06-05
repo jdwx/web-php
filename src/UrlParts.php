@@ -120,6 +120,15 @@ class UrlParts implements \ArrayAccess, Stringable {
     }
 
 
+    public function pathOnly() : static {
+        /** @phpstan-ignore new.static */
+        $path = new static();
+        $path->subFolders = $this->subFolders;
+        $path->nstFile = $this->nstFile;
+        return $path;
+    }
+
+
     public function validate() : bool {
         foreach ( $this->subFolders as $part ) {
             if ( ! Url::validatePathSegment( $part ) ) {

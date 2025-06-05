@@ -134,6 +134,21 @@ final class AbstractRequestTest extends TestCase {
     }
 
 
+    public function testParent() : void {
+        $srv = ( new MockServer() )->withRequestUri( 'https://www.example.com/foo/bar' );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::assertSame( 'https://www.example.com/foo', $req->parent() );
+    }
+
+
+    public function testParentPath() : void {
+        $srv = ( new MockServer() )->withRequestUri( 'https://www.example.com/foo/bar' );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::assertSame( '/foo', $req->parentPath() );
+
+    }
+
+
     public function testPath() : void {
         $req = $this->newAbstractRequest(
             i_server: ( new MockServer() )->withRequestUri( '/foo/bar?a=b&c=d' )

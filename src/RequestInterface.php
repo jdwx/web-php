@@ -61,6 +61,12 @@ interface RequestInterface {
     public function method() : string;
 
 
+    public function parent() : string;
+
+
+    public function parentPath() : string;
+
+
     public function path() : string;
 
 

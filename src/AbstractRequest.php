@@ -105,6 +105,16 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
+    public function parent() : string {
+        return $this->uriParts()->parent()->__toString();
+    }
+
+
+    public function parentPath() : string {
+        return $this->uriParts()->parent()->path();
+    }
+
+
     public function path() : string {
         return $this->uriParts()->path();
     }

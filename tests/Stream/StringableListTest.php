@@ -43,6 +43,21 @@ final class StringableListTest extends TestCase {
     }
 
 
+    public function testAsList() : void {
+        $baz = new SimpleStringable( 'Baz' );
+        $stl = new StringableList( [ 'Foo', 'Bar', $baz ] );
+        self::assertSame( [ 'Foo', 'Bar', $baz ], $stl->asList() );
+    }
+
+
+    public function testAsListForNested() : void {
+        $bar = new SimpleStringable( 'Bar' );
+        $stl = new StringableList( [ 'Foo', $bar ] );
+        $stl2 = new StringableList( [ 'Baz', $stl ] );
+        self::assertSame( [ 'Baz', $stl ], $stl2->asList() );
+    }
+
+
     public function testChildren() : void {
         $el = new StringableList( [ 'foo', 'bar', 'baz' ] );
         self::assertSame( [ 'foo', 'bar', 'baz' ], iterator_to_array( $el->children(), false ) );

@@ -15,7 +15,7 @@ trait StringableStreamTrait {
 
 
     public function __toString() : string {
-        return join( '', $this->asArray() );
+        return join( '', $this->asList() );
     }
 
 

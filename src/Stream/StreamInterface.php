@@ -17,7 +17,7 @@ interface StreamInterface {
 
 
     /** @return list<string|Stringable> */
-    public function asArray() : array;
+    public function asList() : array;
 
 
     /** @return iterable<string|Stringable> */

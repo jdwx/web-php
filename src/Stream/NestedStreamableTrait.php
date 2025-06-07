@@ -15,9 +15,9 @@ trait NestedStreamableTrait {
 
     /** @return iterable<string|Stringable> */
     public function stream() : iterable {
-        yield from YieldHelper::yield( $this->prefix() );
-        yield from YieldHelper::yield( $this->infix() );
-        yield from YieldHelper::yield( $this->postfix() );
+        yield from StreamHelper::yield( $this->prefix() );
+        yield from StreamHelper::yield( $this->infix() );
+        yield from StreamHelper::yield( $this->postfix() );
     }
 
 

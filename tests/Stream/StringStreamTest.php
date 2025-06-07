@@ -18,7 +18,7 @@ final class StringStreamTest extends TestCase {
 
     public function testAsArray() : void {
         $sst = new StringStream( 'foo' );
-        self::assertSame( [ 'foo' ], $sst->asArray() );
+        self::assertSame( [ 'foo' ], $sst->asList() );
     }
 
 

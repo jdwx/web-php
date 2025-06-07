@@ -8,7 +8,7 @@ namespace JDWX\Web\Pages;
 
 
 use JDWX\Json\Json;
-use JDWX\Web\Stream\StringStreamTrait;
+use JDWX\Stream\StringStreamTrait;
 use JsonSerializable;
 
 

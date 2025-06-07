@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Pages;
 
 
-use JDWX\Web\Stream\StreamInterface;
+use JDWX\Stream\StreamInterface;
 use Stringable;
 
 

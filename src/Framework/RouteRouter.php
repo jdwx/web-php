@@ -33,7 +33,7 @@ class RouteRouter extends AbstractRouter {
      *                           it to a different route.
      */
     public function route( ?string $i_nstUriOverride = null ) : bool {
-        $stUri = $i_nstUriOverride ?? $this->uri();
+        $stUri = $i_nstUriOverride ?? $this->path();
 
         $rBestMatches = [];
         $uBestMatchLength = 0;

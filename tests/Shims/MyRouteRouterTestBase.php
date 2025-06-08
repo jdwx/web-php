@@ -60,6 +60,19 @@ abstract class MyRouteRouterTestBase extends TestCase {
     }
 
 
+    public function testRouteForFragment() : void {
+        $req = $this->newRequest( 'GET', '/test#foo' );
+        $router = $this->newRouter( i_req: $req );
+        $route = new MyRoute( $router, [
+            'GET' => function ( $stUri, $stPath ) {
+                return Response::text( "{$stUri}:{$stPath}" );
+            },
+        ] );
+        $router->addRoutePub( '/test', $route );
+        self::assertSame( '/test:', $router->routeOutput() );
+    }
+
+
     public function testRouteForLongestPrefix() : void {
         $req = $this->newRequest( 'GET', '/test/this/that/these' );
         $router = $this->newRouter( i_req: $req );
@@ -106,6 +119,19 @@ abstract class MyRouteRouterTestBase extends TestCase {
         ], true );
         $router->addRoutePub( '/test/', $route );
         self::assertSame( '/test/:/this', $router->routeOutput() );
+    }
+
+
+    public function testRouteForQueryParameters() : void {
+        $req = $this->newRequest( 'GET', '/test?foo=bar' );
+        $router = $this->newRouter( i_req: $req );
+        $route = new MyRoute( $router, [
+            'GET' => function ( $stUri, $stPath ) {
+                return Response::text( "{$stUri}:{$stPath}" );
+            },
+        ], true );
+        $router->addRoutePub( '/test', $route );
+        self::assertSame( '/test:', $router->routeOutput() );
     }
 
 

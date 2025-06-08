@@ -16,6 +16,14 @@ use PHPUnit\Framework\TestCase;
 final class ResponseTest extends TestCase {
 
 
+    public function testBinary() : void {
+        $response = Response::binary( 'FOO_BAR' );
+        self::assertSame( 'FOO_BAR', strval( $response->getPage() ) );
+        self::assertSame( 200, $response->getStatusCode() );
+        self::assertSame( [], $response->getHeaders()->toArray() );
+    }
+
+
     public function testHtml() : void {
         $response = Response::html( '<h1>Hello, world!</h1>', 200, [ 'X-Foo: Bar' ] );
         self::assertStringContainsString( '<h1>Hello, world!</h1>', strval( $response->getPage() ) );

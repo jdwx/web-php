@@ -8,6 +8,7 @@ namespace JDWX\Web\Framework;
 
 
 use JDWX\Web\Pages\PageInterface;
+use JDWX\Web\Pages\SimpleBinaryPage;
 use JDWX\Web\Pages\SimpleHtmlPage;
 use JDWX\Web\Pages\SimpleJsonPage;
 use JDWX\Web\Pages\SimpleTextPage;
@@ -20,6 +21,13 @@ use JDWX\Web\Pages\SimpleTextPage;
  * statistics that are made up.)
  */
 readonly class Response extends AbstractResponse {
+
+
+    /** @param ?iterable<string> $i_rHeaders */
+    public static function binary( string  $i_stData, int $i_uStatusCode = 200,
+                                   ?string $i_stContentType = null, ?iterable $i_rHeaders = null ) : self {
+        return static::page( new SimpleBinaryPage( $i_stData, $i_stContentType ), $i_uStatusCode, $i_rHeaders );
+    }
 
 
     /** @param ?iterable<string> $i_rHeaders */

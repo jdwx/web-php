@@ -13,7 +13,7 @@ use JDWX\Web\Server;
 readonly class MockServer extends Server {
 
 
-    protected const array DEFAULTS = [
+    protected const array EXTRA_DEFAULTS = [
         'DOCUMENT_ROOT' => '/var/www/html',
         'HTTP_HOST' => 'www.example.com',
         'HTTP_REFERER' => 'https://www.example.org/referer.html',
@@ -36,6 +36,12 @@ readonly class MockServer extends Server {
     /** @param array<string, bool|int|string> $i_rDefaults */
     public static function POST( array $i_rDefaults = [] ) : self {
         $i_rDefaults[ 'REQUEST_METHOD' ] = 'POST';
+        return self::new( $i_rDefaults );
+    }
+
+
+    public static function new( array $i_rDefaults = [] ) : self {
+        $i_rDefaults = array_merge( self::EXTRA_DEFAULTS, $i_rDefaults );
         return new self( $i_rDefaults );
     }
 

@@ -176,6 +176,31 @@ final class AbstractRequestTest extends TestCase {
     }
 
 
+    public function testReferer() : void {
+        $srv = MockServer::new()->withHttpReferer( null );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::assertNull( $req->refererParts() );
+
+        $srv = MockServer::new()->withHttpReferer( 'https://www.example.com/foo/bar' );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::assertSame( 'https://www.example.com/foo/bar', $req->referer() );
+    }
+
+
+    public function testRefererParts() : void {
+        $srv = MockServer::new()->withHttpReferer( null );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::assertNull( $req->referer() );
+
+        $srv = MockServer::new()->withHttpReferer( 'https://www.example.com/foo/bar' );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        $parts = $req->refererParts();
+        self::assertSame( 'https', $parts->nstScheme );
+        self::assertSame( 'www.example.com', $parts->nstHost );
+        self::assertSame( '/foo/bar', $parts->path() );
+    }
+
+
     public function testServer() : void {
         $srv = new MockServer();
         $req = $this->newAbstractRequest( i_server: $srv );
@@ -254,7 +279,7 @@ final class AbstractRequestTest extends TestCase {
         $setPost = new ParameterSet( $i_rPost );
         $setCookie = new ParameterSet( $i_rCookie );
         $files = new FilesHandler( $i_rFiles );
-        $srv = $i_server ?? new MockServer();
+        $srv = $i_server ?? MockServer::new();
         return new readonly class( $setGet, $setPost, $setCookie, $files, $srv )
             extends AbstractRequest {
 

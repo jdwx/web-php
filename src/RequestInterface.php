@@ -77,6 +77,12 @@ interface RequestInterface {
     public function postHas( ...$i_rstNames ) : bool;
 
 
+    public function referer() : ?string;
+
+
+    public function refererParts() : ?UrlParts;
+
+
     public function server() : ServerInterface;
 
 

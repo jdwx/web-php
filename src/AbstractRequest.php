@@ -135,6 +135,20 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
+    public function referer() : ?string {
+        return $this->server->httpReferer();
+    }
+
+
+    public function refererParts() : ?UrlParts {
+        $nst = $this->referer();
+        if ( ! is_string( $nst ) ) {
+            return null;
+        }
+        return Url::splitEx( $nst );
+    }
+
+
     public function server() : ServerInterface {
         return $this->server;
     }

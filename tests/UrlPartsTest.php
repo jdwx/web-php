@@ -62,8 +62,28 @@ final class UrlPartsTest extends TestCase {
 
 
     public function testPath() : void {
+
         $url = Url::splitEx( 'https://example.com/path/to/resource?query=string#fragment' );
         self::assertSame( '/path/to/resource', $url->path() );
+
+        $parts = Url::split( 'https://www.example.com:12345/a/b?foo=1&bar=baz' );
+        self::assertSame( '/a/b', $parts->path() );
+
+        $parts = Url::split( 'https://www.example.com:12345/a/b/?foo=1' );
+        self::assertSame( '/a/b/', $parts->path() );
+
+        $parts = Url::split( 'https://www.example.com:12345/?foo=1' );
+        self::assertSame( '/', $parts->path() );
+
+        $parts = Url::split( 'https://www.example.com:12345?foo=1' );
+        self::assertSame( '/', $parts->path() );
+
+        $parts = Url::split( 'https://www.example.com:12345' );
+        self::assertSame( '/', $parts->path() );
+
+        $paths = Url::split( '/foo/bar/baz' );
+        self::assertSame( '/foo/bar/baz', $paths->path() );
+
     }
 
 

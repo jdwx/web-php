@@ -13,10 +13,36 @@ use JDWX\Web\UrlParts;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 
 #[CoversClass( Url::class )]
 final class UrlTest extends TestCase {
+
+
+    public function testHost() : void {
+
+        $nstHost = Url::host( 'https://example.com/path/to/resource?query=string#fragment' );
+        self::assertSame( 'example.com', $nstHost );
+
+        $nstHost = Url::host( 'https://www.example.com:12345/a/b?foo=1&bar=baz' );
+        self::assertSame( 'www.example.com', $nstHost );
+
+        $nstHost = Url::host( '/foo/bar/baz' );
+        self::assertNull( $nstHost );
+
+    }
+
+
+    public function testHostEx() : void {
+
+        $nstHost = Url::hostEx( 'https://example.com/path/to/resource?query=string#fragment' );
+        self::assertSame( 'example.com', $nstHost );
+
+        self::expectException( RuntimeException::class );
+        Url::hostEx( '/foo/bar/baz' );
+
+    }
 
 
     public function testParent() : void {
@@ -41,14 +67,50 @@ final class UrlTest extends TestCase {
 
 
     public function testPath() : void {
-        $parts = Url::split( 'https://www.example.com:12345/a/b?foo=1&bar=baz' );
-        self::assertSame( '/a/b', $parts->path() );
-        $parts = Url::split( 'https://www.example.com:12345/a/b/?foo=1' );
-        self::assertSame( '/a/b/', $parts->path() );
-        $parts = Url::split( 'https://www.example.com:12345/?foo=1' );
-        self::assertSame( '/', $parts->path() );
-        $parts = Url::split( 'https://www.example.com:12345?foo=1' );
-        self::assertSame( '/', $parts->path() );
+        $stPath = Url::path( 'https://example.com/path/to/resource?query=string#fragment' );
+        self::assertSame( '/path/to/resource', $stPath );
+
+        $stPath = Url::path( 'https://www.example.com:12345/a/b?foo=1&bar=baz' );
+        self::assertSame( '/a/b', $stPath );
+
+        $stPath = Url::path( 'https://www.example.com:12345/a/b/?foo=1' );
+        self::assertSame( '/a/b/', $stPath );
+
+        $stPath = Url::path( 'https://www.example.com:12345/?foo=1' );
+        self::assertSame( '/', $stPath );
+
+        $stPath = Url::path( 'https://www.example.com:12345?foo=1' );
+        self::assertSame( '/', $stPath );
+
+        $stPath = Url::path( 'https://www.example.com:12345' );
+        self::assertSame( '/', $stPath );
+
+        $stPath = Url::path( '/foo/bar/baz' );
+        self::assertSame( '/foo/bar/baz', $stPath );
+    }
+
+
+    public function testScheme() : void {
+        $stScheme = Url::scheme( 'https://example.com/path/to/resource?query=string#fragment' );
+        self::assertSame( 'https', $stScheme );
+
+        /** @noinspection HttpUrlsUsage */
+        $stScheme = Url::scheme( 'http://example.com/path/to/resource?query=string#fragment' );
+        self::assertSame( 'http', $stScheme );
+
+        $stScheme = Url::scheme( 'imap://imap.example.com/;TYPE=LIST' );
+        self::assertSame( 'imap', $stScheme );
+
+        self::assertNull( Url::scheme( '/foo/bar/baz' ) );
+    }
+
+
+    public function testSchemeEx() : void {
+        $stScheme = Url::schemeEx( 'https://example.com/path/to/resource?query=string#fragment' );
+        self::assertSame( 'https', $stScheme );
+
+        self::expectException( RuntimeException::class );
+        Url::schemeEx( '/foo/bar/baz' );
     }
 
 

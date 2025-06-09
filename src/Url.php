@@ -35,8 +35,41 @@ class Url {
         . self::ALLOWED_UNRESERVED;
 
 
+    public static function host( string $i_url ) : ?string {
+        return self::splitEx( $i_url )->nstHost;
+    }
+
+
+    public static function hostEx( string $i_url ) : string {
+        $nst = self::host( $i_url );
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new \RuntimeException( "No host in URL: {$i_url}" );
+    }
+
+
     public static function parent( string $i_url ) : string {
         return self::splitEx( $i_url )->parent()->__toString();
+    }
+
+
+    public static function path( string $i_url ) : string {
+        return self::splitEx( $i_url )->path();
+    }
+
+
+    public static function scheme( string $i_url ) : ?string {
+        return self::splitEx( $i_url )->nstScheme;
+    }
+
+
+    public static function schemeEx( string $i_url ) : string {
+        $nst = self::scheme( $i_url );
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new \RuntimeException( "No scheme in URL: {$i_url}" );
     }
 
 

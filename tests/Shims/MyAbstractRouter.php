@@ -39,6 +39,7 @@ class MyAbstractRouter extends AbstractRouter {
     public ?ResponseInterface $response = null;
 
 
+    /** @suppress PhanParamTooMany */
     public function route( ?string $i_nstOverride = null ) : bool {
         $fnRoute = $this->fnRoute;
         if ( $fnRoute ) {

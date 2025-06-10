@@ -120,6 +120,10 @@ class UrlParts implements \ArrayAccess, Stringable {
     }
 
 
+    /**
+     * Generates a new UrlParts object that is just the path component
+     * of the current one.
+     */
     public function pathOnly() : static {
         /** @phpstan-ignore new.static */
         $path = new static();

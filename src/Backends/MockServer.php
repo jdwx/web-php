@@ -18,11 +18,11 @@ readonly class MockServer extends Server {
         'HTTP_HOST' => 'www.example.com',
         'HTTP_REFERER' => 'https://www.example.org/referer.html',
         'HTTP_USER_AGENT' => 'Super Fake User Agent',
-        'HTTPS' => true,
+        'HTTPS' => 'on',
         'PATH_INFO' => '/path/to/script.php',
         'PHP_SELF' => '/index.php',
         'REMOTE_ADDR' => '127.0.0.1',
-        'REMOTE_PORT' => 12345,
+        'REMOTE_PORT' => '12345',
         'REQUEST_METHOD' => 'GET',
         'REQUEST_SCHEME' => 'https',
         'REQUEST_URI' => '/',
@@ -40,6 +40,7 @@ readonly class MockServer extends Server {
     }
 
 
+    /** @param array<string, bool|int|string> $i_rDefaults */
     public static function new( array $i_rDefaults = [] ) : self {
         $i_rDefaults = array_merge( self::EXTRA_DEFAULTS, $i_rDefaults );
         return new self( $i_rDefaults );

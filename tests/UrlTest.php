@@ -157,7 +157,7 @@ final class UrlTest extends TestCase {
 
     public function testSplitForArray() : void {
         $parts = Url::split( '/a/b?foo[]=1&foo[]=2' );
-        self::assertInstanceOf( UrlParts::class, $parts );
+        assert( $parts instanceof UrlParts );
         self::assertSame( [ 'a' ], $parts->subFolders );
         self::assertSame( 'b', $parts->nstFile );
         self::assertSame( [ '1', '2' ], $parts[ 'foo' ] );
@@ -173,7 +173,7 @@ final class UrlTest extends TestCase {
 
     public function testSplitForFragment() : void {
         $parts = Url::split( '/a/b#fragment' );
-        self::assertInstanceOf( UrlParts::class, $parts );
+        assert( $parts instanceof UrlParts );
         self::assertSame( 'fragment', $parts->nstFragment );
     }
 
@@ -203,7 +203,7 @@ final class UrlTest extends TestCase {
 
     public function testSplitForValid() : void {
         $parts = Url::split( '/a/b?foo=1&bar=baz' );
-        self::assertInstanceOf( UrlParts::class, $parts );
+        assert( $parts instanceof UrlParts );
         self::assertSame( [ 'a' ], $parts->subFolders );
         self::assertSame( 'b', $parts->nstFile );
         self::assertSame( '1', $parts[ 'foo' ] );

@@ -31,7 +31,7 @@ final class RequestTest extends TestCase {
 
     public function testGlobalCookie() : void {
         $req = $this->newGlobalRequest( i_rCookie: [ 'foo' => 'bar' ] );
-        self::assertSame( 'bar', $req->COOKIE( 'foo' )->asString() );
+        self::assertSame( 'bar', $req->COOKIE( 'foo' )?->asString() );
     }
 
 
@@ -43,7 +43,7 @@ final class RequestTest extends TestCase {
 
     public function testGlobalGet() : void {
         $req = $this->newGlobalRequest( [ 'foo' => 'bar' ] );
-        self::assertSame( 'bar', $req->GET( 'foo' )->asString() );
+        self::assertSame( 'bar', $req->GET( 'foo' )?->asString() );
     }
 
 
@@ -55,7 +55,7 @@ final class RequestTest extends TestCase {
 
     public function testGlobalPost() : void {
         $req = $this->newGlobalRequest( i_rPost: [ 'foo' => 'bar' ] );
-        self::assertSame( 'bar', $req->POST( 'foo' )->asString() );
+        self::assertSame( 'bar', $req->POST( 'foo' )?->asString() );
     }
 
 
@@ -74,7 +74,7 @@ final class RequestTest extends TestCase {
 
         $req = Request::getGlobal();
         self::assertInstanceOf( Request::class, $req );
-        self::assertSame( 'bar', $req->GET( 'foo' )->asString() );
+        self::assertSame( 'bar', $req->GET( 'foo' )?->asString() );
 
         self::expectException( LogicException::class );
         Request::init( [], [], [], [], $srv );

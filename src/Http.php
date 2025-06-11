@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Strict\TypeIs;
 use JDWX\Web\Backends\HttpBackendInterface;
 
 
@@ -61,7 +62,7 @@ class Http {
         if ( ! self::$backend ) {
             self::init( new Backends\PHPHttpBackend() );
         }
-        return self::$backend;
+        return TypeIs::object( self::$backend );
     }
 
 

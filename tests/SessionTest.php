@@ -8,6 +8,7 @@ namespace JDWX\Web\Tests;
 
 
 use InvalidArgumentException;
+use JDWX\Web\Backends\AbstractSessionBackend;
 use JDWX\Web\Backends\MockSessionBackend;
 use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
@@ -20,6 +21,7 @@ use RuntimeException;
 use TypeError;
 
 
+#[CoversClass( AbstractSessionBackend::class )]
 #[CoversClass( Session::class )]
 final class SessionTest extends TestCase {
 
@@ -74,7 +76,7 @@ final class SessionTest extends TestCase {
         $be = $this->initSession();
         $req = Request::synthetic( [], [], [], [] );
         self::assertFalse( Session::cookieInRequest( $req ) );
-        $req = Request::synthetic( [], [], [ $be->stName => $be->stID ], [] );
+        $req = Request::synthetic( [], [], [ $be->bstName => $be->stID ], [] );
         self::assertTrue( Session::cookieInRequest( $req ) );
         self::assertFalse( Session::cookieInRequest() );
     }
@@ -385,7 +387,7 @@ final class SessionTest extends TestCase {
     public function testStart() : void {
         $be = $this->initSession();
         Session::start( i_stSessionName: 'alt-session-name' );
-        self::assertSame( 'alt-session-name', $be->stName );
+        self::assertSame( 'alt-session-name', $be->bstName );
         Session::destroy();
         $be->bFailStart = true;
         self::expectException( RuntimeException::class );

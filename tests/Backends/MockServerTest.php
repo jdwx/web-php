@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web\Tests;
+namespace JDWX\Web\Tests\Backends;
 
 
 use JDWX\Web\Backends\MockServer;

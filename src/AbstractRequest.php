@@ -140,12 +140,30 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
+    public function refererEx() : string {
+        $nst = $this->referer();
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new OutOfBoundsException( 'Referer URL not available' );
+    }
+
+
     public function refererParts() : ?UrlParts {
         $nst = $this->referer();
         if ( ! is_string( $nst ) ) {
             return null;
         }
         return Url::splitEx( $nst );
+    }
+
+
+    public function refererPartsEx() : UrlParts {
+        $nur = $this->refererParts();
+        if ( $nur instanceof UrlParts ) {
+            return $nur;
+        }
+        throw new OutOfBoundsException( 'Referer URL parts not available' );
     }
 
 

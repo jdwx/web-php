@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Tests\Framework;
 
 
+use JDWX\Strict\OK;
 use JDWX\Web\Framework\Exceptions\NotFoundException;
 use JDWX\Web\Framework\HttpError;
 use JDWX\Web\Tests\Shims\MyTestCase;
@@ -52,18 +53,18 @@ final class HttpErrorTest extends MyTestCase {
 
     public function testShow() : void {
         $error = new HttpError();
-        ob_start();
+        OK::ob_start();
         $error->show( 404 );
-        $result = ob_get_clean();
+        $result = OK::ob_get_clean();
         self::assertStringContainsString( 'Not Found', $result );
     }
 
 
     public function testShowException() : void {
         $error = new HttpError();
-        ob_start();
+        OK::ob_start();
         $error->showException( new NotFoundException( i_nstDisplay: 'TEST_EXCEPTION' ) );
-        $result = ob_get_clean();
+        $result = OK::ob_get_clean();
         self::assertStringContainsString( 'TEST_EXCEPTION', $result );
     }
 

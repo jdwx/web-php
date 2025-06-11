@@ -10,10 +10,9 @@ namespace JDWX\Web\Framework;
 readonly class RouteMatch {
 
 
-    /** @param array<string, string> $rParameters */
+    /** @param array<string, list<string>|string> $rParameters */
     public function __construct( public string $stUri, public string|RouteInterface $route,
-                                 public string $stPathInfo, public array $rParameters ) {
-    }
+                                 public string $stPathInfo, public array $rParameters ) {}
 
 
     public function isExact() : bool {

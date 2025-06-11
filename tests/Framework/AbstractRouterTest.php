@@ -8,6 +8,7 @@ namespace JDWX\Web\Tests\Framework;
 
 
 use JDWX\Log\BufferLogger;
+use JDWX\Strict\OK;
 use JDWX\Web\Backends\MockHttpBackend;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\AbstractRouter;
@@ -46,7 +47,7 @@ final class AbstractRouterTest extends MyTestCase {
 
 
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
         ob_end_clean();
         self::assertSame( 'Bar', $http->getHeader( 'X-Foo' ) );
@@ -67,7 +68,7 @@ final class AbstractRouterTest extends MyTestCase {
 
 
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
         ob_end_clean();
         self::assertSame( 'Bar', $http->getHeader( 'X-Foo' ) );
@@ -153,9 +154,9 @@ final class AbstractRouterTest extends MyTestCase {
 
 
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $result = ob_get_clean();
+        $result = OK::ob_get_clean();
         self::assertStringContainsString( 'TEST_HTML', $result );
     }
 
@@ -173,9 +174,9 @@ final class AbstractRouterTest extends MyTestCase {
 
 
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $result = ob_get_clean();
+        $result = OK::ob_get_clean();
         self::assertSame( 200, $http->getResponseCode() );
         self::assertSame( 'application/json', $http->getHeader( 'Content-Type' ) );
         self::assertStringContainsString( '"foo":"bar"', $result );
@@ -196,9 +197,9 @@ final class AbstractRouterTest extends MyTestCase {
 
 
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $result = ob_get_clean();
+        $result = OK::ob_get_clean();
         self::assertSame( 'TEST_CONTENT', $result );
         self::assertSame( 200, $http->getResponseCode() );
         self::assertSame( 'text/plain', $http->getHeader( 'Content-Type' ) );
@@ -219,9 +220,9 @@ final class AbstractRouterTest extends MyTestCase {
 
 
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $result = ob_get_clean();
+        $result = OK::ob_get_clean();
         self::assertSame( 'TEST_CONTENT', $result );
     }
 
@@ -233,13 +234,13 @@ final class AbstractRouterTest extends MyTestCase {
         $router->fnRoute = function () {
             throw new InternalServerException( 'TEST_EXCEPTION' );
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertStringContainsString( '500', $st );
         self::assertStringContainsString( 'Internal Server Error', $st );
         self::assertSame( 500, Http::getResponseCode() );
-        $log = $logger->shiftLog();
+        $log = $logger->shiftLogEx();
         self::assertStringContainsString( 'TEST_EXCEPTION', $log->message );
     }
 
@@ -248,9 +249,9 @@ final class AbstractRouterTest extends MyTestCase {
         $req = $this->newRequest( 'GET', '/test/..' );
         $logger = new BufferLogger();
         $router = new MyAbstractRouter( $logger, i_req: $req );
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertStringContainsString( '400 Bad Request', $st );
     }
 
@@ -260,12 +261,12 @@ final class AbstractRouterTest extends MyTestCase {
         $logger = new BufferLogger();
         $router = new MyAbstractRouter( $logger, i_req: $req );
         $router->bReturn = false;
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertStringContainsString( '404', $st );
         self::assertStringContainsString( 'Not Found', $st );
-        $log = $logger->shiftLog();
+        $log = $logger->shiftLogEx();
         self::assertSame( '(nothing)', $log->context[ 'display' ] );
     }
 
@@ -276,9 +277,9 @@ final class AbstractRouterTest extends MyTestCase {
         $router->fnRoute = function () {
             echo 'foo';
         };
-        ob_start();
+        OK::ob_start();
         $router->run();
-        $result = ob_get_clean();
+        $result = OK::ob_get_clean();
         self::assertSame( 'foo', $result );
     }
 

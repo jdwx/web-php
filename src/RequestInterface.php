@@ -39,7 +39,7 @@ interface RequestInterface {
 
 
     /** @param string ...$i_rstNames */
-    public function cookieHas( ...$i_rstNames ) : bool;
+    public function cookieHas( string ...$i_rstNames ) : bool;
 
 
     public function getEx( string $i_stName, mixed $i_xDefault = null ) : IParameter;
@@ -80,7 +80,13 @@ interface RequestInterface {
     public function referer() : ?string;
 
 
+    public function refererEx() : string;
+
+
     public function refererParts() : ?UrlParts;
+
+
+    public function refererPartsEx() : UrlParts;
 
 
     public function server() : ServerInterface;

@@ -7,6 +7,8 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Framework;
 
 
+use JDWX\Strict\OK;
+use JDWX\Strict\TypeIs;
 use JDWX\Web\Framework\Exceptions\HttpStatusException;
 use JDWX\Web\Pages\SimpleHtmlPage;
 
@@ -65,9 +67,9 @@ class HttpError {
         # If there is an error page for this error, use it.
         $path = $this->errorPath( $i_uHTTPStatus );
         if ( is_string( $path ) ) {
-            ob_start();
+            OK::ob_start();
             require $path;
-            return ob_get_clean();
+            return OK::ob_get_clean();
         }
 
         $stErrorName = $this->errorName( $i_uHTTPStatus, $i_nstErrorName );
@@ -90,7 +92,7 @@ class HttpError {
 
 
     public function showException( HttpStatusException $i_e ) : void {
-        $this->show( $i_e->getCode(), $i_e->display() );
+        $this->show( TypeIs::int( $i_e->getCode() ), $i_e->display() );
     }
 
 

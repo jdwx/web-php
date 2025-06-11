@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Backends;
 
 
+use JDWX\Strict\OK;
+
+
 /**
  *
  * This is the HTTP stuff that PHP provides that cannot be tested
@@ -18,7 +21,7 @@ class PHPHttpBackend extends AbstractHttpBackend {
 
 
     public function getResponseCode() : int {
-        return http_response_code();
+        return OK::http_response_code();
     }
 
 

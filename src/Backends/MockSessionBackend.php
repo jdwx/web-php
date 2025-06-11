@@ -16,7 +16,7 @@ class MockSessionBackend extends AbstractSessionBackend {
 
     public bool $bActive;
 
-    public string $stName;
+    public false|string $bstName;
 
     public string $stCacheLimiter;
 
@@ -46,7 +46,7 @@ class MockSessionBackend extends AbstractSessionBackend {
     public bool $bFailWriteClose = false;
 
 
-    /** @param array<string, string> $rBackup */
+    /** @param array<string, mixed> $rBackup */
     public function __construct( public array $rBackup ) {
         $this->setup();
     }
@@ -140,7 +140,7 @@ class MockSessionBackend extends AbstractSessionBackend {
 
 
     public function has2( string $name, string $sub ) : bool {
-        return array_key_exists( $name, $this->rSession ) && array_key_exists( $sub, $this->rSession[ $name ] );
+        return isset( $this->rSession[ $name ][ $sub ] );
     }
 
 
@@ -158,10 +158,10 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @return array<string, string|list<string>> */
+    /** @return array<string, mixed> */
     public function list() : array {
         # This forces a copy so we don't hand back a modifiable reference to $_SESSION.
-        return array_merge( [], $this->rSession );
+        return array_merge( $this->rSession, [] );
     }
 
 
@@ -171,11 +171,11 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function name( ?string $value = null ) : string|false {
+    public function name( ?string $value = null ) : false|string {
         if ( is_string( $value ) ) {
-            $this->stName = $value;
+            $this->bstName = $value;
         }
-        return $this->stName;
+        return $this->bstName;
     }
 
 
@@ -251,7 +251,7 @@ class MockSessionBackend extends AbstractSessionBackend {
 
     public function setup() : void {
         $this->bActive = false;
-        $this->stName = 'test-session';
+        $this->bstName = 'test-session';
         $this->stCacheLimiter = 'nocache';
         $this->stID = '';
         $this->rSession = $this->rBackup;

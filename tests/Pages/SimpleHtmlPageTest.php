@@ -45,7 +45,8 @@ final class SimpleHtmlPageTest extends TestCase {
         $st = $page->render();
         # Appears at least once.
         $u = strpos( $st, '<link rel="stylesheet" href="foo">' );
-        self::assertNotFalse( $u );
+        assert( is_int( $u ) );
+        self::assertGreaterThan( 0, $u );
 
         # But not twice.
         $u = strpos( $st, '<link rel="stylesheet" href="foo">', $u + 1 );

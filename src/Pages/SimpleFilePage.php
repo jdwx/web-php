@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Pages;
 
 
+use JDWX\Strict\OK;
+
+
 class SimpleFilePage extends AbstractBinaryPage {
 
 
@@ -55,7 +58,7 @@ class SimpleFilePage extends AbstractBinaryPage {
      * @inheritDoc
      */
     public function stream() : iterable {
-        $f = fopen( $this->stFilename, 'rb' );
+        $f = OK::fopen( $this->stFilename, 'rb' );
         while ( ! feof( $f ) ) {
             yield fread( $f, $this->uReadSize );
         }

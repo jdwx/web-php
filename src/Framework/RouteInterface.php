@@ -27,7 +27,7 @@ interface RouteInterface {
     /**
      * @param string $i_stUri The URI of the route.
      * @param string $i_stPath The URI of any path after the route.
-     * @param array<string, string> $i_rUriParameters The parameters for the route. (If any.)
+     * @param array<string, list<string>|string> $i_rUriParameters The parameters for the route. (If any.)
      * @return ResponseInterface|null The response object or null to defer to the next matching route.
      *
      * If the route is a prefix, the path will be the rest of the URI after the route

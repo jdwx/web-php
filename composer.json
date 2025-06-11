@@ -15,6 +15,7 @@
     "jdwx/json-php": "^1.0",
     "jdwx/log": "^1.0",
     "jdwx/param": "^1.0",
+    "jdwx/strict": "^1.0",
     "jdwx/stream": "^1.0",
     "jdwx/trie": "dev-main",
     "psr/log": "^3.0"

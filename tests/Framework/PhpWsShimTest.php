@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Tests\Framework;
 
 
+use JDWX\Strict\OK;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\PhpWsShim;
 use JDWX\Web\Request;
@@ -27,9 +28,9 @@ final class PhpWsShimTest extends TestCase {
         $shim->addHook( '/exact', function () {
             echo 'Hello, world!';
         }, true );
-        ob_start();
+        OK::ob_start();
         self::assertTrue( $shim->run() );
-        $output = ob_get_clean();
+        $output = OK::ob_get_clean();
         self::assertSame( 'Hello, world!', $output );
     }
 
@@ -41,9 +42,9 @@ final class PhpWsShimTest extends TestCase {
         $shim->addHook( '/hook/', function () {
             echo 'Hello, world!';
         } );
-        ob_start();
+        OK::ob_start();
         self::assertTrue( $shim->run() );
-        $output = ob_get_clean();
+        $output = OK::ob_get_clean();
         self::assertSame( 'Hello, world!', $output );
     }
 
@@ -55,9 +56,9 @@ final class PhpWsShimTest extends TestCase {
             echo 'Hello, world!';
         };
         $shim = new PhpWsShim( $router );
-        ob_start();
+        OK::ob_start();
         self::assertTrue( $shim->run() );
-        $output = ob_get_clean();
+        $output = OK::ob_get_clean();
         self::assertSame( 'Hello, world!', $output );
     }
 
@@ -67,9 +68,9 @@ final class PhpWsShimTest extends TestCase {
         $router = new MyAbstractRouter( i_req: $req );
         $shim = new PhpWsShim( $router );
         $shim->addStaticUri( '/' );
-        ob_start();
+        OK::ob_start();
         self::assertTrue( $shim->run() );
-        $output = ob_get_clean();
+        $output = OK::ob_get_clean();
         self::assertStringContainsString( 'This is a test.', $output );
     }
 

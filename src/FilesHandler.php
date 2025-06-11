@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Strict\TypeIs;
 use JDWX\Web\Backends\FilesBackendInterface;
 use JDWX\Web\Backends\PHPFilesBackend;
 use RuntimeException;
@@ -103,7 +104,7 @@ readonly class FilesHandler {
 
     public function type( string $i_stTag, ?int $i_niIndex = null ) : string {
         $this->check( $i_stTag, $i_niIndex );
-        return $this->rFiles[ $i_stTag ][ 'type' ];
+        return TypeIs::string( $this->rFiles[ $i_stTag ][ 'type' ] );
     }
 
 

@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Tests\Framework;
 
 
+use JDWX\Strict\OK;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\Framework\StaticShim;
 use JDWX\Web\Http;
@@ -28,7 +29,7 @@ final class StaticShimTest extends MyTestCase {
         $shim = new MyStaticShim( __DIR__, i_req: $req );
         self::assertFalse( $shim->handleStatic() );
         $shim->addStaticUri( '/' );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->handleStatic();
         ob_end_clean();
         self::assertTrue( $bResult );
@@ -47,9 +48,9 @@ final class StaticShimTest extends MyTestCase {
         $req = $this->newRequest( '/no/such/file' );
         $shim = new StaticShim( __DIR__, i_req: $req );
         $shim->addStaticUri( '/' );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertStringContainsString( '404', $st );
         self::assertStringContainsString( 'Not Found', $st );
@@ -67,9 +68,9 @@ final class StaticShimTest extends MyTestCase {
         $req = $this->newRequest( '/static' );
         $shim = new StaticShim( __DIR__ . '/../../example/', i_req: $req );
         $shim->addStaticUri( '/' );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertSame( 403, Http::getResponseCode() );
         self::assertStringContainsString( '403', $st );
@@ -89,9 +90,9 @@ final class StaticShimTest extends MyTestCase {
     public function testRunForInferredDocumentRoot() : void {
         $req = $this->newRequest( '/example.txt', __DIR__ . '/../../example/static/' );
         $shim = new StaticShim( i_req: $req );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertStringContainsString( 'This is a test.', $st );
     }
@@ -101,9 +102,9 @@ final class StaticShimTest extends MyTestCase {
         $req = $this->newRequest( '/decoy/alias.txt' );
         $shim = new StaticShim( __DIR__ . '/../../example/', i_req: $req );
         $shim->addStaticMap( '/decoy/', __DIR__ . '/../../example/static/alias/' );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertStringContainsString( 'aliased example', $st );
     }
@@ -112,9 +113,9 @@ final class StaticShimTest extends MyTestCase {
     public function testRunForMultiViews() : void {
         $req = $this->newRequest( '/example2' );
         $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertStringContainsString( 'This is also a test.', $st );
     }
@@ -131,9 +132,9 @@ final class StaticShimTest extends MyTestCase {
         $req = $this->newRequest( '/example.exe' );
         $shim = new StaticShim( __DIR__, i_req: $req );
         $shim->addStaticUri( '/' );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertStringContainsString( '404', $st );
         self::assertStringContainsString( 'Not Found', $st );
@@ -158,9 +159,9 @@ final class StaticShimTest extends MyTestCase {
     public function testRunForSuccess() : void {
         $req = $this->newRequest( '/example.txt' );
         $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertStringContainsString( 'This is a test.', $st );
     }
@@ -169,9 +170,9 @@ final class StaticShimTest extends MyTestCase {
     public function testRunForUnknownType() : void {
         $req = $this->newRequest( '/example3.wtf' );
         $shim = new StaticShim( __DIR__ . '/../../example/static/', i_req: $req );
-        ob_start();
+        OK::ob_start();
         $bResult = $shim->run();
-        $st = ob_get_clean();
+        $st = OK::ob_get_clean();
         self::assertTrue( $bResult );
         self::assertSame( 200, Http::getResponseCode() );
         self::assertStringContainsString( 'text file', $st );

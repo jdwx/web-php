@@ -27,7 +27,7 @@ class MapRouteManager implements RouteManagerInterface {
         if ( isset( $this->routes[ $i_stUri ] ) ) {
             throw new InvalidArgumentException( "Route already exists for URI: {$i_stUri}" );
         }
-        $this->routes[ $i_stUri ] = $i_route;
+        $this->routes->put( $i_stUri, $i_route );
     }
 
 

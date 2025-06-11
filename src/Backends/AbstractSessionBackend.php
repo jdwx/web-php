@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Backends;
 
 
+use JDWX\Strict\TypeIs;
 use RuntimeException;
 
 
@@ -46,6 +47,11 @@ abstract class AbstractSessionBackend implements SessionBackendInterface {
             return $x;
         }
         throw new RuntimeException( 'Session failed to get id.' );
+    }
+
+
+    public function nameEx( ?string $value = null ) : string {
+        return TypeIs::string( $this->name( $value ) );
     }
 
 

@@ -75,6 +75,9 @@ interface SessionBackendInterface {
     public function name( ?string $value = null ) : string|false;
 
 
+    public function nameEx( ?string $value = null ) : string;
+
+
     public function regenerateId( bool $deleteOldSession = false ) : bool;
 
 

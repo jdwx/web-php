@@ -12,6 +12,7 @@ use JDWX\Web\AbstractRequest;
 use JDWX\Web\Backends\MockServer;
 use JDWX\Web\FilesHandler;
 use JDWX\Web\ServerInterface;
+use JDWX\Web\UrlParts;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -23,9 +24,9 @@ final class AbstractRequestTest extends TestCase {
 
     public function testCOOKIE() : void {
         $req = $this->newAbstractRequest( i_rCookie: [ 'foo' => 'bar', 1 => 'baz' ] );
-        self::assertSame( 'bar', $req->COOKIE( 'foo' )->asString() );
-        self::assertSame( 'baz', $req->COOKIE( '1' )->asString() );
-        self::assertSame( 'quux', $req->COOKIE( 'qux', 'quux' )->asString() );
+        self::assertSame( 'bar', $req->COOKIE( 'foo' )?->asString() );
+        self::assertSame( 'baz', $req->COOKIE( '1' )?->asString() );
+        self::assertSame( 'quux', $req->COOKIE( 'qux', 'quux' )?->asString() );
         self::assertNull( $req->COOKIE( 'bar' ) );
     }
 
@@ -55,9 +56,9 @@ final class AbstractRequestTest extends TestCase {
 
     public function testGET() : void {
         $req = $this->newAbstractRequest( [ 'foo' => 'bar', 1 => 'baz' ] );
-        self::assertSame( 'bar', $req->GET( 'foo' )->asString() );
-        self::assertSame( 'baz', $req->GET( '1' )->asString() );
-        self::assertSame( 'quux', $req->GET( 'qux', 'quux' )->asString() );
+        self::assertSame( 'bar', $req->GET( 'foo' )?->asString() );
+        self::assertSame( 'baz', $req->GET( '1' )?->asString() );
+        self::assertSame( 'quux', $req->GET( 'qux', 'quux' )?->asString() );
         self::assertNull( $req->GET( 'qux' ) );
     }
 
@@ -127,9 +128,9 @@ final class AbstractRequestTest extends TestCase {
 
     public function testPOST() : void {
         $req = $this->newAbstractRequest( i_rPost: [ 'foo' => 'bar', 1 => 'baz' ] );
-        self::assertSame( 'bar', $req->POST( 'foo' )->asString() );
-        self::assertSame( 'baz', $req->POST( '1' )->asString() );
-        self::assertSame( 'quux', $req->POST( 'qux', 'quux' )->asString() );
+        self::assertSame( 'bar', $req->POST( 'foo' )?->asString() );
+        self::assertSame( 'baz', $req->POST( '1' )?->asString() );
+        self::assertSame( 'quux', $req->POST( 'qux', 'quux' )?->asString() );
         self::assertNull( $req->POST( 'bar' ) );
     }
 
@@ -187,6 +188,19 @@ final class AbstractRequestTest extends TestCase {
     }
 
 
+    public function testRefererEx() : void {
+        $srv = MockServer::new()->withHttpReferer( 'https://www.example.com/foo/bar' );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::assertSame( 'https://www.example.com/foo/bar', $req->refererEx() );
+
+        $srv = MockServer::new()->withHttpReferer( null );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::expectException( OutOfBoundsException::class );
+        $req->refererEx();
+
+    }
+
+
     public function testRefererParts() : void {
         $srv = MockServer::new()->withHttpReferer( null );
         $req = $this->newAbstractRequest( i_server: $srv );
@@ -195,9 +209,25 @@ final class AbstractRequestTest extends TestCase {
         $srv = MockServer::new()->withHttpReferer( 'https://www.example.com/foo/bar' );
         $req = $this->newAbstractRequest( i_server: $srv );
         $parts = $req->refererParts();
+        assert( $parts instanceof UrlParts );
         self::assertSame( 'https', $parts->nstScheme );
         self::assertSame( 'www.example.com', $parts->nstHost );
         self::assertSame( '/foo/bar', $parts->path() );
+    }
+
+
+    public function testRefererPartsEx() : void {
+        $srv = MockServer::new()->withHttpReferer( 'https://www.example.com/foo/bar' );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        $parts = $req->refererPartsEx();
+        self::assertSame( 'https', $parts->nstScheme );
+        self::assertSame( 'www.example.com', $parts->nstHost );
+        self::assertSame( '/foo/bar', $parts->path() );
+
+        $srv = MockServer::new()->withHttpReferer( null );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::expectException( OutOfBoundsException::class );
+        $req->refererPartsEx();
     }
 
 

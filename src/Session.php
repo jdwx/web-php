@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Strict\TypeIs;
 use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use LogicException;
@@ -116,7 +117,7 @@ class Session {
         if ( ! $i_req ) {
             $i_req = Request::getGlobal();
         }
-        return $i_req->cookieHas( static::backend()->name() );
+        return $i_req->cookieHas( static::backend()->nameEx() );
     }
 
 
@@ -501,7 +502,7 @@ class Session {
             $stSessionName = $i_stSessionName;
             static::backend()->name( $stSessionName );
         } else {
-            $stSessionName = static::backend()->name();
+            $stSessionName = static::backend()->nameEx();
         }
 
         if ( ! $i_req ) {
@@ -580,7 +581,7 @@ class Session {
         if ( ! static::$backend instanceof SessionBackendInterface ) {
             static::init( new PHPSessionBackend() );
         }
-        return static::$backend;
+        return TypeIs::object( static::$backend );
     }
 
 

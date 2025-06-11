@@ -76,7 +76,7 @@ final class SessionTest extends TestCase {
         $be = $this->initSession();
         $req = Request::synthetic( [], [], [], [] );
         self::assertFalse( Session::cookieInRequest( $req ) );
-        $req = Request::synthetic( [], [], [ $be->bstName => $be->stID ], [] );
+        $req = Request::synthetic( [], [], [ $be->nameEx() => $be->idEx() ], [] );
         self::assertTrue( Session::cookieInRequest( $req ) );
         self::assertFalse( Session::cookieInRequest() );
     }

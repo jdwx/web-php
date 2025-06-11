@@ -60,9 +60,9 @@ class SimpleFilePage extends AbstractBinaryPage {
     public function stream() : iterable {
         $f = OK::fopen( $this->stFilename, 'rb' );
         while ( ! feof( $f ) ) {
-            yield fread( $f, $this->uReadSize );
+            yield OK::fread( $f, $this->uReadSize );
         }
-        fclose( $f );
+        OK::fclose( $f );
     }
 
 

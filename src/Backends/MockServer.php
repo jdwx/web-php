@@ -33,14 +33,14 @@ readonly class MockServer extends Server {
     ];
 
 
-    /** @param array<string, bool|int|string> $i_rDefaults */
+    /** @param array<string, ?string> $i_rDefaults */
     public static function POST( array $i_rDefaults = [] ) : self {
         $i_rDefaults[ 'REQUEST_METHOD' ] = 'POST';
         return self::new( $i_rDefaults );
     }
 
 
-    /** @param array<string, bool|int|string> $i_rDefaults */
+    /** @param array<string, ?string> $i_rDefaults */
     public static function new( array $i_rDefaults = [] ) : self {
         $i_rDefaults = array_merge( self::EXTRA_DEFAULTS, $i_rDefaults );
         return new self( $i_rDefaults );

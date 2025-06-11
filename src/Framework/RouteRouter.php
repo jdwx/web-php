@@ -85,7 +85,7 @@ class RouteRouter extends AbstractRouter {
         if ( is_string( $i_route ) && ! class_exists( $i_route ) ) {
             throw new InvalidArgumentException( "Class {$i_route} does not exist" );
         }
-        if ( ! is_subclass_of( $i_route, RouteInterface::class ) ) {
+        if ( is_string( $i_route ) && ! is_subclass_of( $i_route, RouteInterface::class ) ) {
             throw new InvalidArgumentException( "Class {$i_route} is not a route." );
         }
         $this->routes->add( $i_stUri, $i_route );

@@ -7,7 +7,6 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-use JDWX\Strict\TypeIs;
 use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use LogicException;
@@ -581,7 +580,7 @@ class Session {
         if ( ! static::$backend instanceof SessionBackendInterface ) {
             static::init( new PHPSessionBackend() );
         }
-        return TypeIs::object( static::$backend );
+        return static::$backend ?? throw new LogicException( 'Session backend not initialized.' );
     }
 
 

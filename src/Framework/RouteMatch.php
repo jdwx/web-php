@@ -21,10 +21,12 @@ readonly class RouteMatch {
 
 
     public function route( RouterInterface $i_router ) : RouteInterface {
-        if ( is_string( $this->route ) ) {
-            return new $this->route( $i_router );
+        $route = $this->route;
+        if ( is_string( $route ) ) {
+            $route = new $this->route( $i_router );
+            assert( $route instanceof RouteInterface );
         }
-        return $this->route;
+        return $route;
     }
 
 

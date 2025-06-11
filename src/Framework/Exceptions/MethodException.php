@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Framework\Exceptions;
 
 
+use JDWX\Strict\OK;
+
+
 class MethodException extends HttpStatusException {
 
 
@@ -19,7 +22,7 @@ class MethodException extends HttpStatusException {
                                  ?\Throwable $i_ePrevious = null ) {
         # Because this may get displayed on the error page, sanitize the method name.
         # Replace any non-alphanumeric characters with underscores.
-        $stMethod = preg_replace( '/[^a-zA-Z0-9]/', '_', $stRawMethod );
+        $stMethod = OK::preg_replace_string( '/[^a-zA-Z0-9]/', '_', $stRawMethod );
         if ( strlen( $stMethod ) > 16 ) {
             $stMethod = substr( $stMethod, 0, 13 ) . '...';
         }

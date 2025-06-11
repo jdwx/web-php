@@ -8,6 +8,7 @@ namespace JDWX\Web;
 
 
 use JDWX\Strict\Cast;
+use JDWX\Strict\OK;
 
 
 class Url {
@@ -172,14 +173,14 @@ class Url {
         # there's something invalid in there.
 
         # Start with pct-encoded. It's the only multi-character component.
-        $i_nstComponent = preg_replace( '/%[0-9A-Fa-f]{2}/', '', $i_nstComponent );
+        $i_nstComponent = OK::preg_replace( '/%[0-9A-Fa-f]{2}/', '', $i_nstComponent );
 
         # Now remove the sub-delims. Note % is no longer valid after above,
         # but we'll get : and @ while we're at it.
-        $i_nstComponent = preg_replace( '/[!$&\'()*+,;=:@]/', '', $i_nstComponent );
+        $i_nstComponent = OK::preg_replace( '/[!$&\'()*+,;=:@]/', '', $i_nstComponent );
 
         # Now remove the unreserved characters.
-        $i_nstComponent = preg_replace( '/[A-Za-z0-9\-._~]/', '', $i_nstComponent );
+        $i_nstComponent = OK::preg_replace( '/[A-Za-z0-9\-._~]/', '', $i_nstComponent );
 
         return '' === $i_nstComponent;
     }

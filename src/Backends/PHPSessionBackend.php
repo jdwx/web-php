@@ -107,8 +107,7 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @suppress PhanTypeMismatchArgumentNullableInternal */
-    public function regenerateId( ?bool $deleteOldSession = false ) : bool {
+    public function regenerateId( bool $deleteOldSession = false ) : bool {
         return session_regenerate_id( $deleteOldSession );
     }
 
@@ -157,10 +156,24 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @suppress PhanTypeMismatchArgumentNullableInternal */
+    /**
+     * @param callable(): string|null $create_sid
+     * @suppress PhanTypeMismatchArgumentNullableInternal
+     */
     public function setSaveHandler( callable  $open, callable $close, callable $read, callable $write,
                                     callable  $destroy, callable $gc, ?callable $create_sid = null,
                                     ?callable $validate_sid = null, ?callable $update_timestamp = null ) : bool {
+        if ( ! is_callable( $create_sid ) ) {
+            return session_set_save_handler( $open, $close, $read, $write, $destroy, $gc );
+        }
+        if ( ! is_callable( $validate_sid ) ) {
+            return session_set_save_handler( $open, $close, $read, $write, $destroy, $gc,
+                $create_sid );
+        }
+        if ( ! is_callable( $update_timestamp ) ) {
+            return session_set_save_handler( $open, $close, $read, $write, $destroy, $gc,
+                $create_sid, $validate_sid );
+        }
         return session_set_save_handler( $open, $close, $read, $write, $destroy, $gc, $create_sid,
             $validate_sid, $update_timestamp );
     }

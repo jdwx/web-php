@@ -7,6 +7,9 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Framework;
 
 
+use JDWX\Strict\OK;
+
+
 /**
  * This class extends StaticShim and also does whatever minimal fix-ups
  * are necessary to make the PHP built-in web server work with the router
@@ -58,7 +61,7 @@ class PhpWsShim extends StaticShim {
         # for older code that hasn't been updated to look at the request instead of
         # the environment.
         $scriptName = $this->request->uri();
-        $scriptName = preg_replace( '#\?.*$#', '', $scriptName );
+        $scriptName = OK::preg_replace_string( '#\?.*$#', '', $scriptName );
         $_SERVER[ 'SCRIPT_NAME' ] = $scriptName;
         $_SERVER[ 'PATH_INFO' ] = $scriptName;
         if ( ! array_key_exists( 'QUERY_STRING', $_SERVER ) ) {

@@ -179,7 +179,7 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function regenerateId( ?bool $deleteOldSession = false ) : bool {
+    public function regenerateId( bool $deleteOldSession = false ) : bool {
         if ( $this->bFailRegenerate ) {
             return false;
         }

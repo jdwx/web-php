@@ -7,8 +7,8 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-use JDWX\Strict\Cast;
 use JDWX\Strict\OK;
+use JDWX\Strict\TypeIs;
 
 
 class Url {
@@ -211,7 +211,7 @@ class Url {
 
     private static function splitQuery( UrlParts $o_uri, string $i_stQuery ) : void {
         parse_str( $i_stQuery, $r );
-        $o_uri->rQuery = Cast::mapStringOrListString( $r );
+        $o_uri->rQuery = TypeIs::mapStringOrListString( $r );
     }
 
 

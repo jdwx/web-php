@@ -19,5 +19,10 @@
     "jdwx/stream": "^1.0",
     "jdwx/trie": "dev-main",
     "psr/log": "^3.0"
+  },
+  "scripts": {
+    "phan": "sh phan.sh",
+    "phpstan": "phpstan",
+    "test": "vendor/bin/phpunit tests"
   }
 }

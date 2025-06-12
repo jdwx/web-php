@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-use JDWX\Strict\Cast;
+use JDWX\Strict\TypeIs;
 
 
 /** This class encapsulates the $_SERVER superglobal to allow type and error checking. */
@@ -88,7 +88,7 @@ readonly class Server implements ServerInterface {
         $rFromHttpHeaders = array_filter( array_merge( static::DEFAULTS, $i_nrDefaults ), function ( $key ) {
             return str_starts_with( $key, 'HTTP_' );
         }, ARRAY_FILTER_USE_KEY );
-        $this->rFromHttpHeaders = Cast::mapStringOrNull( $rFromHttpHeaders );
+        $this->rFromHttpHeaders = TypeIs::mapNullableString( $rFromHttpHeaders );
 
     }
 

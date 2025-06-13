@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use LogicException;
 use Psr\Log\LoggerInterface;
@@ -18,9 +19,13 @@ class MainSession implements SessionInterface {
 
     private const int DEFAULT_LIFETIME_SECONDS = 14400;
 
+    private readonly SessionBackendInterface $backend;
 
-    public function __construct( private readonly SessionBackendInterface $backend,
-                                 private readonly int                     $uLifetimeSeconds = self::DEFAULT_LIFETIME_SECONDS ) {}
+
+    public function __construct( ?SessionBackendInterface $backend = null,
+                                 private readonly int     $uLifetimeSeconds = self::DEFAULT_LIFETIME_SECONDS ) {
+        $this->backend = $backend ?? new PHPSessionBackend();
+    }
 
 
     /**

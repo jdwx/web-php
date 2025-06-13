@@ -7,7 +7,6 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
-use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use LogicException;
 use Psr\Log\LoggerInterface;
@@ -162,13 +161,16 @@ class Session {
 
 
     /**
-     * @param SessionBackendInterface $i_backend The session backend to use.
+     * @param SessionInterface|SessionBackendInterface|null $i_backend The session backend to use.
      * @return void
      *
      * Initialize the session handler. Only used for testing.
      */
-    public static function init( SessionBackendInterface $i_backend ) : void {
-        static::$backend = new MainSession( $i_backend );
+    public static function init( SessionInterface|SessionBackendInterface|null $i_backend = null ) : void {
+        if ( ! $i_backend instanceof SessionInterface ) {
+            $i_backend = new MainSession( $i_backend );
+        }
+        static::$backend = $i_backend;
     }
 
 
@@ -386,7 +388,7 @@ class Session {
 
     protected static function backend() : SessionInterface {
         if ( ! static::$backend instanceof SessionInterface ) {
-            static::init( new PHPSessionBackend() );
+            static::init();
         }
         return static::$backend ?? throw new LogicException( 'Session backend not initialized.' );
     }

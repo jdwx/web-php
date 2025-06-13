@@ -23,6 +23,7 @@ use RuntimeException;
 #[CoversClass( AbstractSessionBackend::class )]
 #[CoversClass( Session::class )]
 #[CoversClass( MainSession::class )]
+#[CoversClass( MockSessionBackend::class )]
 final class SessionTest extends TestCase {
 
 

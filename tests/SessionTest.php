@@ -10,19 +10,19 @@ namespace JDWX\Web\Tests;
 use InvalidArgumentException;
 use JDWX\Web\Backends\AbstractSessionBackend;
 use JDWX\Web\Backends\MockSessionBackend;
-use JDWX\Web\Backends\PHPSessionBackend;
-use JDWX\Web\Backends\SessionBackendInterface;
+use JDWX\Web\MainSession;
 use JDWX\Web\Request;
 use JDWX\Web\Session;
+use JDWX\Web\SessionInterface;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use TypeError;
 
 
 #[CoversClass( AbstractSessionBackend::class )]
 #[CoversClass( Session::class )]
+#[CoversClass( MainSession::class )]
 final class SessionTest extends TestCase {
 
 
@@ -58,20 +58,6 @@ final class SessionTest extends TestCase {
     }
 
 
-    /**
-     * @noinspection PhpDeprecationInspection
-     * @suppress PhanDeprecatedFunction
-     */
-    public function testClear() : void {
-        $this->initSession();
-        Session::start();
-        Session::set( 'foo', 'bar' );
-        self::assertEquals( 'bar', Session::get( 'foo' ) );
-        Session::clear( 'foo' );
-        self::assertNull( Session::get( 'foo' ) );
-    }
-
-
     public function testCookieInRequest() : void {
         $be = $this->initSession();
         $req = Request::synthetic( [], [], [], [] );
@@ -86,7 +72,7 @@ final class SessionTest extends TestCase {
         $ses = new class() extends Session {
 
 
-            public static function sessionCheck() : SessionBackendInterface {
+            public static function sessionCheck() : SessionInterface {
                 return self::backend();
             }
 
@@ -101,7 +87,7 @@ final class SessionTest extends TestCase {
         $ses::whack();
         /** @noinspection PhpAccessStaticViaInstanceInspection */
         $be = $ses::sessionCheck();
-        self::assertInstanceOf( PHPSessionBackend::class, $be );
+        self::assertInstanceOf( MainSession::class, $be );
     }
 
 
@@ -165,7 +151,7 @@ final class SessionTest extends TestCase {
         Session::set( 'foo', 123 );
         self::assertSame( 123, Session::getIntOrNull( 'foo' ) );
         Session::set( 'foo', 'bar' );
-        self::expectException( TypeError::class );
+        self::expectException( RuntimeException::class );
         Session::getIntOrNull( 'foo' );
     }
 
@@ -188,7 +174,7 @@ final class SessionTest extends TestCase {
         Session::set( 'foo', 'bar' );
         self::assertSame( 'bar', Session::getStringOrNull( 'foo' ) );
         Session::set( 'foo', 123 );
-        self::expectException( TypeError::class );
+        self::expectException( RuntimeException::class );
         Session::getStringOrNull( 'foo' );
     }
 
@@ -226,21 +212,11 @@ final class SessionTest extends TestCase {
     }
 
 
-    /**
-     * @noinspection PhpDeprecationInspection
-     * @suppress PhanDeprecatedFunction
-     */
-    public function testNestedClear() : void {
+    public function testNestedGet() : void {
         $this->initSession();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 'baz' );
-        Session::nestedSet( 'foo', 'qux', 'quux' );
         self::assertSame( 'baz', Session::nestedGet( 'foo', 'bar' ) );
-        self::assertSame( 'quux', Session::nestedGet( 'foo', 'qux' ) );
-        Session::nestedClear( 'foo', 'bar' );
-        self::assertSame( 'quux', Session::nestedGet( 'foo', 'qux' ) );
-        Session::nestedClear( 'foo', 'bar' );
-        self::assertNull( Session::nestedGet( 'foo', 'bar' ) );
     }
 
 
@@ -263,7 +239,7 @@ final class SessionTest extends TestCase {
         Session::nestedSet( 'foo', 'bar', 123 );
         self::assertSame( 123, Session::nestedGetIntOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 'baz' );
-        self::expectException( TypeError::class );
+        self::expectException( RuntimeException::class );
         Session::nestedGetIntOrNull( 'foo', 'bar' );
     }
 
@@ -286,8 +262,17 @@ final class SessionTest extends TestCase {
         Session::nestedSet( 'foo', 'bar', 'baz' );
         self::assertSame( 'baz', Session::nestedGetStringOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 123 );
-        self::expectException( TypeError::class );
+        self::expectException( RuntimeException::class );
         Session::nestedGetStringOrNull( 'foo', 'bar' );
+    }
+
+
+    public function testNestedHas() : void {
+        $this->initSession();
+        Session::start();
+        Session::nestedSet( 'foo', 'bar', 'baz' );
+        self::assertTrue( Session::nestedHas( 'foo', 'bar' ) );
+        self::assertSame( 'baz', Session::nestedGet( 'foo', 'bar' ) );
     }
 
 

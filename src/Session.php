@@ -11,8 +11,6 @@ use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use LogicException;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
-use TypeError;
 
 
 /**
@@ -78,9 +76,7 @@ use TypeError;
 class Session {
 
 
-    private const int LIFETIME_SECONDS = 14400;
-
-    protected static ?SessionBackendInterface $backend = null;
+    protected static ?SessionInterface $backend = null;
 
 
     /**
@@ -89,7 +85,7 @@ class Session {
      * Abort the session without saving any changes to the session data.
      */
     public static function abort() : void {
-        static::backend()->abortEx();
+        static::backend()->abort();
     }
 
 
@@ -97,113 +93,62 @@ class Session {
      * @return bool True if a session is active, false otherwise.
      */
     public static function active() : bool {
-        return static::backend()->status() == PHP_SESSION_ACTIVE;
+        return static::backend()->active();
     }
 
 
     public static function cacheLimiter( ?string $i_nstCacheLimiter = null ) : string {
-        return static::backend()->cacheLimiterEx( $i_nstCacheLimiter );
-    }
-
-
-    /** @deprecated Use Session::remove() */
-    public static function clear( string $i_stKey ) : void {
-        static::remove( $i_stKey );
+        return static::backend()->cacheLimiter( $i_nstCacheLimiter );
     }
 
 
     public static function cookieInRequest( ?RequestInterface $i_req = null ) : bool {
-        if ( ! $i_req ) {
-            $i_req = Request::getGlobal();
-        }
-        return $i_req->cookieHas( static::backend()->nameEx() );
+        return static::backend()->cookieInRequest( $i_req );
     }
 
 
     public static function destroy() : void {
-        static::checkActive();
-        static::backend()->destroyEx();
+        static::backend()->destroy();
     }
 
 
     public static function flush() : void {
-        static::checkActive();
-        $ntmExpire = static::getIntOrNull( 'tmExpire' );
-        static::backend()->unsetEx();
-        if ( is_int( $ntmExpire ) ) {
-            static::set( 'tmExpire', $ntmExpire );
-        }
+        static::backend()->flush();
     }
 
 
     public static function get( string $i_stKey, mixed $i_xDefault = null ) : mixed {
-
-        if ( ! static::has( $i_stKey ) ) {
-            return $i_xDefault;
-        }
-
-        return static::backend()->get( $i_stKey );
-
+        return static::backend()->get( $i_stKey, $i_xDefault );
     }
 
 
     public static function getInt( string $i_stKey, ?int $i_niDefault = null ) : int {
-        $x = static::get( $i_stKey );
-        if ( is_int( $x ) ) {
-            return $x;
-        }
-        if ( is_int( $i_niDefault ) ) {
-            return $i_niDefault;
-        }
-        throw new RuntimeException( "Session value {$i_stKey} is not found and no default was provided." );
+        return static::backend()->getInt( $i_stKey, $i_niDefault );
     }
 
 
     public static function getIntOrNull( string $i_stKey ) : ?int {
-        $x = static::get( $i_stKey );
-        if ( $x === null ) {
-            return null;
-        }
-        if ( is_int( $x ) ) {
-            return $x;
-        }
-        throw new TypeError( "Session value {$i_stKey} is not an integer." );
+        return static::backend()->getIntOrNull( $i_stKey );
     }
 
 
     public static function getString( string $i_stKey, ?string $i_nstDefault = null ) : string {
-        $x = static::get( $i_stKey );
-        if ( is_string( $x ) ) {
-            return $x;
-        }
-        if ( is_string( $i_nstDefault ) ) {
-            return $i_nstDefault;
-        }
-        throw new RuntimeException( "Session value {$i_stKey} is not found and no default was provided." );
+        return static::backend()->getString( $i_stKey, $i_nstDefault );
     }
 
 
     public static function getStringOrNull( string $i_stKey ) : ?string {
-        $x = static::get( $i_stKey );
-        if ( $x === null ) {
-            return null;
-        }
-        if ( is_string( $x ) ) {
-            return $x;
-        }
-        throw new TypeError( "Session value {$i_stKey} is not a string." );
+        return static::backend()->getStringOrNull( $i_stKey );
     }
 
 
     public static function has( string $i_stKey ) : bool {
-        static::checkActive();
         return static::backend()->has( $i_stKey );
     }
 
 
     public static function id() : string {
-        static::checkActive();
-        return static::backend()->idEx();
+        return static::backend()->id();
     }
 
 
@@ -212,12 +157,7 @@ class Session {
      * @param float|int $i_nValue The value to increment by. (Default: 1)
      */
     public static function increment( string $i_stKey, float|int $i_nValue = 1 ) : void {
-        static::checkActive();
-        if ( ! static::has( $i_stKey ) ) {
-            static::set( $i_stKey, $i_nValue );
-        } else {
-            static::backend()->set( $i_stKey, static::backend()->get( $i_stKey ) + $i_nValue );
-        }
+        static::backend()->increment( $i_stKey, $i_nValue );
     }
 
 
@@ -228,20 +168,13 @@ class Session {
      * Initialize the session handler. Only used for testing.
      */
     public static function init( SessionBackendInterface $i_backend ) : void {
-        static::$backend = $i_backend;
+        static::$backend = new MainSession( $i_backend );
     }
 
 
     /** @return array<string, string|list<string>> */
     public static function list() : array {
-        static::checkActive();
         return static::backend()->list();
-    }
-
-
-    /** @deprecated Use Session::nestedRemove(). */
-    public static function nestedClear( string $i_stKey, string $i_stKey2 ) : void {
-        static::nestedRemove( $i_stKey, $i_stKey2 );
     }
 
 
@@ -254,10 +187,7 @@ class Session {
      * possible to distinguish between a null value and a non-existent value.
      */
     public static function nestedGet( string $i_stKey1, string $i_stKey2 ) : mixed {
-        if ( ! static::nestedHas( $i_stKey1, $i_stKey2 ) ) {
-            return null;
-        }
-        return static::backend()->get2( $i_stKey1, $i_stKey2 );
+        return static::backend()->nestedGet( $i_stKey1, $i_stKey2 );
     }
 
 
@@ -271,14 +201,7 @@ class Session {
      * and be an integer (with an optional default value if it does not exist).
      */
     public static function nestedGetInt( string $i_stKey1, string $i_stKey2, ?int $i_niDefault = null ) : int {
-        $nst = static::nestedGetIntOrNull( $i_stKey1, $i_stKey2 );
-        if ( is_int( $nst ) ) {
-            return $nst;
-        }
-        if ( is_int( $i_niDefault ) ) {
-            return $i_niDefault;
-        }
-        throw new RuntimeException( "Session value {$i_stKey1}/{$i_stKey2} is not found and no default was provided." );
+        return static::backend()->nestedGetInt( $i_stKey1, $i_stKey2, $i_niDefault );
     }
 
 
@@ -292,14 +215,7 @@ class Session {
      * between a null value and a non-existent value.)
      */
     public static function nestedGetIntOrNull( string $i_stKey1, string $i_stKey2 ) : ?int {
-        $x = static::nestedGet( $i_stKey1, $i_stKey2 );
-        if ( $x === null ) {
-            return null;
-        }
-        if ( is_int( $x ) ) {
-            return $x;
-        }
-        throw new TypeError( "Session value {$i_stKey1}/{$i_stKey2} is not an integer." );
+        return static::backend()->nestedGetIntOrNull( $i_stKey1, $i_stKey2 );
     }
 
 
@@ -312,15 +228,9 @@ class Session {
      * Get a session variable in a namespaced hierarchy, requiring it to exist
      * and be a string (with an optional default value if it doesn't).
      */
-    public static function nestedGetString( string $i_stKey1, string $i_stKey2, ?string $i_nstDefault = null ) : string {
-        $nst = static::nestedGetStringOrNull( $i_stKey1, $i_stKey2 );
-        if ( is_string( $nst ) ) {
-            return $nst;
-        }
-        if ( is_string( $i_nstDefault ) ) {
-            return $i_nstDefault;
-        }
-        throw new RuntimeException( "Session value {$i_stKey1}/{$i_stKey2} is not found and no default was provided." );
+    public static function nestedGetString( string  $i_stKey1, string $i_stKey2,
+                                            ?string $i_nstDefault = null ) : string {
+        return static::backend()->nestedGetString( $i_stKey1, $i_stKey2, $i_nstDefault );
     }
 
 
@@ -334,20 +244,12 @@ class Session {
      * between a null value and a non-existent value.)
      */
     public static function nestedGetStringOrNull( string $i_stKey1, string $i_stKey2 ) : ?string {
-        $x = static::nestedGet( $i_stKey1, $i_stKey2 );
-        if ( $x === null ) {
-            return null;
-        }
-        if ( is_string( $x ) ) {
-            return $x;
-        }
-        throw new TypeError( "Session value {$i_stKey1}/{$i_stKey2} is not a string." );
+        return static::backend()->nestedGetStringOrNull( $i_stKey1, $i_stKey2 );
     }
 
 
     public static function nestedHas( string $i_stKey1, string $i_stKey2 ) : bool {
-        static::checkActive();
-        return static::backend()->has2( $i_stKey1, $i_stKey2 );
+        return static::backend()->nestedHas( $i_stKey1, $i_stKey2 );
     }
 
 
@@ -360,15 +262,7 @@ class Session {
      * Increment a session variable in a namespaced hierarchy.
      */
     public static function nestedIncrement( string $i_stKey1, string $i_stKey2, float|int $i_nValue = 1 ) : void {
-        static::checkActive();
-        if ( ! static::nestedHas( $i_stKey1, $i_stKey2 ) ) {
-            static::nestedSet( $i_stKey1, $i_stKey2, $i_nValue );
-        } else {
-            static::backend()->set2(
-                $i_stKey1, $i_stKey2,
-                static::backend()->get2( $i_stKey1, $i_stKey2 ) + $i_nValue
-            );
-        }
+        static::backend()->nestedIncrement( $i_stKey1, $i_stKey2, $i_nValue );
     }
 
 
@@ -380,8 +274,7 @@ class Session {
      * Remove a session variable in a namespaced hierarchy.
      */
     public static function nestedRemove( string $i_stKey1, string $i_stKey2 ) : void {
-        static::checkActive();
-        static::backend()->remove2( $i_stKey1, $i_stKey2 );
+        static::backend()->nestedRemove( $i_stKey1, $i_stKey2 );
     }
 
 
@@ -394,11 +287,7 @@ class Session {
      * Simplifies setting a session variable in a two-level hierarchy.
      */
     public static function nestedSet( string $i_stKey1, string $i_stKey2, mixed $i_xValue ) : void {
-        static::checkActive();
-        if ( ! static::has( $i_stKey1 ) ) {
-            static::backend()->set( $i_stKey1, [] );
-        }
-        static::backend()->set2( $i_stKey1, $i_stKey2, $i_xValue );
+        static::backend()->nestedSet( $i_stKey1, $i_stKey2, $i_xValue );
     }
 
 
@@ -408,10 +297,7 @@ class Session {
      * Return the session data while the session is not active.
      */
     public static function peek() : array {
-        static::backend()->start();
-        $a = static::backend()->list();
-        static::backend()->abortEx();
-        return $a;
+        return static::backend()->peek();
     }
 
 
@@ -422,8 +308,7 @@ class Session {
      * Regenerate the session ID while preserving the session data.
      */
     public static function regenerate( bool $i_bDeleteOld = false ) : void {
-        static::checkActive();
-        static::backend()->regenerateIdEx( $i_bDeleteOld );
+        static::backend()->regenerate( $i_bDeleteOld );
     }
 
 
@@ -434,7 +319,6 @@ class Session {
      * Remove a session variable.
      */
     public static function remove( string $i_stKey ) : void {
-        static::checkActive();
         static::backend()->remove( $i_stKey );
     }
 
@@ -446,19 +330,7 @@ class Session {
      *
      */
     public static function reset( bool $i_bPreserveTimes = true ) : void {
-        $ntmExpire = static::getIntOrNull( 'tmExpire' );
-        $ntmStart = static::getIntOrNull( 'tmStart' );
-        if ( ! static::backend()->reset() ) {
-            throw new RuntimeException( 'Session reset failed.' );
-        }
-        if ( $i_bPreserveTimes ) {
-            if ( is_int( $ntmExpire ) ) {
-                static::set( 'tmExpire', $ntmExpire );
-            }
-            if ( is_int( $ntmStart ) ) {
-                static::set( 'tmStart', $ntmStart );
-            }
-        }
+        static::backend()->reset( $i_bPreserveTimes );
     }
 
 
@@ -470,7 +342,6 @@ class Session {
      * Set a session variable.
      */
     public static function set( string $i_stKey, mixed $i_xValue ) : void {
-        static::checkActive();
         static::backend()->set( $i_stKey, $i_xValue );
     }
 
@@ -480,74 +351,13 @@ class Session {
      */
     public static function softStart( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
                                       ?RequestInterface $i_req = null ) : bool {
-        if ( static::active() ) {
-            return true;
-        }
-        return static::start( $i_logger, $i_stSessionName, $i_req );
+        return static::backend()->softStart( $i_logger, $i_stSessionName, $i_req );
     }
 
 
-    /**
-     * @param LoggerInterface|null $i_logger
-     * @param string|null $i_stSessionName
-     * @param RequestInterface|null $i_req
-     * @return bool
-     *
-     * Start a session. If a session is already active, an exception is thrown.
-     */
     public static function start( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
                                   ?RequestInterface $i_req = null ) : bool {
-        if ( is_string( $i_stSessionName ) ) {
-            $stSessionName = $i_stSessionName;
-            static::backend()->name( $stSessionName );
-        } else {
-            $stSessionName = static::backend()->nameEx();
-        }
-
-        if ( ! $i_req ) {
-            $i_req = Request::getGlobal();
-        }
-        if ( $i_req->cookieHas( $stSessionName ) ) {
-            $sid = $i_req->cookieEx( $stSessionName )->asString();
-            if ( ! preg_match( '/^[-a-zA-Z0-9,]+$/', $sid ) ) {
-                $i_logger?->warning( "Bogus characters in session cookie: {$sid}" );
-                return false;
-            }
-            if ( strlen( $sid ) > 40 ) {
-                $i_logger?->warning( "Session cookie is too long: {$sid}" );
-                return false;
-            }
-        }
-
-        if ( static::active() ) {
-            throw new LogicException( 'Session already started.' );
-        }
-
-        static::backend()->startEx();
-
-        $ntmExpire = static::getIntOrNull( 'tmExpire' );
-        // error_log( ( $ntmExpire ?? 0 ) . " <?< " . time()
-        //    . " " . ( $ntmExpire < time() ? "true" : "false" )
-        //    . " " . ( $ntmExpire ? "true" : "false" )
-        // );
-        if ( $ntmExpire && $ntmExpire < time() ) {
-            $i_logger?->info( 'Session expired.' );
-            static::flush();
-        } elseif ( $ntmExpire === null ) {
-            // $i_logger?->info( 'New session started.' );
-            static::flush();
-        } else {
-            // $i_logger?->info( "Existing session resumed." );
-        }
-        $tmNow = time();
-        if ( ! static::has( 'tmStart' ) ) {
-            static::set( 'tmStart', $tmNow );
-        }
-        // $tmOldExpire = $ntmExpire ?? 0;
-        $tmExpire = $tmNow + self::LIFETIME_SECONDS;
-        static::set( 'tmExpire', $tmExpire );
-        // $i_logger?->info( "Session extended from {$tmOldExpire} to {$tmExpire}" );
-        return true;
+        return static::backend()->start( $i_logger, $i_stSessionName, $i_req );
     }
 
 
@@ -557,8 +367,7 @@ class Session {
      * Removes all session data. The session remains active.
      */
     public static function unset() : void {
-        static::checkActive();
-        static::backend()->unsetEx();
+        static::backend()->unset();
     }
 
 
@@ -571,28 +380,15 @@ class Session {
      * need to access the session.
      */
     public static function writeClose() : void {
-        static::checkActive();
-        static::backend()->writeCloseEx();
+        static::backend()->writeClose();
     }
 
 
-    protected static function backend() : SessionBackendInterface {
-        if ( ! static::$backend instanceof SessionBackendInterface ) {
+    protected static function backend() : SessionInterface {
+        if ( ! static::$backend instanceof SessionInterface ) {
             static::init( new PHPSessionBackend() );
         }
         return static::$backend ?? throw new LogicException( 'Session backend not initialized.' );
-    }
-
-
-    /**
-     * @return void
-     *
-     * Check if a session is active and throw an exception if it is not.
-     */
-    protected static function checkActive() : void {
-        if ( ! static::active() ) {
-            throw new LogicException( 'Session not started.' );
-        }
     }
 
 

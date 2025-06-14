@@ -115,13 +115,10 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function get( string $name ) : mixed {
-        return $this->rSession[ $name ];
-    }
-
-
-    public function get2( string $name, string $sub ) : mixed {
-        return $this->rSession[ $name ][ $sub ];
+    /** @param list<string> $namespace */
+    public function get( array $namespace, string $name ) : mixed {
+        $r = $this->getNamespace( $namespace );
+        return $r[ $name ];
     }
 
 
@@ -134,13 +131,10 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function has( string $name ) : bool {
-        return array_key_exists( $name, $this->rSession );
-    }
-
-
-    public function has2( string $name, string $sub ) : bool {
-        return isset( $this->rSession[ $name ][ $sub ] );
+    /** @param list<string> $namespace */
+    public function has( array $namespace, string $name ) : bool {
+        $r = $this->getNamespace( $namespace );
+        return array_key_exists( $name, $r );
     }
 
 
@@ -158,10 +152,15 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @return array<string, mixed> */
-    public function list() : array {
-        # This forces a copy so we don't hand back a modifiable reference to $_SESSION.
-        return array_merge( $this->rSession, [] );
+    /**
+     * @param list<string> $namespace
+     * @return array<string, mixed>
+     */
+    public function list( array $namespace ) : array {
+        $r = $this->getNamespace( $namespace );
+        // This ensures that we return a copy of the session data, not
+        // a reference to it.
+        return array_merge( $r, [] );
     }
 
 
@@ -194,15 +193,10 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function remove( string $name ) : void {
-        unset( $this->rSession[ $name ] );
-    }
-
-
-    public function remove2( string $name, string $sub ) : void {
-        if ( $this->has2( $name, $sub ) ) {
-            unset( $this->rSession[ $name ][ $sub ] );
-        }
+    /** @param list<string> $namespace */
+    public function remove( array $namespace, string $name ) : void {
+        $r = &$this->getNamespace( $namespace );
+        unset( $r[ $name ] );
     }
 
 
@@ -224,13 +218,10 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function set( string $name, mixed $value ) : void {
-        $this->rSession[ $name ] = $value;
-    }
-
-
-    public function set2( string $name, string $sub, mixed $value ) : void {
-        $this->rSession[ $name ][ $sub ] = $value;
+    /** @param list<string> $namespace */
+    public function set( array $namespace, string $name, mixed $value ) : void {
+        $r = &$this->getNamespace( $namespace );
+        $r[ $name ] = $value;
     }
 
 
@@ -299,6 +290,25 @@ class MockSessionBackend extends AbstractSessionBackend {
         $this->rBackup = $this->rSession;
         $this->bActive = false;
         return true;
+    }
+
+
+    /**
+     * @param list<string> $namespace
+     * @return array<string, mixed>
+     */
+    protected function & getNamespace( array $namespace ) : array {
+        $r = &$this->rSession;
+        foreach ( $namespace as $stKey ) {
+            if ( ! isset( $r[ $stKey ] ) ) {
+                $r[ $stKey ] = [];
+            }
+            $r = &$r[ $stKey ];
+        }
+        if ( is_array( $r ) ) {
+            return $r;
+        }
+        throw new LogicException( 'Namespace is not an array.' );
     }
 
 

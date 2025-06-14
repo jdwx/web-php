@@ -57,13 +57,10 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function get( string $name ) : mixed {
-        return $_SESSION[ $name ];
-    }
-
-
-    public function get2( string $name, string $sub ) : mixed {
-        return $_SESSION[ $name ][ $sub ];
+    /** @param list<string> $namespace */
+    public function get( array $namespace, string $name ) : mixed {
+        $r = $this->getNamespace( $namespace );
+        return $r[ $name ];
     }
 
 
@@ -73,13 +70,9 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function has( string $name ) : bool {
-        return array_key_exists( $name, $_SESSION );
-    }
-
-
-    public function has2( string $name, string $sub ) : bool {
-        return array_key_exists( $name, $_SESSION ) && array_key_exists( $sub, $_SESSION[ $name ] );
+    public function has( array $namespace, string $name ) : bool {
+        $r = $this->getNamespace( $namespace );
+        return isset( $r[ $name ] );
     }
 
 
@@ -89,10 +82,14 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @return array<string, string|list<string>> */
-    public function list() : array {
+    /**
+     * @param list<string> $namespace
+     * @return array<string, string|list<string>>
+     */
+    public function list( array $namespace ) : array {
+        $r = $this->getNamespace( $namespace );
         # This forces a copy so we don't hand back a modifiable reference to $_SESSION.
-        return array_merge( [], $_SESSION );
+        return array_merge( [], $r );
     }
 
 
@@ -117,15 +114,10 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function remove( string $name ) : void {
-        unset( $_SESSION[ $name ] );
-    }
-
-
-    public function remove2( string $name, string $sub ) : void {
-        if ( $this->has2( $name, $sub ) ) {
-            unset( $_SESSION[ $name ][ $sub ] );
-        }
+    /** @param list<string> $namespace */
+    public function remove( array $namespace, string $name ) : void {
+        $r = &$this->getNamespace( $namespace );
+        unset( $r[ $name ] );
     }
 
 
@@ -140,13 +132,9 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function set( string $name, mixed $value ) : void {
-        $_SESSION[ $name ] = $value;
-    }
-
-
-    public function set2( string $name, string $sub, mixed $value ) : void {
-        $_SESSION[ $name ][ $sub ] = $value;
+    public function set( array $namespace, string $name, mixed $value ) : void {
+        $r = &$this->getNamespace( $namespace );
+        $r[ $name ] = $value;
     }
 
 
@@ -197,6 +185,22 @@ class PHPSessionBackend extends AbstractSessionBackend {
 
     public function writeClose() : bool {
         return session_write_close();
+    }
+
+
+    /**
+     * @param list<string> $namespace
+     * @return array<string, mixed>
+     */
+    protected function & getNamespace( array $namespace ) : array {
+        $r = &$_SESSION;
+        foreach ( $namespace as $stKey ) {
+            if ( ! array_key_exists( $stKey, $r ) ) {
+                $r[ $stKey ] = [];
+            }
+            $r = &$r[ $stKey ];
+        }
+        return $r;
     }
 
 

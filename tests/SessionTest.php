@@ -10,10 +10,12 @@ namespace JDWX\Web\Tests;
 use InvalidArgumentException;
 use JDWX\Web\Backends\AbstractSessionBackend;
 use JDWX\Web\Backends\MockSessionBackend;
-use JDWX\Web\MainSession;
+use JDWX\Web\Backends\PHPSessionBackend;
+use JDWX\Web\Backends\SessionBackendInterface;
 use JDWX\Web\Request;
 use JDWX\Web\Session;
-use JDWX\Web\SessionInterface;
+use JDWX\Web\SessionBase;
+use JDWX\Web\SessionControl;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +24,8 @@ use RuntimeException;
 
 #[CoversClass( AbstractSessionBackend::class )]
 #[CoversClass( Session::class )]
-#[CoversClass( MainSession::class )]
+#[CoversClass( SessionBase::class )]
+#[CoversClass( SessionControl::class )]
 #[CoversClass( MockSessionBackend::class )]
 final class SessionTest extends TestCase {
 
@@ -73,13 +76,13 @@ final class SessionTest extends TestCase {
         $ses = new class() extends Session {
 
 
-            public static function sessionCheck() : SessionInterface {
+            public static function sessionCheck() : SessionBackendInterface {
                 return self::backend();
             }
 
 
             public static function whack() : void {
-                self::$backend = null;
+                self::clearBackend();
             }
 
 
@@ -88,7 +91,7 @@ final class SessionTest extends TestCase {
         $ses::whack();
         /** @noinspection PhpAccessStaticViaInstanceInspection */
         $be = $ses::sessionCheck();
-        self::assertInstanceOf( MainSession::class, $be );
+        self::assertInstanceOf( PHPSessionBackend::class, $be );
     }
 
 
@@ -291,10 +294,10 @@ final class SessionTest extends TestCase {
     public function testNestedRemove() : void {
         $be = $this->initSession();
         Session::start();
-        $be->set( 'foo', [ 'bar' => 'baz', 'qux' => 'quux' ] );
+        $be->set( [], 'foo', [ 'bar' => 'baz', 'qux' => 'quux' ] );
         Session::nestedRemove( 'foo', 'bar' );
         Session::nestedRemove( 'foo', 'corge' );
-        self::assertSame( [ 'qux' => 'quux' ], $be->get( 'foo' ) );
+        self::assertSame( [ 'qux' => 'quux' ], $be->get( [], 'foo' ) );
     }
 
 
@@ -320,13 +323,13 @@ final class SessionTest extends TestCase {
     public function testRemove() : void {
         $be = $this->initSession();
         Session::start();
-        $be->set( 'foo', 'bar' );
-        $be->set( 'qux', 'quux' );
+        $be->set( [], 'foo', 'bar' );
+        $be->set( [], 'qux', 'quux' );
         Session::remove( 'foo' );
-        self::assertFalse( $be->has( 'foo' ) );
+        self::assertFalse( $be->has( [], 'foo' ) );
         Session::remove( 'baz' );
-        self::assertFalse( $be->has( 'baz' ) );
-        self::assertTrue( $be->has( 'qux' ) );
+        self::assertFalse( $be->has( [], 'baz' ) );
+        self::assertTrue( $be->has( [], 'qux' ) );
     }
 
 

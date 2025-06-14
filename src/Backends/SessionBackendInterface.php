@@ -43,20 +43,23 @@ interface SessionBackendInterface {
     public function gc() : int|false;
 
 
-    public function get( string $name ) : mixed;
-
-
-    public function get2( string $name, string $sub ) : mixed;
+    /** @param list<string> $namespace */
+    public function get( array $namespace, string $name ) : mixed;
 
 
     /** @return array<string, int|bool|string> */
     public function getCookieParams() : array;
 
 
-    public function has( string $name ) : bool;
+    /** @param list<string> $namespace */
+    public function has( array $namespace, string $name ) : bool;
 
 
-    public function has2( string $name, string $sub ) : bool;
+    /**
+     * @param list<string> $namespace
+     * @param list<string> $subNamespace
+     */
+    public function hasNamespace( array $namespace, array $subNamespace ) : bool;
 
 
     public function id( ?string $id = null ) : string|false;
@@ -65,8 +68,11 @@ interface SessionBackendInterface {
     public function idEx() : string;
 
 
-    /** @return array<string, string|list<string>> */
-    public function list() : array;
+    /**
+     * @param list<string> $namespace
+     * @return array<string, string|list<string>>
+     */
+    public function list( array $namespace ) : array;
 
 
     public function moduleName() : string|false;
@@ -87,10 +93,8 @@ interface SessionBackendInterface {
     public function registerShutdown() : void;
 
 
-    public function remove( string $name ) : void;
-
-
-    public function remove2( string $name, string $sub ) : void;
+    /** @param list<string> $namespace */
+    public function remove( array $namespace, string $name ) : void;
 
 
     public function reset() : bool;
@@ -99,10 +103,8 @@ interface SessionBackendInterface {
     public function savePath( ?string $value = null ) : string|false;
 
 
-    public function set( string $name, mixed $value ) : void;
-
-
-    public function set2( string $name, string $sub, mixed $value ) : void;
+    /** @param list<string> $namespace */
+    public function set( array $namespace, string $name, mixed $value ) : void;
 
 
     public function setCookieParams( int  $lifetime, string $path = '', string $domain = '',

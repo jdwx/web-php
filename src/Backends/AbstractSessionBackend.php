@@ -41,6 +41,21 @@ abstract class AbstractSessionBackend implements SessionBackendInterface {
     }
 
 
+    public function hasNamespace( array $namespace, array $subNamespace ) : bool {
+        $r = $this->getNamespace( $namespace );
+        foreach ( $subNamespace as $stKey ) {
+            if ( ! isset( $r[ $stKey ] ) ) {
+                return true;
+            }
+            if ( ! is_array( $r[ $stKey ] ) ) {
+                return false;
+            }
+            $r = $r[ $stKey ];
+        }
+        return true;
+    }
+
+
     public function idEx( ?string $id = null ) : string {
         $x = $this->id( $id );
         if ( is_string( $x ) ) {
@@ -89,6 +104,13 @@ abstract class AbstractSessionBackend implements SessionBackendInterface {
         }
         throw new RuntimeException( 'Session failed to write close.' );
     }
+
+
+    /**
+     * @param list<string> $namespace
+     * @return array<string, mixed>
+     */
+    abstract protected function & getNamespace( array $namespace ) : array;
 
 
 }

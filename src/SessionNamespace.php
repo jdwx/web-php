@@ -12,6 +12,14 @@ use JDWX\Web\Backends\SessionBackendInterface;
 use RuntimeException;
 
 
+/**
+ * Class SessionNamespace
+ *
+ * This class provides a namespaced session interface, allowing for the management of session variables
+ * and making it easy to isolate session data within specific namespaces.
+ *
+ * @package JDWX\Web
+ */
 class SessionNamespace extends SessionBase {
 
 

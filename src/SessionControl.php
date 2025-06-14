@@ -13,6 +13,15 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 
+/**
+ * Class SessionControl
+ *
+ * This class provides methods to control session behavior, such as starting,
+ * destroying, and configuring sessions. I.e., all the functionality that
+ * applies to the session as a whole, not to individual session variables.
+ *
+ * @package JDWX\Web
+ */
 class SessionControl extends SessionBase {
 
 

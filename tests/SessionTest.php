@@ -31,7 +31,7 @@ final class SessionTest extends TestCase {
 
 
     public function testAbort() : void {
-        $ses = $this->initSession();
+        $ses = Session::mock();
         $ses->bFailAbort = true;
         self::expectException( RuntimeException::class );
         Session::abort();
@@ -39,13 +39,13 @@ final class SessionTest extends TestCase {
 
 
     public function testActive() : void {
-        $this->initSession();
+        Session::mock();
         self::assertFalse( Session::active() );
     }
 
 
     public function testCacheLimiter() : void {
-        $this->initSession();
+        Session::mock();
         self::assertEquals( 'nocache', Session::cacheLimiter() );
         Session::cacheLimiter( 'public' );
         self::assertEquals( 'public', Session::cacheLimiter() );
@@ -55,7 +55,7 @@ final class SessionTest extends TestCase {
 
 
     public function testCacheLimiterForFailure() : void {
-        $ses = $this->initSession();
+        $ses = Session::mock();
         $ses->bFailCacheLimiter = true;
         self::expectException( RuntimeException::class );
         Session::cacheLimiter( 'public' );
@@ -63,7 +63,7 @@ final class SessionTest extends TestCase {
 
 
     public function testCookieInRequest() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         $req = Request::synthetic( [], [], [], [] );
         self::assertFalse( Session::cookieInRequest( $req ) );
         $req = Request::synthetic( [], [], [ $be->nameEx() => $be->idEx() ], [] );
@@ -96,7 +96,7 @@ final class SessionTest extends TestCase {
 
 
     public function testDestroy() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 'bar' );
         self::assertEquals( 'bar', Session::get( 'foo' ) );
@@ -107,7 +107,7 @@ final class SessionTest extends TestCase {
 
 
     public function testDestroyForFailure() : void {
-        $ses = $this->initSession();
+        $ses = Session::mock();
         $ses->bFailDestroy = true;
         Session::start();
         self::expectException( RuntimeException::class );
@@ -116,7 +116,7 @@ final class SessionTest extends TestCase {
 
 
     public function testFlush() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 'bar' );
         $tmExpire = Session::get( 'tmExpire' );
@@ -128,7 +128,7 @@ final class SessionTest extends TestCase {
 
 
     public function testGet() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 'bar' );
         self::assertSame( 'bar', Session::get( 'foo' ) );
@@ -137,7 +137,7 @@ final class SessionTest extends TestCase {
 
 
     public function testGetInt() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 123 );
         self::assertSame( 123, Session::getInt( 'foo' ) );
@@ -149,7 +149,7 @@ final class SessionTest extends TestCase {
 
 
     public function testGetIntOrNull() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         self::assertNull( Session::getIntOrNull( 'foo' ) );
         Session::set( 'foo', 123 );
@@ -161,7 +161,7 @@ final class SessionTest extends TestCase {
 
 
     public function testGetString() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 'bar' );
         self::assertSame( 'bar', Session::getString( 'foo' ) );
@@ -172,7 +172,7 @@ final class SessionTest extends TestCase {
 
 
     public function testGetStringOrNull() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         self::assertNull( Session::getStringOrNull( 'foo' ) );
         Session::set( 'foo', 'bar' );
@@ -184,7 +184,7 @@ final class SessionTest extends TestCase {
 
 
     public function testId() : void {
-        $ses = $this->initSession();
+        $ses = Session::mock();
         Session::start();
         self::assertSame( 'test-id', Session::id() );
         $ses->bFailId = true;
@@ -194,7 +194,7 @@ final class SessionTest extends TestCase {
 
 
     public function testIncrement() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 123 );
         Session::increment( 'foo' );
@@ -205,7 +205,7 @@ final class SessionTest extends TestCase {
 
 
     public function testList() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::remove( 'tmExpire' );
         Session::remove( 'tmStart' );
@@ -217,7 +217,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedGet() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 'baz' );
         self::assertSame( 'baz', Session::nestedGet( 'foo', 'bar' ) );
@@ -225,7 +225,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedGetInt() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 123 );
         self::assertSame( 123, Session::nestedGetInt( 'foo', 'bar' ) );
@@ -237,7 +237,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedGetIntOrNull() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         self::assertNull( Session::nestedGetIntOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 123 );
@@ -249,7 +249,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedGetString() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 'baz' );
         self::assertSame( 'baz', Session::nestedGetString( 'foo', 'bar' ) );
@@ -260,7 +260,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedGetStringOrNull() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         self::assertNull( Session::nestedGetStringOrNull( 'foo', 'bar' ) );
         Session::nestedSet( 'foo', 'bar', 'baz' );
@@ -272,7 +272,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedHas() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 'baz' );
         self::assertTrue( Session::nestedHas( 'foo', 'bar' ) );
@@ -281,7 +281,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedIncrement() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::nestedSet( 'foo', 'bar', 123 );
         Session::nestedIncrement( 'foo', 'bar' );
@@ -292,7 +292,7 @@ final class SessionTest extends TestCase {
 
 
     public function testNestedRemove() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         Session::start();
         $be->set( [], 'foo', [ 'bar' => 'baz', 'qux' => 'quux' ] );
         Session::nestedRemove( 'foo', 'bar' );
@@ -302,14 +302,14 @@ final class SessionTest extends TestCase {
 
 
     public function testPeek() : void {
-        $this->initSession( [ 'foo' => 'bar', 'baz' => 'qux' ] );
+        Session::mock( [ 'foo' => 'bar', 'baz' => 'qux' ] );
         $peek = Session::peek();
         self::assertSame( [ 'foo' => 'bar', 'baz' => 'qux' ], $peek );
     }
 
 
     public function testRegenerate() : void {
-        $ses = $this->initSession();
+        $ses = Session::mock();
         Session::start();
         $stID = Session::id();
         Session::regenerate();
@@ -321,7 +321,7 @@ final class SessionTest extends TestCase {
 
 
     public function testRemove() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         Session::start();
         $be->set( [], 'foo', 'bar' );
         $be->set( [], 'qux', 'quux' );
@@ -335,7 +335,7 @@ final class SessionTest extends TestCase {
 
     public function testReset() : void {
         $tmExpire = time() + 60;
-        $this->initSession( [ 'foo' => 'bar', 'tmExpire' => $tmExpire ] );
+        Session::mock( [ 'foo' => 'bar', 'tmExpire' => $tmExpire ] );
         Session::start();
         self::assertSame( 'bar', Session::get( 'foo' ) );
         Session::set( 'foo', 'baz' );
@@ -350,7 +350,7 @@ final class SessionTest extends TestCase {
 
 
     public function testResetForFailure() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         $be->bFailReset = true;
         Session::start();
         self::expectException( RuntimeException::class );
@@ -359,14 +359,14 @@ final class SessionTest extends TestCase {
 
 
     public function testResetForNotStarted() : void {
-        $this->initSession();
+        Session::mock();
         self::expectException( LogicException::class );
         Session::reset();
     }
 
 
     public function testSoftStart() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         self::assertTrue( Session::softStart() );
         self::assertTrue( $be->bActive );
         self::assertTrue( Session::softStart() );
@@ -374,7 +374,7 @@ final class SessionTest extends TestCase {
 
 
     public function testStart() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         Session::start( i_stSessionName: 'alt-session-name' );
         self::assertSame( 'alt-session-name', $be->bstName );
         Session::destroy();
@@ -385,7 +385,7 @@ final class SessionTest extends TestCase {
 
 
     public function testStart2() : void {
-        $this->initSession();
+        Session::mock();
         $req = Request::synthetic( [], [], [ 'baz' => 'foo|bar' ], [] );
         self::assertFalse( Session::start( i_stSessionName: 'baz', i_req: $req ) );
         $req = Request::synthetic( [], [], [ 'baz' => str_repeat( '01234567890', 10 ) ], [] );
@@ -399,14 +399,14 @@ final class SessionTest extends TestCase {
 
 
     public function testStart3() : void {
-        $this->initSession( [ 'tmExpire' => time() - 3600, 'foo' => 'bar' ] );
+        Session::mock( [ 'tmExpire' => time() - 3600, 'foo' => 'bar' ] );
         self::assertTrue( Session::start() );
         self::assertNull( Session::get( 'foo' ) );
     }
 
 
     public function testUnset() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         Session::start();
         Session::set( 'foo', 'bar' );
         self::assertSame( 'bar', Session::get( 'foo' ) );
@@ -419,7 +419,7 @@ final class SessionTest extends TestCase {
 
 
     public function testWriteClose() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 'bar' );
         self::assertSame( 'bar', Session::get( 'foo' ) );
@@ -430,7 +430,7 @@ final class SessionTest extends TestCase {
 
 
     public function testWriteCloseForFailure() : void {
-        $be = $this->initSession();
+        $be = Session::mock();
         Session::start();
         $be->bFailWriteClose = true;
         self::expectException( RuntimeException::class );
@@ -439,21 +439,13 @@ final class SessionTest extends TestCase {
 
 
     public function testWriteCloseForReadAfterClose() : void {
-        $this->initSession();
+        Session::mock();
         Session::start();
         Session::set( 'foo', 'bar' );
         self::assertSame( 'bar', Session::get( 'foo' ) );
         Session::writeClose();
         Session::start();
         self::assertSame( 'bar', Session::get( 'foo' ) );
-    }
-
-
-    /** @param array<string, mixed> $i_rSession */
-    private function initSession( array $i_rSession = [] ) : MockSessionBackend {
-        $be = new MockSessionBackend( $i_rSession );
-        Session::init( $be );
-        return $be;
     }
 
 

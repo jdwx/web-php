@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Web\Backends\MockSessionBackend;
 use JDWX\Web\Backends\PHPSessionBackend;
 use JDWX\Web\Backends\SessionBackendInterface;
 use Psr\Log\LoggerInterface;
@@ -188,6 +189,14 @@ class Session {
     /** @return array<string, string|list<string>> */
     public static function list() : array {
         return static::vars()->list();
+    }
+
+
+    /** @param array<string, mixed> $rBackup */
+    public static function mock( array $rBackup = [] ) : MockSessionBackend {
+        $be = new MockSessionBackend( $rBackup );
+        self::init( $be );
+        return $be;
     }
 
 

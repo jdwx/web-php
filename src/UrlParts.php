@@ -29,7 +29,7 @@ class UrlParts implements \ArrayAccess, Stringable {
 
     public ?string $nstFile = null;
 
-    /** @var array<string, string|list<string>> */
+    /** @var array<string, string|array<int|string, string>> */
     public array $rQuery = [];
 
     public ?string $nstFragment = null;
@@ -81,7 +81,7 @@ class UrlParts implements \ArrayAccess, Stringable {
 
     /**
      * @param string $offset
-     * @return string|list<string>
+     * @return string|array<int|string, string>
      * @suppress PhanTypeMismatchDeclaredParamNullable
      */
     public function offsetGet( mixed $offset ) : string|array {

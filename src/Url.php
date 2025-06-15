@@ -211,7 +211,7 @@ class Url {
 
     private static function splitQuery( UrlParts $o_uri, string $i_stQuery ) : void {
         parse_str( $i_stQuery, $r );
-        $o_uri->rQuery = TypeIs::mapStringOrListString( $r );
+        $o_uri->rQuery = TypeIs::mapStringOrArrayString( $r );
     }
 
 

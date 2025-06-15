@@ -156,11 +156,11 @@ final class UrlTest extends TestCase {
 
 
     public function testSplitForArray() : void {
-        $parts = Url::split( '/a/b?foo[]=1&foo[]=2' );
+        $parts = Url::split( '/a/b?foo[]=1&foo[]=2&foo[bar]=3' );
         assert( $parts instanceof UrlParts );
         self::assertSame( [ 'a' ], $parts->subFolders );
         self::assertSame( 'b', $parts->nstFile );
-        self::assertSame( [ '1', '2' ], $parts[ 'foo' ] );
+        self::assertSame( [ '1', '2', 'bar' => '3' ], $parts[ 'foo' ] );
     }
 
 
@@ -182,6 +182,24 @@ final class UrlTest extends TestCase {
         self::assertNull( Url::split( '\\absolute-nonsense\\' ) );
         self::assertNull( Url::split( 'https://example.com,http://http' ) );
         self::assertNull( Url::split( 'https://example.com/path/te st/resource?query=string#fragment' ) );
+    }
+
+
+    public function testSplitForList() : void {
+        $parts = Url::split( '/a/b?foo[]=1&foo[]=2' );
+        assert( $parts instanceof UrlParts );
+        self::assertSame( [ 'a' ], $parts->subFolders );
+        self::assertSame( 'b', $parts->nstFile );
+        self::assertSame( [ '1', '2' ], $parts[ 'foo' ] );
+    }
+
+
+    public function testSplitForMap() : void {
+        $parts = Url::split( '/a/b?foo[bar]=1&foo[baz]=2' );
+        assert( $parts instanceof UrlParts );
+        self::assertSame( [ 'a' ], $parts->subFolders );
+        self::assertSame( 'b', $parts->nstFile );
+        self::assertSame( [ 'bar' => '1', 'baz' => '2' ], $parts[ 'foo' ] );
     }
 
 

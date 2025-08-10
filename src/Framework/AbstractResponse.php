@@ -30,6 +30,18 @@ abstract readonly class AbstractResponse implements ResponseInterface {
     }
 
 
+    public function getHeader( string $i_stHeaderName ) : ?string {
+        $i_stHeaderName = strtolower( $i_stHeaderName );
+        foreach ( $this->setHeaders as $stHeader ) {
+            $stCheck = strtolower( $stHeader );
+            if ( str_starts_with( $stCheck, $i_stHeaderName . ':' ) ) {
+                return trim( substr( $stHeader, strlen( $i_stHeaderName ) + 1 ) );
+            }
+        }
+        return null;
+    }
+
+
     /** @return Set<string> */
     public function getHeaders() : Set {
         return $this->setHeaders;

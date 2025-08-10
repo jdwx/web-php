@@ -26,6 +26,17 @@ class RouteRouter extends AbstractRouter {
     }
 
 
+    public function addRoute( string $i_stUri, string|RouteInterface $i_route ) : void {
+        if ( is_string( $i_route ) && ! class_exists( $i_route ) ) {
+            throw new InvalidArgumentException( "Class {$i_route} does not exist" );
+        }
+        if ( is_string( $i_route ) && ! is_subclass_of( $i_route, RouteInterface::class ) ) {
+            throw new InvalidArgumentException( "Class {$i_route} is not a route." );
+        }
+        $this->routes->add( $i_stUri, $i_route );
+    }
+
+
     /**
      * @inheritDoc
      * @param ?string $i_nstUriOverride Can be used to override the Uri
@@ -78,17 +89,6 @@ class RouteRouter extends AbstractRouter {
         }
 
         return $this->handle( $rBestMatches[ 0 ] );
-    }
-
-
-    protected function addRoute( string $i_stUri, string|RouteInterface $i_route ) : void {
-        if ( is_string( $i_route ) && ! class_exists( $i_route ) ) {
-            throw new InvalidArgumentException( "Class {$i_route} does not exist" );
-        }
-        if ( is_string( $i_route ) && ! is_subclass_of( $i_route, RouteInterface::class ) ) {
-            throw new InvalidArgumentException( "Class {$i_route} is not a route." );
-        }
-        $this->routes->add( $i_stUri, $i_route );
     }
 
 

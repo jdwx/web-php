@@ -13,6 +13,7 @@ use JDWX\Web\Backends\MockServer;
 use JDWX\Web\FilesHandler;
 use JDWX\Web\ServerInterface;
 use JDWX\Web\UrlParts;
+use JsonException;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -20,6 +21,126 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversClass( AbstractRequest::class )]
 final class AbstractRequestTest extends TestCase {
+
+
+    public function testBody() : void {
+        $req = $this->newAbstractRequest();
+        self::assertNull( $req->body() );
+
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ) );
+        self::assertSame( '', $req->body() );
+
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: 'test body' );
+        self::assertSame( 'test body', $req->body() );
+    }
+
+
+    public function testBodyEx() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ) );
+        self::assertSame( '', $req->body() );
+
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: 'test body' );
+        self::assertSame( 'test body', $req->bodyEx() );
+
+        $req = $this->newAbstractRequest();
+        $this->expectException( OutOfBoundsException::class );
+        $req->bodyEx();
+    }
+
+
+    public function testBodyJson() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '{"foo":"bar","baz":1}' );
+        $data = $req->bodyJson();
+        assert( is_array( $data ) );
+        self::assertSame( 'bar', $data[ 'foo' ] );
+        self::assertSame( 1, $data[ 'baz' ] );
+
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '"text"' );
+        self::assertSame( 'text', $req->bodyJson() );
+
+        $req = $this->newAbstractRequest();
+        self::assertNull( $req->bodyJson() );
+
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: 'not json' );
+        $this->expectException( JsonException::class );
+        $req->bodyJson();
+    }
+
+
+    public function testBodyJsonArray() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '{"foo":"bar","baz":1}' );
+        $data = $req->bodyJsonArray();
+        assert( is_array( $data ) );
+        self::assertSame( 'bar', $data[ 'foo' ] );
+        self::assertSame( 1, $data[ 'baz' ] );
+    }
+
+
+    public function testBodyJsonArrayEx() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '{"foo":"bar","baz":1}' );
+        $data = $req->bodyJsonArrayEx();
+        self::assertSame( 'bar', $data[ 'foo' ] );
+        self::assertSame( 1, $data[ 'baz' ] );
+
+        $req = $this->newAbstractRequest();
+        $this->expectException( OutOfBoundsException::class );
+        $req->bodyJsonArrayEx();
+    }
+
+
+    public function testBodyJsonArrayForGET() : void {
+        $req = $this->newAbstractRequest();
+        self::assertNull( $req->bodyJsonArray() );
+    }
+
+
+    public function testBodyJsonArrayForNullValue() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: 'null' );
+        $this->expectException( JsonException::class );
+        $req->bodyJsonArray();
+    }
+
+
+    public function testBodyJsonArrayForStringValue() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '"text"' );
+        $this->expectException( JsonException::class );
+        $req->bodyJsonArray();
+    }
+
+
+    public function testBodyJsonEx() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '{"foo":"bar","baz":1}' );
+        $data = $req->bodyJsonEx();
+        assert( is_array( $data ) );
+        self::assertSame( 'bar', $data[ 'foo' ] );
+        self::assertSame( 1, $data[ 'baz' ] );
+
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '"text"' );
+        self::assertSame( 'text', $req->bodyJsonEx() );
+
+        $req = $this->newAbstractRequest();
+        $this->expectException( OutOfBoundsException::class );
+        $req->bodyJsonEx();
+    }
+
+
+    public function testBodyJsonExForInvalid() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: 'not json' );
+        $this->expectException( JsonException::class );
+        $req->bodyJsonEx();
+    }
 
 
     public function testCOOKIE() : void {
@@ -35,7 +156,7 @@ final class AbstractRequestTest extends TestCase {
         $req = $this->newAbstractRequest( i_rCookie: [ 'foo' => 'bar' ] );
         self::assertSame( 'bar', $req->cookieEx( 'foo' )->asString() );
         self::assertSame( 'quux', $req->cookieEx( 'qux', 'quux' )->asString() );
-        self::expectException( OutOfBoundsException::class );
+        $this->expectException( OutOfBoundsException::class );
         $req->cookieEx( 'bar' );
     }
 
@@ -67,7 +188,7 @@ final class AbstractRequestTest extends TestCase {
         $req = $this->newAbstractRequest( [ 'foo' => 'bar' ] );
         self::assertSame( 'bar', $req->getEx( 'foo' )->asString() );
         self::assertSame( 'quux', $req->getEx( 'qux', 'quux' )->asString() );
-        self::expectException( OutOfBoundsException::class );
+        $this->expectException( OutOfBoundsException::class );
         $req->getEx( 'baz' );
     }
 
@@ -164,7 +285,7 @@ final class AbstractRequestTest extends TestCase {
 
         self::assertSame( 'quux', $req->postEx( 'qux', 'quux' )->asString() );
 
-        self::expectException( OutOfBoundsException::class );
+        $this->expectException( OutOfBoundsException::class );
         $req->postEx( 'bar' );
     }
 
@@ -195,7 +316,7 @@ final class AbstractRequestTest extends TestCase {
 
         $srv = MockServer::new()->withHttpReferer( null );
         $req = $this->newAbstractRequest( i_server: $srv );
-        self::expectException( OutOfBoundsException::class );
+        $this->expectException( OutOfBoundsException::class );
         $req->refererEx();
 
     }
@@ -226,7 +347,7 @@ final class AbstractRequestTest extends TestCase {
 
         $srv = MockServer::new()->withHttpReferer( null );
         $req = $this->newAbstractRequest( i_server: $srv );
-        self::expectException( OutOfBoundsException::class );
+        $this->expectException( OutOfBoundsException::class );
         $req->refererPartsEx();
     }
 
@@ -300,18 +421,35 @@ final class AbstractRequestTest extends TestCase {
      * @param array<int|string, string> $i_rCookie
      * @param mixed[] $i_rFiles
      * @param ServerInterface|null $i_server
+     * @param string $i_stBody
      * @return AbstractRequest
      */
     private function newAbstractRequest( array            $i_rGet = [], array $i_rPost = [],
                                          array            $i_rCookie = [], array $i_rFiles = [],
-                                         ?ServerInterface $i_server = null ) : AbstractRequest {
+                                         ?ServerInterface $i_server = null,
+                                         string           $i_stBody = '' ) : AbstractRequest {
         $setGet = new ParameterSet( $i_rGet );
         $setPost = new ParameterSet( $i_rPost );
         $setCookie = new ParameterSet( $i_rCookie );
         $files = new FilesHandler( $i_rFiles );
         $srv = $i_server ?? MockServer::new();
-        return new readonly class( $setGet, $setPost, $setCookie, $files, $srv )
+        return new readonly class( $setGet, $setPost, $setCookie, $files, $srv, $i_stBody )
             extends AbstractRequest {
+
+
+            public function __construct( ParameterSet    $setGet,
+                                         ParameterSet    $setPost,
+                                         ParameterSet    $setCookie,
+                                         FilesHandler    $files,
+                                         ServerInterface $server,
+                                         private string  $stBody ) {
+                parent::__construct( $setGet, $setPost, $setCookie, $files, $server );
+            }
+
+
+            protected function fetchInput() : string {
+                return $this->stBody;
+            }
 
 
         };

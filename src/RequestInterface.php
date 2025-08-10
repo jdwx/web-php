@@ -35,6 +35,27 @@ interface RequestInterface {
     public function _POST() : IParameterSet;
 
 
+    public function body() : ?string;
+
+
+    public function bodyEx() : string;
+
+
+    public function bodyJson() : mixed;
+
+
+    /** @return array<int|string, mixed>|null */
+    public function bodyJsonArray() : ?array;
+
+
+    /** @return array<int|string, mixed> */
+    public function bodyJsonArrayEx() : array;
+
+
+    /** @return mixed */
+    public function bodyJsonEx() : mixed;
+
+
     public function cookieEx( string $i_stName, mixed $i_xDefault = null ) : IParameter;
 
 

@@ -7,8 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Web;
 
 
+use JDWX\Json\Json;
 use JDWX\Param\IParameter;
 use JDWX\Param\IParameterSet;
+use JDWX\Strict\OK;
 use OutOfBoundsException;
 
 
@@ -52,6 +54,59 @@ abstract readonly class AbstractRequest implements RequestInterface {
 
     public function _POST() : IParameterSet {
         return $this->setPost;
+    }
+
+
+    public function body() : ?string {
+        return match ( $this->method() ) {
+            'POST', 'PUT', 'PATCH' => $this->fetchInput(),
+            default => null,
+        };
+    }
+
+
+    public function bodyEx() : string {
+        $nst = $this->body();
+        if ( is_string( $nst ) ) {
+            return $nst;
+        }
+        throw new OutOfBoundsException( 'Request body not available' );
+    }
+
+
+    public function bodyJson() : mixed {
+        $nst = $this->body();
+        if ( is_string( $nst ) ) {
+            return Json::decode( $nst );
+        }
+        return null;
+    }
+
+
+    /** @return array<int|string, mixed>|null The decoded array or null if there isn't a body */
+    public function bodyJsonArray() : ?array {
+        $nst = $this->body();
+        if ( ! is_string( $nst ) ) {
+            return null;
+        }
+        return Json::decodeArray( $nst );
+    }
+
+
+    /** @return array<int|string, mixed> */
+    public function bodyJsonArrayEx() : array {
+        return Json::decodeArray( $this->bodyEx() );
+    }
+
+
+    public function bodyJsonEx() : mixed {
+        $nst = $this->body();
+        # This is implemented this way to allow for the JSON to return null (which is OK) and
+        # distinguish that from the case where there isn't a body at all (which is an error).
+        if ( ! empty( $nst ) ) {
+            return Json::decode( $nst );
+        }
+        throw new OutOfBoundsException( 'Request body JSON not available' );
     }
 
 
@@ -190,6 +245,15 @@ abstract readonly class AbstractRequest implements RequestInterface {
         # Note that splitting the URL parts already checks the URI as a
         # whole for things like invalid characters.
         return $this->uriParts()->validate();
+    }
+
+
+    /**
+     * This is provided as a separate method so that it can be overridden for testing.
+     * @codeCoverageIgnore
+     */
+    protected function fetchInput() : string {
+        return OK::file_get_contents( 'php://input' );
     }
 
 

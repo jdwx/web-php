@@ -19,9 +19,6 @@ trait MyRouteRouterTrait {
     use MyRouterTrait;
 
 
-    abstract public function addRoute( string $i_stUri, string|RouteInterface $i_route ) : void;
-
-
     public function addRoutePub( string $i_stUri, string|RouteInterface $i_route ) : void {
         $this->addRoute( $i_stUri, $i_route );
     }
@@ -30,6 +27,9 @@ trait MyRouteRouterTrait {
     public function setRootIsPrefixPub() : void {
         $this->setRootIsPrefix( true );
     }
+
+
+    abstract protected function addRoute( string $i_stUri, string|RouteInterface $i_route ) : void;
 
 
     abstract protected function setRootIsPrefix( bool $i_b ) : void;

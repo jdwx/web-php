@@ -7,10 +7,13 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Tests\Framework;
 
 
+use JDWX\Web\Backends\MockHttpBackend;
 use JDWX\Web\Backends\MockServer;
+use JDWX\Web\Framework\MapRouteManager;
 use JDWX\Web\Framework\Response;
 use JDWX\Web\Framework\RouteMatch;
 use JDWX\Web\Framework\RouteRouter;
+use JDWX\Web\Http;
 use JDWX\Web\Request;
 use JDWX\Web\RequestInterface;
 use JDWX\Web\Tests\Shims\MyRoute;
@@ -38,7 +41,7 @@ final class RouteRouterTest extends TestCase {
             new RouteMatch( '/foo/bar', MyRoute::class, '', [] ),
         ];
         $router = new RouteRouter( $mgr, i_req: $req );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $router->route();
     }
 
@@ -64,6 +67,51 @@ final class RouteRouterTest extends TestCase {
         $mgr->routes[ '/foo' ] = [ new RouteMatch( '/foo', $route, '', [] ) ];
         self::assertFalse( $router->route() );
         self::assertTrue( $router->route( '/foo' ) );
+    }
+
+
+    public function testRouteForRedirectWithExact() : void {
+        $req = $this->newRequest( 'GET', '/foo/bar' );
+        $mgr = new MapRouteManager();
+        $router = new MyRouteRouter( $mgr, i_req: $req );
+        $router->addRedirectPub( '/foo/', '/baz/' );
+        ob_start();
+        $x = $router->route();
+        $st = ob_get_clean();
+        self::assertFalse( $x );
+        self::assertSame( '', $st );
+
+        $http = new MockHttpBackend();
+        Http::init( $http );
+
+        ob_start();
+        $x = $router->route( '/foo/' );
+        $st = ob_get_clean();
+        self::assertTrue( $x );
+        assert( is_string( $st ) );
+        self::assertStringContainsString( 'href="/baz/"', $st );
+        self::assertSame( 301, $http->getResponseCode() );
+        self::assertSame( '/baz/', $http->getHeader( 'Location' ) );
+    }
+
+
+    public function testRouteForRedirectWithNotExact() : void {
+        $req = $this->newRequest( 'GET', '/foo/bar' );
+        $mgr = new MapRouteManager();
+        $router = new MyRouteRouter( $mgr, i_req: $req );
+
+        $http = new MockHttpBackend();
+        Http::init( $http );
+
+        $router->addRedirectPub( '/foo/', '/baz/', 302, false );
+        ob_start();
+        $x = $router->route();
+        $st = ob_get_clean();
+        self::assertTrue( $x );
+        assert( is_string( $st ) );
+        self::assertStringContainsString( 'href="/baz/"', $st );
+        self::assertSame( 302, $http->getResponseCode() );
+        self::assertSame( '/baz/', $http->getHeader( 'Location' ) );
     }
 
 

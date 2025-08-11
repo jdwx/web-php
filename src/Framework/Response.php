@@ -48,11 +48,15 @@ readonly class Response extends AbstractResponse {
     }
 
 
+    public static function redirect( string $i_stLocation, int $i_uStatusCode,
+                                     string $i_stText = 'Redirecting To' ) : self {
+        $page = new SimpleHtmlPage( "<p>{$i_stText}: <a href=\"{$i_stLocation}\">{$i_stLocation}</a></p>" );
+        return new self( $page, $i_uStatusCode, [ "Location: {$i_stLocation}" ] );
+    }
+
+
     public static function redirectPermanentWithGet( string $i_stLocation ) : self {
-        $page = new SimpleHtmlPage(
-            '<p>Moved Permanently: <a href="' . $i_stLocation . '">' . $i_stLocation . '</a></p>'
-        );
-        return new self( $page, 301, [ "Location: {$i_stLocation}" ] );
+        return self::redirect( $i_stLocation, 301, 'Moved Permanently' );
     }
 
 

@@ -81,6 +81,13 @@ class RouteRouter extends AbstractRouter {
     }
 
 
+    protected function addRedirect( string $i_stUri, string $i_stTarget, int $i_uStatus = 301,
+                                    bool   $i_bExact = true ) : void {
+        $route = RedirectRoute::make( $this, $i_stUri, $i_stTarget, $i_uStatus, $i_bExact );
+        $this->routes->add( $i_stUri, $route );
+    }
+
+
     protected function addRoute( string $i_stUri, string|RouteInterface $i_route ) : void {
         if ( is_string( $i_route ) && ! class_exists( $i_route ) ) {
             throw new InvalidArgumentException( "Class {$i_route} does not exist" );

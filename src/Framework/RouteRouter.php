@@ -104,7 +104,7 @@ class RouteRouter extends AbstractRouter {
         if ( ! $i_match->isExact() && ! $route->allowPathInfo() ) {
             return false;
         }
-        $response = $i_match->route( $this )->handle(
+        $response = $route->handle(
             $i_match->stUri, $i_match->stPathInfo, $i_match->rParameters
         );
         if ( ! $response instanceof ResponseInterface ) {

@@ -65,8 +65,10 @@ final class RouteRouterTest extends TestCase {
             },
         ] );
         $mgr->routes[ '/foo' ] = [ new RouteMatch( '/foo', $route, '', [] ) ];
+        ob_start();
         self::assertFalse( $router->route() );
         self::assertTrue( $router->route( '/foo' ) );
+        ob_end_clean();
     }
 
 

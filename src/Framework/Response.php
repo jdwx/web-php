@@ -11,6 +11,7 @@ use JDWX\Web\Pages\PageInterface;
 use JDWX\Web\Pages\SimpleBinaryPage;
 use JDWX\Web\Pages\SimpleHtmlPage;
 use JDWX\Web\Pages\SimpleJsonPage;
+use JDWX\Web\Pages\SimpleStreamPage;
 use JDWX\Web\Pages\SimpleTextPage;
 
 
@@ -27,6 +28,16 @@ readonly class Response extends AbstractResponse {
     public static function binary( string  $i_stData, int $i_uStatusCode = 200,
                                    ?string $i_stContentType = null, ?iterable $i_rHeaders = null ) : self {
         return static::page( new SimpleBinaryPage( $i_stData, $i_stContentType ), $i_uStatusCode, $i_rHeaders );
+    }
+
+
+    public static function eventStream( \Generator $i_events ) : self {
+        $page = new SimpleStreamPage( $i_events );
+        return new self( $page, 200, [
+            'Cache-Control: no-cache',
+            'Connection: keep-alive',
+            'X-Accel-Buffering: no',
+        ] );
     }
 
 

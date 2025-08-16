@@ -8,6 +8,7 @@ namespace JDWX\Web\Pages;
 
 
 use JDWX\Stream\StringableStreamTrait;
+use JDWX\Web\Flush;
 
 
 abstract class AbstractPage implements PageInterface {
@@ -22,6 +23,10 @@ abstract class AbstractPage implements PageInterface {
 
     public function echo() : void {
         foreach ( $this->stream() as $stChunk ) {
+            if ( $stChunk instanceof Flush ) {
+                ob_flush();
+                continue;
+            }
             echo $stChunk;
         }
     }

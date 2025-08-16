@@ -7,9 +7,11 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Tests\Pages;
 
 
+use JDWX\Web\Flush;
 use JDWX\Web\Pages\AbstractPage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Stringable;
 
 
 #[CoversClass( AbstractPage::class )]
@@ -22,6 +24,21 @@ final class AbstractPageTest extends TestCase {
         $page->echo();
         $result = ob_get_clean();
         self::assertSame( 'TEST_CONTENT', $result );
+    }
+
+
+    /** @suppress PhanTypeMismatchArgument, PhanTypeInvalidDimOffset */
+    public function testEchoForFlush() : void {
+        $page = $this->newAbstractPage( 'text/plain', [ 'TEST', new Flush(), 'CONTENT' ] );
+        $r = [];
+        $fn = static function ( $stChunk ) use ( &$r ) {
+            $r[] = $stChunk;
+        };
+        ob_start( $fn );
+        $page->echo();
+        ob_end_clean();
+        self::assertSame( 'TEST', $r[ 0 ] );
+        self::assertSame( 'CONTENT', $r[ 1 ] );
     }
 
 
@@ -73,12 +90,12 @@ final class AbstractPageTest extends TestCase {
     }
 
 
-    /** @param string|iterable<string> $i_content */
+    /** @param string|iterable<string|Stringable> $i_content */
     private function newAbstractPage( string $i_stContentType, string|iterable $i_content = '' ) : AbstractPage {
         return new class ( $i_stContentType, $i_content ) extends AbstractPage {
 
 
-            /** @param string|iterable<string> $content */
+            /** @param string|iterable<string|Stringable> $content */
             public function __construct( string $i_stContentType, private readonly string|iterable $content ) {
                 parent::__construct( $i_stContentType );
             }

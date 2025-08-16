@@ -24,6 +24,32 @@ final class ResponseTest extends TestCase {
     }
 
 
+    /** @suppress PhanTypeInvalidDimOffset, PhanTypeMismatchArgument */
+    public function testEventStream() : void {
+        $response = Response::eventStream( $this->gen() );
+        $page = $response->getPage();
+        $r = [];
+        ob_start( static function ( $stChunk ) use ( &$r ) {
+            $r[] = $stChunk;
+        } );
+        $page->echo();
+        ob_end_clean();
+        self::assertStringContainsString( 'event: foo', $r[ 0 ] );
+        self::assertStringContainsString( 'data: {"bar":"baz"}', $r[ 0 ] );
+        self::assertStringContainsString( 'event: qux', $r[ 1 ] );
+        self::assertStringContainsString( 'data: 420', $r[ 1 ] );
+        self::assertSame( '', $r[ 2 ] );
+        self::assertCount( 3, $r );
+        self::assertSame( 200, $response->getStatusCode() );
+        self::assertSame( [
+            'Cache-Control: no-cache',
+            'Connection: keep-alive',
+            'X-Accel-Buffering: no',
+        ], $response->getHeaders()->toArray() );
+        self::assertSame( 'text/event-stream', $page->getContentType() );
+    }
+
+
     public function testHtml() : void {
         $response = Response::html( '<h1>Hello, world!</h1>', 200, [ 'X-Foo: Bar' ] );
         self::assertStringContainsString( '<h1>Hello, world!</h1>', strval( $response->getPage() ) );
@@ -73,6 +99,12 @@ final class ResponseTest extends TestCase {
         self::assertSame( 'Hello, world!', strval( $response->getPage() ) );
         self::assertSame( 200, $response->getStatusCode() );
         self::assertSame( [ 'X-Foo: Bar' ], $response->getHeaders()->toArray() );
+    }
+
+
+    private function gen() : \Generator {
+        yield 'foo' => [ 'bar' => 'baz' ];
+        yield 'qux' => 420;
     }
 
 

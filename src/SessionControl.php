@@ -30,8 +30,8 @@ class SessionControl extends SessionBase {
     protected readonly int $uLifetimeSeconds;
 
 
-    public function __construct( SessionBackendInterface $backend,
-                                 ?int                    $nuLifetimeSeconds = null ) {
+    public function __construct( ?SessionBackendInterface $backend = null,
+                                 ?int                     $nuLifetimeSeconds = null ) {
         parent::__construct( $backend );
         $this->uLifetimeSeconds = $nuLifetimeSeconds ?? self::DEFAULT_LIFETIME_SECONDS;
     }

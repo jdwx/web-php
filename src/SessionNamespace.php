@@ -28,8 +28,8 @@ class SessionNamespace extends SessionBase {
 
 
     /** @param list<string>|string $namespace */
-    public function __construct( SessionBackendInterface $backend,
-                                 array|string            $namespace = [] ) {
+    public function __construct( ?SessionBackendInterface $backend = null,
+                                 array|string             $namespace = [] ) {
         parent::__construct( $backend );
         if ( ! is_array( $namespace ) ) {
             $namespace = [ $namespace ];

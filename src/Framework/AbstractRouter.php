@@ -130,6 +130,7 @@ abstract class AbstractRouter implements RouterInterface {
 
     protected function handleHttpStatusException( HttpStatusException $i_e ) : void {
         $this->logger->error( $i_e->getMessage(), [
+            'class' => $i_e::class,
             'code' => $i_e->getCode(),
             'method' => $this->request()->method(),
             'uri' => $this->uri(),

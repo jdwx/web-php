@@ -96,13 +96,7 @@ abstract class AbstractRouter implements RouterInterface {
             }
             throw new NotFoundException( 'Page not found: ' . $this->path() );
         } catch ( HttpStatusException $e ) {
-            $this->logger->error( $e->getMessage(), [
-                'code' => $e->getCode(),
-                'method' => $this->request()->method(),
-                'uri' => $this->uri(),
-                'display' => $e->display() ?? '(nothing)',
-            ] );
-            $this->error->showException( $e );
+            $this->handleHttpStatusException( $e );
         }
     }
 
@@ -131,6 +125,17 @@ abstract class AbstractRouter implements RouterInterface {
             return;
         }
         $this->methodNotAllowed( $i_nstText ?? "{$i_stMethod} required" );
+    }
+
+
+    protected function handleHttpStatusException( HttpStatusException $i_e ) : void {
+        $this->logger->error( $i_e->getMessage(), [
+            'code' => $i_e->getCode(),
+            'method' => $this->request()->method(),
+            'uri' => $this->uri(),
+            'display' => $i_e->display() ?? '(nothing)',
+        ] );
+        $this->error->showException( $i_e );
     }
 
 

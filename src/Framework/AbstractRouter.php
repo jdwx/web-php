@@ -135,6 +135,7 @@ abstract class AbstractRouter implements RouterInterface {
             'method' => $this->request()->method(),
             'uri' => $this->uri(),
             'display' => $i_e->display() ?? '(nothing)',
+            'trace' => $i_e->getTraceAsString(),
         ] );
         $this->error->showException( $i_e );
     }

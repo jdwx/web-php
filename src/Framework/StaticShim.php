@@ -124,7 +124,11 @@ class StaticShim {
     public function handleStatic() : bool {
 
         $this->bAuthoritative = false;
-        $stURI = $this->request->path();
+        try {
+            $stURI = $this->request->path();
+        } catch ( \InvalidArgumentException ) {
+            return false;
+        }
 
         if ( $this->rExcludePaths ) {
             foreach ( $this->rExcludePaths as $path ) {
@@ -223,7 +227,7 @@ class StaticShim {
             }
         }
 
-        if ( $ext == 'php' ) {
+        if ( 'php' === $ext ) {
             return false;
         }
 

@@ -37,6 +37,14 @@ final class StaticShimTest extends MyTestCase {
     }
 
 
+    public function testHandleStaticForVeryInvalidUri() : void {
+        /** @noinspection JSDeprecatedSymbols */
+        $req = $this->newRequest( '/:<script>alert(document.domain)</script>"' );
+        $shim = new MyStaticShim( __DIR__, i_req: $req );
+        self::assertFalse( $shim->handleStatic() );
+    }
+
+
     public function testRunForBogus() : void {
         $req = $this->newRequest( '/no/such/file' );
         $shim = new StaticShim( __DIR__, i_req: $req );

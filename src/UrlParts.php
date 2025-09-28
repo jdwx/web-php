@@ -58,7 +58,7 @@ class UrlParts implements \ArrayAccess, Stringable {
         }
         $st .= '/';
         if ( ! empty( $this->subFolders ) ) {
-            $st .= join( '/', $this->subFolders ) . '/';
+            $st .= implode( '/', $this->subFolders ) . '/';
         }
         if ( is_string( $this->nstFile ) ) {
             $st .= $this->nstFile;

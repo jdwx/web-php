@@ -29,6 +29,7 @@ class HttpError {
         406 => 'Not Acceptable',
         410 => 'Gone',
         500 => 'Internal Server Error',
+        501 => 'Not Implemented',
         503 => 'Service Unavailable',
     ];
 
@@ -42,6 +43,7 @@ class HttpError {
         406 => 'The resource you requested is not available in a format you accept.',
         410 => 'The resource you requested is no longer available.',
         500 => 'An internal error occurred while processing your request.',
+        501 => 'The server does not support the functionality required to fulfill your request.',
         503 => 'A temporary error occurred while processing your request.',
     ];
 

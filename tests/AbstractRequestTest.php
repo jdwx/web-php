@@ -391,6 +391,10 @@ final class AbstractRequestTest extends TestCase {
 
         $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestUri( '/te%st/this' ) );
         self::assertFalse( $req->validateUri() );
+
+        /** @noinspection JSDeprecatedSymbols */
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestUri( '/:<script>alert(document.domain)</script>' ) );
+        self::assertFalse( $req->validateUri() );
     }
 
 

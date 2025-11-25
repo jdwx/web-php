@@ -45,6 +45,51 @@ final class StaticShimTest extends MyTestCase {
     }
 
 
+    public function testInferContentType() : void {
+        $req = $this->newRequest( '/example.nope' );
+        $shim = new MyStaticShim( __DIR__, i_req: $req );
+        self::assertNull( $shim->inferContentType( null ) );
+        self::assertNull( $shim->inferContentType( '' ) );
+        self::assertNull( $shim->inferContentType( 'example-nope' ) );
+        self::assertSame( 'text/plain', $shim->inferContentType( 'example.txt' ) );
+        self::assertNull( $shim->inferContentType( 'example.yup' ) );
+    }
+
+
+    public function testInferContentTypeEx() : void {
+        $req = $this->newRequest( '/example.nope' );
+        $shim = new MyStaticShim( __DIR__, i_req: $req );
+        self::assertSame( 'text/plain', $shim->inferContentTypeEx( 'example.txt' ) );
+        self::assertSame( 'foo', $shim->inferContentTypeEx( 'example', 'foo' ) );
+        $this->expectException( \RuntimeException::class );
+        $shim->inferContentTypeEx( 'no-extension' );
+    }
+
+
+    public function testInferExtension() : void {
+        $req = $this->newRequest( '/example.nope' );
+        $shim = new MyStaticShim( __DIR__, i_req: $req );
+        self::assertNull( $shim->inferExtension( null ) );
+        self::assertNull( $shim->inferExtension( '' ) );
+        self::assertNull( $shim->inferExtension( 'example-nope' ) );
+        self::assertSame( 'txt', $shim->inferExtension( 'example.txt' ) );
+        self::assertSame( 'yup', $shim->inferExtension( 'example.yup' ) );
+    }
+
+
+    public function testLookupContentType() : void {
+        $req = $this->newRequest( '/example.nope' );
+        $shim = new MyStaticShim( __DIR__, i_req: $req );
+        self::assertNull( $shim->lookupContentType( null ) );
+        self::assertNull( $shim->lookupContentType( 'nope' ) );
+        self::assertSame( 'text/plain', $shim->lookupContentType( 'txt' ) );
+        self::assertSame( 'image/jpeg', $shim->lookupContentType( 'jpg' ) );
+        self::assertNull( $shim->lookupContentType( 'yup' ) );
+        $shim->setContentType( 'yup', 'x-application/yup' );
+        self::assertSame( 'x-application/yup', $shim->lookupContentType( 'yup' ) );
+    }
+
+
     public function testRunForBogus() : void {
         $req = $this->newRequest( '/no/such/file' );
         $shim = new StaticShim( __DIR__, i_req: $req );

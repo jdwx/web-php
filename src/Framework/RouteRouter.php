@@ -26,6 +26,17 @@ class RouteRouter extends AbstractRouter {
     }
 
 
+    public function addStaticRoute( string $i_stUri, string $i_stFileName,
+                                    string $i_stContentType = 'application/octet-stream' ) : void {
+        $this->addRoute( $i_stUri, $this->makeStaticRoute( $i_stFileName, $i_stContentType ) );
+    }
+
+
+    public function makeStaticRoute( string $i_stFileName, string $i_stContentType ) : RouteInterface {
+        return StaticRoute::make( $this, $i_stFileName, $i_stContentType );
+    }
+
+
     /**
      * @inheritDoc
      * @param ?string $i_nstUriOverride Can be used to override the Uri

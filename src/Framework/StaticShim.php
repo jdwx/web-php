@@ -15,7 +15,7 @@ use JDWX\Web\RequestInterface;
  * This shim provides basic static file handling to help test a site
  * with the PHP built-in webserver.
  *
- * In production, static files should be served by a real web server
+ * In production, static files should be served by a real web server,
  * and PHP requests should come in via FastCGI. If you are using this
  * in production, you are doing it wrong.
  *
@@ -25,20 +25,7 @@ class StaticShim {
 
     use HttpTrait;
 
-
-    /** @var array<string, string> */
-    protected array $rContentTypes = [
-        'html' => 'text/html',
-        'js' => 'application/javascript',
-        'css' => 'text/css',
-        'gif' => 'image/gif',
-        'jpg' => 'image/jpeg',
-        'png' => 'image/png',
-        'ico' => 'image/x-icon',
-        'svg' => 'image/svg+xml',
-        'txt' => 'text/plain',
-        'webp' => 'image/webp',
-    ];
+    use StaticTrait;
 
 
     /** @var list<string> */
@@ -111,7 +98,7 @@ class StaticShim {
 
 
     /**
-     * Exclude a path from static handling. Like .git for example. (But
+     * Exclude a path from static handling. Like .git, for example. (But
      * don't put .git in your document root, that's a bad idea.)
      *
      * @param string $i_stPath URI path to exclude from static handling.
@@ -156,10 +143,6 @@ class StaticShim {
         if ( $b ) {
             return true;
         }
-        if ( $this->bAuthoritative ) {
-            $this->error->show( 404 );
-            return true;
-        }
         return false;
     }
 
@@ -185,20 +168,16 @@ class StaticShim {
             }
         }
 
-
         $pathName = $stPrefix . substr( $i_stURI, $longest );
         $pathName = str_replace( '//', '/', $pathName );
+        $pathName = $this->multiViews( $pathName );
 
-        $path = pathinfo( $pathName );
-        if ( ! is_file( $pathName ) ) {
-            # If an extension was provided and the file doesn't exist, we're done.
-            if ( array_key_exists( 'extension', $path ) && $path[ 'extension' ] != '' ) {
-                if ( $this->bAuthoritative ) {
-                    $this->error->show( 404 );
-                    return true;
-                }
-                return false;
+        if ( ! is_string( $pathName ) ) {
+            if ( $this->bAuthoritative ) {
+                $this->error->show( 404 );
+                return true;
             }
+            return false;
         }
 
         if ( is_dir( $pathName ) ) {
@@ -209,36 +188,15 @@ class StaticShim {
             return false;
         }
 
-        // error_log( $pathName );
-        if ( array_key_exists( 'extension', $path ) ) {
-            $ext = $path[ 'extension' ];
-        } else {
-            $ext = null;
-            foreach ( $this->rContentTypes as $e => $t ) {
-                $newPath = $pathName . '.' . $e;
-                if ( file_exists( $newPath ) ) {
-                    $pathName = $newPath;
-                    $ext = $e;
-                    break;
-                }
-            }
-            if ( is_null( $ext ) ) {
-                return false;
-            }
-        }
-
-        if ( 'php' === $ext ) {
+        $stExt = $this->inferExtension( $pathName );
+        if ( 'php' === $stExt ) {
             return false;
         }
+        $stContentType = $this->lookupContentType( $stExt ) ?? 'application/octet-stream';
 
-        if ( array_key_exists( $ext, $this->rContentTypes ) ) {
-            $this->setHeader( 'Content-Type: ' . $this->rContentTypes[ $ext ] );
-            readfile( $pathName );
-            return true;
-        }
-
-        $this->setHeader( 'Content-Type: text/plain' );
+        $this->setHeader( 'Content-Type: ' . $stContentType );
         readfile( $pathName );
+
         return true;
 
     }

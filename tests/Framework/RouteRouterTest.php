@@ -117,6 +117,26 @@ final class RouteRouterTest extends TestCase {
     }
 
 
+    public function testRouteForStaticRoute() : void {
+        $req = $this->newRequest( 'GET', '/foo' );
+        $mgr = new MapRouteManager();
+        $router = new MyRouteRouter( $mgr, i_req: $req );
+
+        $http = new MockHttpBackend();
+        Http::init( $http );
+
+        $router->addStaticRoute( '/foo', __DIR__ . '/../../example/static/example.txt' );
+        ob_start();
+        $x = $router->route();
+
+        $st = ob_get_clean();
+        self::assertTrue( $x );
+        assert( is_string( $st ) );
+        self::assertSame( 'This is a test.', $st );
+
+    }
+
+
     protected function newRequest( string $i_stMethod, string $i_stUri ) : RequestInterface {
         $srv = new MockServer();
         $srv = $srv->withRequestMethod( $i_stMethod )->withRequestUri( $i_stUri );

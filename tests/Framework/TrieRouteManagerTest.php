@@ -20,7 +20,7 @@ final class TrieRouteManagerTest extends TestCase {
     public function testAddForDuplicates() : void {
         $mgr = new TrieRouteManager( true, true );
         $mgr->add( 'foo/bar/baz', 'QUX' );
-        self::expectException( \InvalidArgumentException::class );
+        $this->expectException( \InvalidArgumentException::class );
         $mgr->add( 'foo/bar/baz', 'QUUX' );
     }
 

@@ -85,7 +85,7 @@ readonly class Server implements ServerInterface {
         $this->stServerAddr = $i_nrDefaults[ 'SERVER_ADDR' ] ?? static::DEFAULTS[ 'SERVER_ADDR' ];
         $this->stServerName = $i_nrDefaults[ 'SERVER_NAME' ] ?? static::DEFAULTS[ 'SERVER_NAME' ];
 
-        $rFromHttpHeaders = array_filter( array_merge( static::DEFAULTS, $i_nrDefaults ), function ( $key ) {
+        $rFromHttpHeaders = array_filter( array_merge( static::DEFAULTS, $i_nrDefaults ), static function ( $key ) {
             return str_starts_with( $key, 'HTTP_' );
         }, ARRAY_FILTER_USE_KEY );
         $this->rFromHttpHeaders = TypeIs::mapNullableString( $rFromHttpHeaders );
@@ -148,7 +148,7 @@ readonly class Server implements ServerInterface {
 
 
     public function isRequestMethod( string $i_stMethod ) : bool {
-        return strtolower( trim( $i_stMethod ) ) === strtolower( trim( $this->requestMethod() ) );
+        return $i_stMethod === $this->requestMethod();
     }
 
 

@@ -55,6 +55,15 @@ final class MockFilesBackendTest extends TestCase {
     }
 
 
+    public function testFileGetContentsEx() : void {
+        $be = new MockFilesBackend();
+        $be->addUploadedFile( '/tmp/foo.txt', 'test-foo' );
+        self::assertSame( 'test-foo', $be->fileGetContentsEx( '/tmp/foo.txt' ) );
+        $this->expectException( \RuntimeException::class );
+        $be->fileGetContentsEx( '/tmp/baz.txt' );
+    }
+
+
     public function testIsUploadedFile() : void {
         $be = new MockFilesBackend();
         $be->addUploadedFile( '/tmp/foo.txt', 'test-foo' );
@@ -78,6 +87,17 @@ final class MockFilesBackendTest extends TestCase {
         self::assertFalse( $be->moveUploadedFile( '/tmp/baz.txt', '/tmp/baz-moved.txt' ) );
         $be->bFailToMoveUpload = true;
         self::assertFalse( $be->moveUploadedFile( '/tmp/bar.txt', '/tmp/bar-moved.txt' ) );
+    }
+
+
+    public function testMoveUploadedFileEx() : void {
+        $be = new MockFilesBackend();
+        $be->addUploadedFile( '/tmp/foo.txt', 'test-foo' );
+        $be->addUploadedFile( '/tmp/bar.txt', 'test-bar' );
+
+        $be->moveUploadedFileEx( '/tmp/foo.txt', '/tmp/foo-moved.txt' );
+        $this->expectException( \RuntimeException::class );
+        $be->moveUploadedFileEx( '/tmp/foo.txt', '/tmp/foo-moved.txt' );
     }
 
 

@@ -27,7 +27,7 @@ class SessionBase {
      * @return bool True if a session is active, false otherwise.
      */
     public function active() : bool {
-        return $this->backend->status() == PHP_SESSION_ACTIVE;
+        return $this->backend->status() === PHP_SESSION_ACTIVE;
     }
 
 

@@ -45,10 +45,8 @@ There are many unit tests for this module that provide additional examples of us
 
 This bulk of this module (include functionality related to requests, sessions, server values, and files) is considered stable and is extensively used in production code, handling millions of requests per day.
 
-The IRouter interface and derivatives should be considered unstable and subject to change.
-
-The test coverage is very good but not complete. Some web-related functionality is difficult to test in a unit test.
+The test coverage is very good but not complete. Some web-related functionality is difficult to test in a unit test. Everything else should be covered.
 
 ## History
 
-This module was adapted from a private repository in December 2024.
+This module was adapted from a private repository in December 2024. The Framework and Pages code moved to separate modules in November 2025. 

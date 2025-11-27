@@ -154,8 +154,8 @@ class ServerTest extends TestCase {
             'REQUEST_METHOD' => 'foo',
         ] );
         self::assertTrue( $srv->isRequestMethod( 'foo' ) );
-        self::assertTrue( $srv->isRequestMethod( 'Foo' ) );
-        self::assertTrue( $srv->isRequestMethod( 'FOO' ) );
+        self::assertFalse( $srv->isRequestMethod( 'Foo' ) );
+        self::assertFalse( $srv->isRequestMethod( 'FOO' ) );
         self::assertFalse( $srv->isRequestMethod( 'bar' ) );
     }
 

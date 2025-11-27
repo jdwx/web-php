@@ -70,6 +70,11 @@ trait StaticTrait {
     }
 
 
+    public function mapContentType( string $i_stExtension, string $i_stContentType ) : void {
+        $this->rExtraContentTypes[ $i_stExtension ] = $i_stContentType;
+    }
+
+
     public function multiViews( string $i_stPath ) : ?string {
         if ( file_exists( $i_stPath ) ) {
             return $i_stPath;
@@ -82,11 +87,6 @@ trait StaticTrait {
         }
 
         return null;
-    }
-
-
-    public function setContentType( string $i_stExtension, string $i_stContentType ) : void {
-        $this->rExtraContentTypes[ $i_stExtension ] = $i_stContentType;
     }
 
 

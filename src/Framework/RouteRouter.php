@@ -33,7 +33,7 @@ class RouteRouter extends AbstractRouter {
 
 
     public function makeStaticRoute( string $i_stFileName, string $i_stContentType ) : RouteInterface {
-        return StaticRoute::make( $this, $i_stFileName, $i_stContentType );
+        return StaticFileRoute::make( $this, $i_stFileName, $i_stContentType );
     }
 
 

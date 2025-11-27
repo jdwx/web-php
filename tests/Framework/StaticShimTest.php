@@ -85,7 +85,7 @@ final class StaticShimTest extends MyTestCase {
         self::assertSame( 'text/plain', $shim->lookupContentType( 'txt' ) );
         self::assertSame( 'image/jpeg', $shim->lookupContentType( 'jpg' ) );
         self::assertNull( $shim->lookupContentType( 'yup' ) );
-        $shim->setContentType( 'yup', 'x-application/yup' );
+        $shim->mapContentType( 'yup', 'x-application/yup' );
         self::assertSame( 'x-application/yup', $shim->lookupContentType( 'yup' ) );
     }
 

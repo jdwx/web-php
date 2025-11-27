@@ -99,7 +99,7 @@ final class FilesHandlerTest extends TestCase {
         ] ];
         $be = new MockFilesBackend();
         $fh = new FilesHandler( $rFiles, $be );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $fh->fetchAsString( 'baz' );
     }
 
@@ -117,7 +117,7 @@ final class FilesHandlerTest extends TestCase {
                 'tmp_name' => '/tmp/foo.txt',
             ],
         ], $be );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $fh->fetchAsString( 'foo' );
     }
 
@@ -175,7 +175,7 @@ final class FilesHandlerTest extends TestCase {
         $fh->move( 'foo', '/tmp/bar.txt' );
         self::assertSame( $stContent, $be->fileGetContentsEx( '/tmp/bar.txt' ) );
         $be->bFailToMoveUpload = true;
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $fh->move( 'foo', '/tmp/baz.txt' );
     }
 
@@ -199,7 +199,7 @@ final class FilesHandlerTest extends TestCase {
             'error' => UPLOAD_ERR_OK,
         ] ];
         $fh = new FilesHandler( $rFiles );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $fh->name( 'foo' );
     }
 
@@ -239,7 +239,7 @@ final class FilesHandlerTest extends TestCase {
 
     public function testTypeForNoFile() : void {
         $fh = new FilesHandler( [] );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $fh->type( 'foo' );
     }
 
@@ -251,7 +251,7 @@ final class FilesHandlerTest extends TestCase {
             'type' => [ 'text/plain' ],
         ] ];
         $fh = new FilesHandler( $rFiles );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $fh->type( 'foo' );
     }
 
@@ -263,7 +263,7 @@ final class FilesHandlerTest extends TestCase {
             'type' => 'text/plain',
         ] ];
         $fh = new FilesHandler( $rFiles );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $fh->type( 'foo', 0 );
     }
 

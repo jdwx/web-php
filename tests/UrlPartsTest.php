@@ -28,14 +28,15 @@ final class UrlPartsTest extends TestCase {
 
     public function testOffsetSet() : void {
         $url = Url::splitEx( 'https://example.com/path/to/resource?query=string#fragment' );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $url[ 'query' ] = 'new_value';
+        unset( $url );
     }
 
 
     public function testOffsetUnset() : void {
         $url = Url::splitEx( 'https://example.com/path/to/resource?query=string#fragment' );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         unset( $url[ 'query' ] );
     }
 

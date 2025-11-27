@@ -22,7 +22,7 @@ class MockSessionBackendTest extends TestCase {
 
     public function testGetForBadNamespace() : void {
         $be = new MockSessionBackend( [ 'foo' => 'bar' ] );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $be->get( [ 'foo' ], 'bar' );
     }
 
@@ -47,7 +47,7 @@ class MockSessionBackendTest extends TestCase {
         $backend->id( 'FooBar' );
         $backend->start();
         self::assertSame( 'FooBar', $backend->id() );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $backend->id( 'BazQux' );
     }
 
@@ -66,7 +66,7 @@ class MockSessionBackendTest extends TestCase {
         self::assertSame( 'test-session', $backend->nameEx() );
 
         $backend->bstName = false;
-        self::expectException( TypeException::class );
+        $this->expectException( TypeException::class );
         $backend->nameEx();
     }
 
@@ -88,7 +88,7 @@ class MockSessionBackendTest extends TestCase {
         $backend = new MockSessionBackend( [] );
         self::assertTrue( $backend->start() );
         self::assertTrue( $backend->bActive );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $backend->start();
     }
 
@@ -103,7 +103,7 @@ class MockSessionBackendTest extends TestCase {
         self::assertFalse( $backend->unset() );
 
         $backend = new MockSessionBackend( [] );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $backend->unset();
     }
 

@@ -39,7 +39,7 @@ final class UrlTest extends TestCase {
         $nstHost = Url::hostEx( 'https://example.com/path/to/resource?query=string#fragment' );
         self::assertSame( 'example.com', $nstHost );
 
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         Url::hostEx( '/foo/bar/baz' );
 
     }
@@ -109,20 +109,21 @@ final class UrlTest extends TestCase {
         $stScheme = Url::schemeEx( 'https://example.com/path/to/resource?query=string#fragment' );
         self::assertSame( 'https', $stScheme );
 
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         Url::schemeEx( '/foo/bar/baz' );
     }
 
 
     public function testSetQueryParam() : void {
         $parts = Url::split( '/a/b?foo=1&bar=baz' );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         $parts[ 'foo' ] = '2';
+        unset( $parts );
     }
 
 
     public function testSplitExForInvalid() : void {
-        self::expectException( InvalidArgumentException::class );
+        $this->expectException( InvalidArgumentException::class );
         Url::splitEx( '\\absolute-nonsense\\' );
     }
 
@@ -232,7 +233,7 @@ final class UrlTest extends TestCase {
 
     public function testUnsetQueryParam() : void {
         $parts = Url::split( '/a/b?foo=1&bar=baz' );
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         unset( $parts[ 'foo' ] );
     }
 

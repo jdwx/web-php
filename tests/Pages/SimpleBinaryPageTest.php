@@ -8,9 +8,11 @@ namespace JDWX\Web\Tests\Pages;
 
 
 use JDWX\Web\Pages\SimpleBinaryPage;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( SimpleBinaryPage::class )]
 class SimpleBinaryPageTest extends TestCase {
 
 

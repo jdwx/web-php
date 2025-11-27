@@ -8,10 +8,12 @@ namespace JDWX\Web\Tests;
 
 
 use JDWX\Web\Server;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 
+#[CoversClass( Server::class )]
 class ServerTest extends TestCase {
 
 
@@ -47,7 +49,7 @@ class ServerTest extends TestCase {
         ] );
         self::assertSame( 'bar', $srv->httpHeaderEx( 'HTTP_FOO' ) );
         self::assertSame( 'baz', $srv->httpHeaderEx( 'HTTP_BAR', 'baz' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $srv->httpHeaderEx( 'HTTP_BAR' );
     }
 
@@ -75,7 +77,7 @@ class ServerTest extends TestCase {
 
         $srv = $srv->withHttpHost( null );
         self::assertSame( 'bar', $srv->httpHostEx( 'bar' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $srv->httpHostEx();
     }
 
@@ -103,7 +105,7 @@ class ServerTest extends TestCase {
 
         $srv = $srv->withHttpReferer( null );
         self::assertSame( 'bar', $srv->httpRefererEx( 'bar' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $srv->httpRefererEx();
     }
 
@@ -131,7 +133,7 @@ class ServerTest extends TestCase {
 
         $srv = $srv->withHttpUserAgent( null );
         self::assertSame( 'bar', $srv->httpUserAgentEx( 'bar' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $srv->httpUserAgentEx();
     }
 

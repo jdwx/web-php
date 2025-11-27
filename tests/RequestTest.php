@@ -76,7 +76,7 @@ final class RequestTest extends TestCase {
         self::assertInstanceOf( Request::class, $req );
         self::assertSame( 'bar', $req->GET( 'foo' )?->asString() );
 
-        self::expectException( LogicException::class );
+        $this->expectException( LogicException::class );
         Request::init( [], [], [], [], $srv );
     }
 

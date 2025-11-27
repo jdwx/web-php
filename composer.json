@@ -3,13 +3,14 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "JDWX\\Web\\": "src/"
+      "JDWX\\Web\\": "src/",
+      "JDWX\\Web\\Tests\\": "tests/"
     }
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "jetbrains/phpstorm-attributes": "^1.0",
-    "phpunit/phpunit": "^10"
+    "phpunit/phpunit": "^12"
   },
   "require": {
     "php": ">=8.3.0",

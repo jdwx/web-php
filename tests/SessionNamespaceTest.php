@@ -62,7 +62,7 @@ final class SessionNamespaceTest extends TestCase {
         $ns2 = $ns->namespace( [ 'baz' ] );
         self::assertSame( 84, $ns2->getInt( 'foo' ) );
         self::assertSame( 0, $ns->getInt( 'nonexistent', 0 ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $ns->getInt( 'nonexistent' );
     }
 
@@ -81,7 +81,7 @@ final class SessionNamespaceTest extends TestCase {
         $ns2 = $ns->namespace( [ 'baz' ] );
         self::assertSame( 84, $ns2->getIntOrNull( 'foo' ) );
         self::assertNull( $ns->getIntOrNull( 'nonexistent' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $ns2->getIntOrNull( 'qux' );
     }
 
@@ -99,7 +99,7 @@ final class SessionNamespaceTest extends TestCase {
         $ns2 = $ns->namespace( [ 'baz' ] );
         self::assertSame( 'qux', $ns2->getString( 'foo' ) );
         self::assertSame( 'default', $ns->getString( 'nonexistent', 'default' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $ns->getString( 'nonexistent' );
     }
 
@@ -118,7 +118,7 @@ final class SessionNamespaceTest extends TestCase {
         $ns2 = $ns->namespace( [ 'baz' ] );
         self::assertSame( 'qux', $ns2->getStringOrNull( 'foo' ) );
         self::assertNull( $ns->getStringOrNull( 'nonexistent' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $ns2->getStringOrNull( 'quux' );
     }
 
@@ -174,7 +174,7 @@ final class SessionNamespaceTest extends TestCase {
         self::assertSame( 'qux', $ns2->get( 'foo' ) );
         $ns2 = $ns->namespace( 'quux' );
         self::assertSame( 'corge', $ns2->get( 'foo' ) );
-        self::expectException( RuntimeException::class );
+        $this->expectException( RuntimeException::class );
         $ns->namespace( 'foo' );
     }
 

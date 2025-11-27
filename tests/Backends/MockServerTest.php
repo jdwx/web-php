@@ -8,9 +8,11 @@ namespace JDWX\Web\Tests\Backends;
 
 
 use JDWX\Web\Backends\MockServer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 
+#[CoversClass( MockServer::class )]
 class MockServerTest extends TestCase {
 
 

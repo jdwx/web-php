@@ -12,8 +12,8 @@ use JDWX\Web\Backends\FilesBackendInterface;
 use LogicException;
 
 
-/** This class encapsulates user input from a browser request (Cookies, GET query parameters
- * POST values, and file uploads).  It is intended to be used as a singleton obtained via Request::get()
+/** This class encapsulates user input from a browser request (Cookies, GET query parameters,
+ * POST values, and file uploads).  It is intended to be used as a singleton obtained via Request::get(),
  * possibly after initialization via Request::init() if you don't want the regular superglobals
  * used to populate the request.
  */
@@ -57,7 +57,7 @@ readonly class Request extends AbstractRequest {
      * @param array<string, string>|null $i_COOKIE
      * @param mixed[]|null $i_FILES
      *
-     * This is public so it can be used for testing and mocking objects. If you subclass
+     * This is public, so it can be used for testing and mocking objects. If you subclass
      * Request, you'll need to override this method to return an instance of your subclass.
      */
     public static function synthetic( ?array                 $i_GET = null, ?array $i_POST = null,

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpDeprecationInspection */
 
 
 declare( strict_types = 1 );
@@ -72,6 +72,7 @@ final class SessionTest extends TestCase {
     }
 
 
+    /** @suppress PhanDeprecatedClass */
     public function testDefaultInstance() : void {
         $ses = new class() extends Session {
 

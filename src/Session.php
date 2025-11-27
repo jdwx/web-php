@@ -1,4 +1,7 @@
-<?php /** @noinspection PhpUnused */
+<?php /** @noinspection PhpDeprecationInspection */
+
+
+/** @noinspection PhpUnused */
 
 
 declare( strict_types = 1 );
@@ -72,6 +75,7 @@ use Psr\Log\LoggerInterface;
  * - checkActive()
  * - init()
  *
+ * @deprecated Use SessionControl and SessionNamespace instead. Deprecated for 3.x, will remove for 4.x.
  */
 class Session {
 

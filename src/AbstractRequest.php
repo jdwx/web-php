@@ -83,7 +83,6 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
-    /** @return array<int|string, mixed>|null The decoded array or null if there isn't a body */
     public function bodyJsonArray() : ?array {
         $nst = $this->body();
         if ( ! is_string( $nst ) ) {
@@ -93,7 +92,6 @@ abstract readonly class AbstractRequest implements RequestInterface {
     }
 
 
-    /** @return array<int|string, mixed> */
     public function bodyJsonArrayEx() : array {
         return Json::decodeArray( $this->bodyEx() );
     }
@@ -107,6 +105,11 @@ abstract readonly class AbstractRequest implements RequestInterface {
             return Json::decode( $nst );
         }
         throw new OutOfBoundsException( 'Request body JSON not available' );
+    }
+
+
+    public function contentType() : ?string {
+        return $this->server()->httpHeader( 'HTTP_CONTENT_TYPE' );
     }
 
 

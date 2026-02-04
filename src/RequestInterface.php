@@ -9,6 +9,7 @@ namespace JDWX\Web;
 
 use JDWX\Param\IParameter;
 use JDWX\Param\IParameterSet;
+use OutOfBoundsException;
 
 
 interface RequestInterface {
@@ -38,22 +39,47 @@ interface RequestInterface {
     public function body() : ?string;
 
 
+    /**
+     * @return string The body of the request.
+     * @throws OutOfBoundsException If there isn't a request body.
+     */
     public function bodyEx() : string;
 
 
+    /**
+     * @return mixed The decoded JSON or null if there isn't a body
+     * @throws \JsonException
+     */
     public function bodyJson() : mixed;
 
 
-    /** @return array<int|string, mixed>|null */
+    /**
+     * @return array<int|string, mixed>|null The decoded array or null if there isn't a body
+     * @throws \JsonException
+     */
     public function bodyJsonArray() : ?array;
 
 
-    /** @return array<int|string, mixed> */
+    /**
+     * @return array<int|string, mixed>
+     * @throws \JsonException If the body does not decode as a JSON array (list or dictionary).
+     * @throws OutOfBoundsException If there is no request body
+     */
     public function bodyJsonArrayEx() : array;
 
 
-    /** @return mixed */
+    /**
+     * @return mixed The decoded JSON
+     * @throws \JsonException If the body does not decode as JSON.
+     * @throws OutOfBoundsException If there is no request body
+     */
     public function bodyJsonEx() : mixed;
+
+
+    /**
+     * @return string|null The value of the request's content-type header, if present, otherwise null.
+     */
+    public function contentType() : ?string;
 
 
     public function cookieEx( string $i_stName, mixed $i_xDefault = null ) : IParameter;

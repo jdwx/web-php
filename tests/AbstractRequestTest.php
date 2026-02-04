@@ -152,6 +152,19 @@ final class AbstractRequestTest extends TestCase {
     }
 
 
+    public function testContentType() : void {
+        $req = $this->newAbstractRequest( i_server: ( new MockServer() )->withRequestMethod( 'POST' ),
+            i_stBody: '"text"' );
+        self::assertNull( $req->contentType() );
+
+        $srv = ( new MockServer() )
+            ->withHttpHeader( 'HTTP_CONTENT_TYPE', 'foo/bar+baz' )
+            ->withRequestMethod( 'POST' );
+        $req = $this->newAbstractRequest( i_server: $srv );
+        self::assertSame( 'foo/bar+baz', $req->contentType() );
+    }
+
+
     public function testCookieEx() : void {
         $req = $this->newAbstractRequest( i_rCookie: [ 'foo' => 'bar' ] );
         self::assertSame( 'bar', $req->cookieEx( 'foo' )->asString() );

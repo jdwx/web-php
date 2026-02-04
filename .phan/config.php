@@ -18,6 +18,9 @@ return [
         'vendor/',
     ],
 
+    'exclude_file_list' => [
+        'vendor/symfony/polyfill-php80/Resources/stubs/Stringable.php'
+    ],
 
     'processes' => 1,
 

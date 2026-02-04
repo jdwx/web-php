@@ -10,7 +10,9 @@
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "jetbrains/phpstorm-attributes": "^1.0",
-    "phpunit/phpunit": "^12"
+    "phpunit/phpunit": "^12",
+    "phan/phan": "^v5",
+    "phpstan/phpstan": "^2.0"
   },
   "require": {
     "php": ">=8.3.0",
@@ -23,8 +25,8 @@
     "psr/log": "^3.0"
   },
   "scripts": {
-    "phan": "sh phan.sh",
-    "phpstan": "phpstan",
+    "phan": "PHAN_ALLOW_XDEBUG=1 php -d xdebug.mode=off vendor/bin/phan --no-progress-bar -S --analyze-twice",
+    "phpstan": "php -d xdebug.so vendor/bin/phpstan --no-progress",
     "test": "vendor/bin/phpunit tests"
   }
 }

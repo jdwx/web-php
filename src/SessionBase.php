@@ -31,6 +31,12 @@ class SessionBase {
     }
 
 
+    /** Returns the underlying session backend implementation. */
+    public function backend() : SessionBackendInterface {
+        return $this->backend;
+    }
+
+
     /**
      * @return void
      *

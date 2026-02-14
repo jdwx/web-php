@@ -81,12 +81,6 @@ class SessionControl extends SessionBase {
     }
 
 
-    /** Returns the underlying session backend implementation. */
-    public function backend() : SessionBackendInterface {
-        return $this->backend;
-    }
-
-
     /**
      * Gets or sets the cache limiter for the session.
      *

@@ -8,6 +8,7 @@ namespace JDWX\Web\Tests;
 
 
 use JDWX\Web\Backends\MockSessionBackend;
+use JDWX\Web\SessionControl;
 use JDWX\Web\SessionNamespace;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -27,6 +28,21 @@ final class SessionNamespaceTest extends TestCase {
         ] );
         $be->start();
         $ns = new SessionNamespace( $be, 'baz' );
+        self::assertSame( 'qux', $ns->get( 'foo' ) );
+    }
+
+
+    public function testDefault() : void {
+        $be = new MockSessionBackend( [
+            'foo' => 'bar',
+            'baz' => [
+                'foo' => 'qux',
+            ],
+        ] );
+        $be->start();
+        SessionControl::setGlobal( $be );
+        $ns = SessionNamespace::default( 'baz' );
+        self::assertSame( $be, $ns->backend() );
         self::assertSame( 'qux', $ns->get( 'foo' ) );
     }
 

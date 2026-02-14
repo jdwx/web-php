@@ -48,6 +48,19 @@ class SessionNamespace extends SessionBase {
 
 
     /**
+     * @param list<string>|string $i_namespace
+     * @return self
+     *
+     * Returns a new SessionNamespace instance for the specified namespace
+     * using the existing session backend or the default if no existing
+     * backend is set.
+     */
+    public static function default( array|string $i_namespace ) : self {
+        return SessionControl::getGlobal()->namespace( $i_namespace );
+    }
+
+
+    /**
      * Retrieves a session variable by key, returning a default value if
      * the key does not exist.
      *

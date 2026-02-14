@@ -32,6 +32,10 @@ class SessionControl extends SessionBase {
     protected readonly int $uLifetimeSeconds;
 
 
+    /**
+     * @param SessionBackendInterface|null $backend The session backend to use, or null for the default PHP backend.
+     * @param int|null $nuLifetimeSeconds The session lifetime in seconds, or null for the default (4 hours).
+     */
     public function __construct( ?SessionBackendInterface $backend = null,
                                  ?int                     $nuLifetimeSeconds = null ) {
         parent::__construct( $backend );
@@ -39,7 +43,11 @@ class SessionControl extends SessionBase {
     }
 
 
-    public static function get() : self {
+    /**
+     * Returns the global SessionControl singleton, creating it with default
+     * settings if it has not been initialized.
+     */
+    public static function getGlobal() : self {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -47,7 +55,16 @@ class SessionControl extends SessionBase {
     }
 
 
-    public static function set( self|SessionBackendInterface|null $backend, ?int $nuLifetimeSeconds = null ) : void {
+    /**
+     * Sets the global SessionControl singleton. If a SessionBackendInterface or null
+     * is provided, a new SessionControl instance is created wrapping it.
+     *
+     * @param self|SessionBackendInterface|null $backend A SessionControl instance to use directly,
+     *        a backend to wrap in a new SessionControl, or null for the default backend.
+     * @param int|null $nuLifetimeSeconds Session lifetime in seconds (only used when $backend is not a SessionControl).
+     */
+    public static function setGlobal( self|SessionBackendInterface|null $backend,
+                                      ?int                              $nuLifetimeSeconds = null ) : void {
         if ( ! $backend instanceof self ) {
             $backend = new self( $backend, $nuLifetimeSeconds );
         }
@@ -56,25 +73,39 @@ class SessionControl extends SessionBase {
 
 
     /**
-     * @return void
-     *
-     * Abort the session without saving any changes to the session data.
+     * Aborts the session without saving any changes to the session data.
+     * The session is closed and in-memory modifications are discarded.
      */
     public function abort() : void {
         $this->backend->abortEx();
     }
 
 
+    /** Returns the underlying session backend implementation. */
     public function backend() : SessionBackendInterface {
         return $this->backend;
     }
 
 
+    /**
+     * Gets or sets the cache limiter for the session.
+     *
+     * @param string|null $i_nstCacheLimiter The cache limiter to set (e.g. "nocache", "public",
+     *        "private", "private_no_expire"), or null to retrieve the current value.
+     * @return string The current (or newly set) cache limiter value.
+     */
     public function cacheLimiter( ?string $i_nstCacheLimiter = null ) : string {
         return $this->backend->cacheLimiterEx( $i_nstCacheLimiter );
     }
 
 
+    /**
+     * Checks whether the current request contains a session cookie, indicating
+     * that the client has an existing session.
+     *
+     * @param RequestInterface|null $i_req The request to check, or null to use the global request.
+     * @return bool True if the request contains a cookie matching the session name.
+     */
     public function cookieInRequest( ?RequestInterface $i_req = null ) : bool {
         if ( ! $i_req ) {
             $i_req = Request::getGlobal();
@@ -83,12 +114,23 @@ class SessionControl extends SessionBase {
     }
 
 
+    /**
+     * Destroys the current session and its data.
+     *
+     * @throws LogicException If no session is active.
+     */
     public function destroy() : void {
         $this->checkActive();
         $this->backend->destroyEx();
     }
 
 
+    /**
+     * Clears all session data while preserving the expiration timestamp.
+     * The session remains active after flushing.
+     *
+     * @throws LogicException If no session is active.
+     */
     public function flush() : void {
         $this->checkActive();
         $vars = $this->namespace();
@@ -100,28 +142,42 @@ class SessionControl extends SessionBase {
     }
 
 
+    /**
+     * Returns the current session ID.
+     *
+     * @throws LogicException If no session is active.
+     */
     public function id() : string {
         $this->checkActive();
         return $this->backend->idEx();
     }
 
 
+    /** Returns the configured session lifetime in seconds. */
     public function lifetime() : int {
         return $this->uLifetimeSeconds;
     }
 
 
-    /** @param list<string>|string $i_namespace */
+    /**
+     * Creates a SessionNamespace for accessing session variables within
+     * a given namespace.
+     *
+     * @param list<string>|string $i_namespace The namespace path, either as a list of
+     *        segments or a single string. An empty array accesses the root namespace.
+     */
     public function namespace( array|string $i_namespace = [] ) : SessionNamespace {
         return new SessionNamespace( $this->backend, $i_namespace );
     }
 
 
     /**
-     * @param list<string> $namespace
-     * @return array<string, string|list<string>>
+     * Reads session data without keeping the session open. Briefly starts
+     * the session, reads the data, and then aborts (discarding any changes)
+     * to avoid holding the session lock.
      *
-     * Return the session data while the session is not active.
+     * @param list<string> $namespace The namespace to read from (empty for root).
+     * @return array<string, string|list<string>> The session data in the given namespace.
      */
     public function peek( array $namespace = [] ) : array {
         $this->backend->start();
@@ -132,10 +188,12 @@ class SessionControl extends SessionBase {
 
 
     /**
-     * @param bool $i_bDeleteOld
-     * @return void
+     * Regenerates the session ID while preserving all session data.
+     * This is useful for preventing session fixation attacks after
+     * privilege changes (e.g., login).
      *
-     * Regenerate the session ID while preserving the session data.
+     * @param bool $i_bDeleteOld If true, the old session file is deleted.
+     * @throws LogicException If no session is active.
      */
     public function regenerate( bool $i_bDeleteOld = false ) : void {
         $this->checkActive();
@@ -144,10 +202,12 @@ class SessionControl extends SessionBase {
 
 
     /**
-     * @return void
+     * Resets the session data to the state it was in when the session was
+     * last started (i.e., re-reads from storage, discarding in-memory changes).
      *
-     * Reset the session data to its state when the session was started.
-     *
+     * @param bool $i_bPreserveTimes If true (default), the tmExpire and tmStart
+     *        timestamps are preserved across the reset.
+     * @throws RuntimeException If the session reset fails.
      */
     public function reset( bool $i_bPreserveTimes = true ) : void {
         $vars = $this->namespace();
@@ -168,7 +228,15 @@ class SessionControl extends SessionBase {
 
 
     /**
-     * Start a session if one is not already active.
+     * Starts a session only if one is not already active. This is a no-op
+     * convenience wrapper around start() that avoids the LogicException
+     * thrown when a session is already running.
+     *
+     * @param LoggerInterface|null $i_logger Logger for session warnings/info (e.g., bogus cookies, expiry).
+     * @param string|null $i_stSessionName Custom session name or null to use the current/default name.
+     * @param RequestInterface|null $i_req The request to read session cookies from, or null for the global request.
+     * @return bool True if a session is active (whether it was already running or newly started),
+     *              false if session start was rejected (e.g., invalid session cookie).
      */
     public function softStart( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
                                ?RequestInterface $i_req = null ) : bool {
@@ -180,12 +248,16 @@ class SessionControl extends SessionBase {
 
 
     /**
-     * @param LoggerInterface|null $i_logger
-     * @param string|null $i_stSessionName
-     * @param RequestInterface|null $i_req
-     * @return bool
+     * Starts a new session. Validates the session cookie (if present) for
+     * suspicious characters and excessive length. Handles session expiry by
+     * flushing expired sessions and initializes tmStart/tmExpire timestamps.
      *
-     * Start a session. If a session is already active, an exception is thrown.
+     * @param LoggerInterface|null $i_logger Logger for session warnings (bogus cookie, expiry).
+     * @param string|null $i_stSessionName Custom session name or null to use the current/default name.
+     * @param RequestInterface|null $i_req The request to read session cookies from, or null for the global request.
+     * @return bool True if the session was started successfully, false if the session
+     *              cookie was rejected (invalid characters or too long).
+     * @throws LogicException If a session is already active.
      */
     public function start( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
                            ?RequestInterface $i_req = null ) : bool {
@@ -245,9 +317,10 @@ class SessionControl extends SessionBase {
 
 
     /**
-     * @return void
+     * Removes all session data. The session itself remains active
+     * (unlike destroy(), which ends the session entirely).
      *
-     * Removes all session data. The session remains active.
+     * @throws LogicException If no session is active.
      */
     public function unset() : void {
         $this->checkActive();
@@ -256,12 +329,11 @@ class SessionControl extends SessionBase {
 
 
     /**
-     * @return void
+     * Writes the session data and closes the session. This releases the
+     * session lock so that concurrent requests from the same client are
+     * not blocked while this request continues.
      *
-     * Write the session data and close the session. Used if you
-     * need to do additional processing after writing the session data
-     * but don't want to block potential other requests that might
-     * need to access the session.
+     * @throws LogicException If no session is active.
      */
     public function writeClose() : void {
         $this->checkActive();

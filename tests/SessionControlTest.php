@@ -17,12 +17,12 @@ use PHPUnit\Framework\TestCase;
 final class SessionControlTest extends TestCase {
 
 
-    public function testGet() : void {
-        self::assertInstanceOf( SessionControl::class, SessionControl::get() );
+    public function testGetGlobal() : void {
+        self::assertInstanceOf( SessionControl::class, SessionControl::getGlobal() );
 
         $x = new SessionControl();
-        SessionControl::set( $x );
-        self::assertSame( $x, SessionControl::get() );
+        SessionControl::setGlobal( $x );
+        self::assertSame( $x, SessionControl::getGlobal() );
 
     }
 
@@ -36,19 +36,19 @@ final class SessionControlTest extends TestCase {
     }
 
 
-    public function testSetForBackend() : void {
+    public function testSetGlobalForBackend() : void {
         $x = new MockSessionBackend( [] );
-        SessionControl::set( $x, 12345 );
-        $y = SessionControl::get();
+        SessionControl::setGlobal( $x, 12345 );
+        $y = SessionControl::getGlobal();
         self::assertSame( $x, $y->backend() );
         self::assertSame( 12345, $y->lifetime() );
     }
 
 
-    public function testSetForSessionControl() : void {
+    public function testSetGlobalForSessionControl() : void {
         $x = new SessionControl();
-        SessionControl::set( $x );
-        self::assertSame( $x, SessionControl::get() );
+        SessionControl::setGlobal( $x );
+        self::assertSame( $x, SessionControl::getGlobal() );
 
 
     }

@@ -27,6 +27,8 @@ class SessionControl extends SessionBase {
 
     private const int DEFAULT_LIFETIME_SECONDS = 14400;
 
+    private static SessionControl $instance;
+
     protected readonly int $uLifetimeSeconds;
 
 
@@ -37,6 +39,22 @@ class SessionControl extends SessionBase {
     }
 
 
+    public static function get() : self {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+
+    public static function set( self|SessionBackendInterface|null $backend, ?int $nuLifetimeSeconds = null ) : void {
+        if ( ! $backend instanceof self ) {
+            $backend = new self( $backend, $nuLifetimeSeconds );
+        }
+        self::$instance = $backend;
+    }
+
+
     /**
      * @return void
      *
@@ -44,6 +62,11 @@ class SessionControl extends SessionBase {
      */
     public function abort() : void {
         $this->backend->abortEx();
+    }
+
+
+    public function backend() : SessionBackendInterface {
+        return $this->backend;
     }
 
 
@@ -80,6 +103,11 @@ class SessionControl extends SessionBase {
     public function id() : string {
         $this->checkActive();
         return $this->backend->idEx();
+    }
+
+
+    public function lifetime() : int {
+        return $this->uLifetimeSeconds;
     }
 
 

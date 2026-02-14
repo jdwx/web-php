@@ -131,12 +131,12 @@ class SessionNamespace extends SessionBase {
 
 
     /** @param list<string>|string $i_namespace */
-    public function namespace( array|string $i_namespace ) : SessionNamespace {
+    public function namespace( array|string $i_namespace ) : self {
         if ( is_string( $i_namespace ) ) {
             $i_namespace = [ $i_namespace ];
         }
         $i_namespace = array_merge( $this->rNamespace, $i_namespace );
-        return new SessionNamespace( $this->backend, Cast::listString( $i_namespace ) );
+        return new self( $this->backend, Cast::listString( $i_namespace ) );
     }
 
 

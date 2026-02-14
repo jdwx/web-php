@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 
 
 /**
- * Class SessionHelper
+ * Class Session
  *
  * This class encapsulates the PHP session handler functions, performing error
  * and type checking, which may make it easier to use a different methodology

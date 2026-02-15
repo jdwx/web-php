@@ -336,6 +336,29 @@ class SessionControl extends SessionBase {
 
 
     /**
+     * @return int|null The session start time or null if it is not set.
+     * @throws LogicException If the session is not started.
+     */
+    public function startTime() : ?int {
+        return $this->namespace()->getIntOrNull( 'tmStart' );
+    }
+
+
+    /**
+     * @return int The session start time.
+     * @throws LogicException If the session is not started.
+     * @throws RuntimeException If the session start time is not available.
+     */
+    public function startTimeEx() : int {
+        $tmStart = $this->startTime();
+        if ( is_int( $tmStart ) ) {
+            return $tmStart;
+        }
+        throw new RuntimeException( 'Session start time not available' );
+    }
+
+
+    /**
      * Removes all session data. The session itself remains active
      * (unlike destroy(), which ends the session entirely).
      *

@@ -118,4 +118,55 @@ final class SessionControlTest extends TestCase {
     }
 
 
+    public function testStartTime() : void {
+        $tm = time() - 3600;
+        $be = new MockSessionBackend( [ 'tmStart' => $tm ] );
+        $be->start();
+        $sc = new SessionControl( $be );
+        self::assertSame( $tm, $sc->startTime() );
+    }
+
+
+    public function testStartTimeEx() : void {
+        $tm = time() - 3600;
+        $be = new MockSessionBackend( [ 'tmStart' => $tm ] );
+        $be->start();
+        $sc = new SessionControl( $be );
+        self::assertSame( $tm, $sc->startTimeEx() );
+    }
+
+
+    public function testStartTimeExForMissing() : void {
+        $be = new MockSessionBackend( [] );
+        $be->start();
+        $sc = new SessionControl( $be );
+        $this->expectException( RuntimeException::class );
+        $sc->startTimeEx();
+    }
+
+
+    public function testStartTimeExForNotStarted() : void {
+        $be = new MockSessionBackend( [] );
+        $sc = new SessionControl( $be );
+        $this->expectException( LogicException::class );
+        $sc->startTimeEx();
+    }
+
+
+    public function testStartTimeForMissing() : void {
+        $be = new MockSessionBackend( [] );
+        $be->start();
+        $sc = new SessionControl( $be );
+        self::assertNull( $sc->startTime() );
+    }
+
+
+    public function testStartTimeForNotStarted() : void {
+        $be = new MockSessionBackend( [] );
+        $sc = new SessionControl( $be );
+        $this->expectException( LogicException::class );
+        $sc->startTime();
+    }
+
+
 }

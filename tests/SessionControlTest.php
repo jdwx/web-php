@@ -9,6 +9,7 @@ namespace JDWX\Web\Tests;
 
 use JDWX\Web\Backends\MockSessionBackend;
 use JDWX\Web\SessionControl;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -58,11 +59,37 @@ final class SessionControlTest extends TestCase {
 
     public function testGetGlobal() : void {
         self::assertInstanceOf( SessionControl::class, SessionControl::getGlobal() );
+        $sc = new SessionControl();
+        SessionControl::setGlobal( $sc );
+        self::assertSame( $sc, SessionControl::getGlobal() );
+    }
 
-        $x = new SessionControl();
-        SessionControl::setGlobal( $x );
-        self::assertSame( $x, SessionControl::getGlobal() );
 
+    public function testIsExpired() : void {
+        $be = new MockSessionBackend( [
+            'tmExpire' => time() + 3600,
+        ] );
+        $be->start();
+        $sc = new SessionControl( $be );
+        self::assertFalse( $sc->isExpired() );
+    }
+
+
+    public function testIsExpiredForExpired() : void {
+        $be = new MockSessionBackend( [
+            'tmExpire' => time() - 3600,
+        ] );
+        $be->start();
+        $sc = new SessionControl( $be );
+        self::assertTrue( $sc->isExpired() );
+    }
+
+
+    public function testIsExpiredForNotStarted() : void {
+        $be = new MockSessionBackend( [] );
+        $sc = new SessionControl( $be );
+        $this->expectException( LogicException::class );
+        $sc->isExpired();
     }
 
 

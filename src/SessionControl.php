@@ -165,6 +165,13 @@ class SessionControl extends SessionBase {
     }
 
 
+    public function isExpired() : bool {
+        $this->checkActive();
+        $tmExpire = $this->expiresEx();
+        return time() > $tmExpire;
+    }
+
+
     /** Returns the configured session lifetime in seconds. */
     public function lifetime() : int {
         return $this->uLifetimeSeconds;

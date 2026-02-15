@@ -120,6 +120,24 @@ class SessionControl extends SessionBase {
 
 
     /**
+     * @return int|null The expiration time of the current session, if available.
+     */
+    public function expires() : ?int {
+        return $this->namespace()->getIntOrNull( 'tmExpire' );
+    }
+
+
+    /**
+     * @return int The expiration time of the current session.
+     * @throws LogicException If no session is active.
+     * @throws RuntimeException If the expiration time cannot be retrieved.
+     */
+    public function expiresEx() : int {
+        return $this->namespace()->getInt( 'tmExpire' );
+    }
+
+
+    /**
      * Clears all session data while preserving the expiration timestamp.
      * The session remains active after flushing.
      *

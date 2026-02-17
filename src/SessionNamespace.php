@@ -55,7 +55,7 @@ class SessionNamespace extends SessionBase {
      * using the existing session backend or the default if no existing
      * backend is set.
      */
-    public static function default( array|string $i_namespace ) : self {
+    public static function default( array|string $i_namespace = [] ) : self {
         return SessionControl::getGlobal()->namespace( $i_namespace );
     }
 

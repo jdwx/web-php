@@ -19,6 +19,35 @@ use RuntimeException;
 final class SessionNamespaceTest extends TestCase {
 
 
+    public function testClear() : void {
+        $be = new MockSessionBackend( [
+            'foo' => 'bar',
+            'baz' => [
+                'foo' => 'qux',
+            ],
+        ] );
+        $be->start();
+        $sns = new SessionNamespace( $be );
+        $sns2 = $sns->namespace( 'baz' );
+        $sns2->clear();
+        self::assertSame( [ 'foo' => 'bar', 'baz' => [] ], $be->rSession );
+    }
+
+
+    public function testClearForBase() : void {
+        $be = new MockSessionBackend( [
+            'foo' => 'bar',
+            'baz' => [
+                'foo' => 'qux',
+            ],
+        ] );
+        $be->start();
+        $ns = new SessionNamespace( $be );
+        $ns->clear();
+        self::assertSame( [], $be->rSession );
+    }
+
+
     public function testConstructForString() : void {
         $be = new MockSessionBackend( [
             'foo' => 'bar',

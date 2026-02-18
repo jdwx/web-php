@@ -25,6 +25,9 @@ interface SessionBackendInterface {
     public function cacheLimiterEx( ?string $value = null ) : string;
 
 
+    public function clear( array|string $i_namespace = [] ) : void;
+
+
     public function createId( string $prefix = '' ) : string|false;
 
 

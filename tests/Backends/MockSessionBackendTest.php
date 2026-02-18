@@ -20,6 +20,21 @@ use PHPUnit\Framework\TestCase;
 class MockSessionBackendTest extends TestCase {
 
 
+    public function testClear() : void {
+        $be = new MockSessionBackend( [
+            'foo' => 'bar',
+            'baz' => [
+                'qux' => 'quux',
+                'corge' => 'grault',
+            ],
+        ] );
+        $be->clear( 'baz' );
+        self::assertSame( [ 'foo' => 'bar', 'baz' => [] ], $be->rSession );
+        $be->clear();
+        self::assertSame( [], $be->rSession );
+    }
+
+
     public function testGetForBadNamespace() : void {
         $be = new MockSessionBackend( [ 'foo' => 'bar' ] );
         $this->expectException( LogicException::class );

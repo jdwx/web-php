@@ -60,6 +60,11 @@ class SessionNamespace extends SessionBase {
     }
 
 
+    public function clear() : void {
+        $this->backend->clear( $this->rNamespace );
+    }
+
+
     /**
      * Retrieves a session variable by key, returning a default value if
      * the key does not exist.
@@ -103,7 +108,7 @@ class SessionNamespace extends SessionBase {
 
 
     /**
-     * Retrieves a session variable as an integer, or null if the key is not set.
+     * Retrieves a session variable as an integer or null if the key is not set.
      *
      * @param string $i_stKey The session variable name.
      * @return int|null The stored integer value, or null if the key is absent.
@@ -143,7 +148,7 @@ class SessionNamespace extends SessionBase {
 
 
     /**
-     * Retrieves a session variable as a string, or null if the key is not set.
+     * Retrieves a session variable as a string or null if the key is not set.
      *
      * @param string $i_stKey The session variable name.
      * @return string|null The stored string value, or null if the key is absent.

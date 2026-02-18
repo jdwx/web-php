@@ -32,6 +32,24 @@ abstract class AbstractSessionBackend implements SessionBackendInterface {
     }
 
 
+    public function clear( array|string $i_namespace = [] ) : void {
+        if ( ! is_array( $i_namespace ) ) {
+            $i_namespace = [ $i_namespace ];
+        }
+        $stTag = array_pop( $i_namespace );
+        $rSession =& $this->getNamespace( $i_namespace );
+        if ( $stTag ) {
+            # We are clearing a sub-namespace.
+            $rSession[ $stTag ] = [];
+        } else {
+            # We are clearing the entire global namespace.
+            foreach ( array_keys( $rSession ) as $stKey ) {
+                unset( $rSession[ $stKey ] );
+            }
+        }
+    }
+
+
     public function destroyEx() : void {
         $b = $this->destroy();
         if ( $b ) {

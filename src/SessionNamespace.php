@@ -60,6 +60,10 @@ class SessionNamespace extends SessionBase {
     }
 
 
+    /**
+     * Remove all session variables in (or under) this namespace.
+     * @return void
+     */
     public function clear() : void {
         $this->backend->clear( $this->rNamespace );
     }

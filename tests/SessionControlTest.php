@@ -209,6 +209,54 @@ final class SessionControlTest extends TestCase {
     }
 
 
+    public function testStartRegeneratesIdForUnknownSession() : void {
+        # Scenario: client presents a well-formed session cookie that our app
+        # has never stamped with tmExpire — the fingerprint of a fixation
+        # attempt (or a stale/foreign cookie). The library must rotate the SID
+        # so the attacker no longer knows what the victim is authenticated
+        # against.
+        $be = new MockSessionBackend( [] );
+        $sc = new SessionControl( $be, null, 32 );
+        $stAttackerSid = str_repeat( 'a', 32 );
+        $req = Request::synthetic( null, null, [ 'test-session' => $stAttackerSid ], null );
+
+        self::assertTrue( $sc->start( null, null, $req ) );
+
+        # MockSessionBackend sets stID to 'test-id' on start() and to
+        # 'regenerated-id' on regenerateId(). If the fix is not in place,
+        # stID will still be 'test-id' and this assertion will fail.
+        self::assertSame( 'regenerated-id', $be->stID );
+        MyRequest::whackGlobal();
+    }
+
+
+    public function testStartDoesNotRegenerateForBrandNewVisitor() : void {
+        # Complement to the fixation test: a visitor with no session cookie
+        # must not trigger regeneration — PHP is already minting a fresh ID.
+        $be = new MockSessionBackend( [] );
+        $sc = new SessionControl( $be, null, 32 );
+        $req = Request::synthetic( null, null, [], null );
+
+        self::assertTrue( $sc->start( null, null, $req ) );
+        self::assertSame( 'test-id', $be->stID );
+        MyRequest::whackGlobal();
+    }
+
+
+    public function testStartDoesNotRegenerateForResumedSession() : void {
+        # Complement: a legitimate returning user whose session is already
+        # stamped with tmExpire must not trigger regeneration.
+        $be = new MockSessionBackend( [ 'tmExpire' => time() + 3600 ] );
+        $sc = new SessionControl( $be, null, 32 );
+        $stSid = str_repeat( 'a', 32 );
+        $req = Request::synthetic( null, null, [ 'test-session' => $stSid ], null );
+
+        self::assertTrue( $sc->start( null, null, $req ) );
+        self::assertSame( 'test-id', $be->stID );
+        MyRequest::whackGlobal();
+    }
+
+
     public function testStartUsesCustomSidLength() : void {
         $be = new MockSessionBackend( [] );
         $sc = new SessionControl( $be, null, 48 );

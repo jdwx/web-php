@@ -345,9 +345,19 @@ class SessionControl extends SessionBase {
             $rSessionOptions[ 'use_strict_mode' ] = true;
         }
         $this->backend->startEx( $rSessionOptions );
-
+        $bHadCookie = $i_req->cookieHas( $stSessionName );
         $vars = $this->namespace();
         $ntmExpire = $vars->getIntOrNull( 'tmExpire' );
+
+        if ( $bHadCookie && $ntmExpire === null ) {
+            # This is most likely a forged cookie of some sort.
+            $i_logger?->warning( 'Session cookie is invalid (missing tmExpire).', [
+                'sid' => $i_req->cookieEx( $stSessionName )->asString(),
+                'vars' => $vars->list(),
+            ] );
+            $this->backend->regenerateIdEx( true );
+        }
+
         // error_log( ( $ntmExpire ?? 0 ) . " <?< " . time()
         //    . " " . ( $ntmExpire < time() ? "true" : "false" )
         //    . " " . ( $ntmExpire ? "true" : "false" )

@@ -13,7 +13,6 @@ use JDWX\Web\UrlParts;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 
 #[CoversClass( Url::class )]
@@ -39,9 +38,45 @@ final class UrlTest extends TestCase {
         $nstHost = Url::hostEx( 'https://example.com/path/to/resource?query=string#fragment' );
         self::assertSame( 'example.com', $nstHost );
 
-        $this->expectException( RuntimeException::class );
+        $this->expectException( InvalidArgumentException::class );
         Url::hostEx( '/foo/bar/baz' );
 
+    }
+
+
+    public function testIsSafeWeb() : void {
+        self::assertTrue( Url::isSafeWeb( 'https://example.com/path' ) );
+        self::assertTrue( Url::isSafeWeb( 'http://example.com/path' ) );
+        self::assertFalse( Url::isSafeWeb( 'ftp://example.com/path' ) );
+        self::assertFalse( Url::isSafeWeb( 'javascript:alert(1)' ) );
+        self::assertFalse( Url::isSafeWeb( '/relative/path' ) );
+
+        # Classic open-redirect bypass: `javascript://host/…` parses with a host,
+        # but isSafeWeb() must still reject it because the scheme is not allowed.
+        self::assertFalse( Url::isSafeWeb( 'javascript://example.com/%0aalert(1)' ) );
+
+        # Custom allow list.
+        self::assertTrue( Url::isSafeWeb( 'ftp://example.com/path', [ 'ftp' ] ) );
+        self::assertFalse( Url::isSafeWeb( 'https://example.com/path', [ 'ftp' ] ) );
+    }
+
+
+    public function testIsSafeWebForInvalidUrl() : void {
+        $this->expectException( InvalidArgumentException::class );
+        Url::isSafeWeb( '\\not-a-url\\' );
+    }
+
+
+    public function testIsSchemeAllowed() : void {
+        self::assertTrue( Url::isSchemeAllowed( 'https://example.com/foo' ) );
+        self::assertTrue( Url::isSchemeAllowed( 'http://example.com/foo' ) );
+        self::assertFalse( Url::isSchemeAllowed( 'ftp://example.com/foo' ) );
+        self::assertFalse( Url::isSchemeAllowed( 'javascript:alert(1)' ) );
+
+        # Custom allow list (array + string forms).
+        self::assertTrue( Url::isSchemeAllowed( 'sftp://example.com/foo', [ 'sftp' ] ) );
+        self::assertTrue( Url::isSchemeAllowed( 'sftp://example.com/foo', 'sftp' ) );
+        self::assertFalse( Url::isSchemeAllowed( 'http://example.com/foo', 'https' ) );
     }
 
 
@@ -109,7 +144,7 @@ final class UrlTest extends TestCase {
         $stScheme = Url::schemeEx( 'https://example.com/path/to/resource?query=string#fragment' );
         self::assertSame( 'https', $stScheme );
 
-        $this->expectException( RuntimeException::class );
+        $this->expectException( InvalidArgumentException::class );
         Url::schemeEx( '/foo/bar/baz' );
     }
 

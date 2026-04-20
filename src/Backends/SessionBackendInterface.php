@@ -25,6 +25,7 @@ interface SessionBackendInterface {
     public function cacheLimiterEx( ?string $value = null ) : string;
 
 
+    /** @param list<string>|string $i_namespace */
     public function clear( array|string $i_namespace = [] ) : void;
 
 
@@ -110,8 +111,12 @@ interface SessionBackendInterface {
     public function set( array $namespace, string $name, mixed $value ) : void;
 
 
-    public function setCookieParams( int  $lifetime, string $path = '', string $domain = '',
-                                     bool $secure = false, bool $httponly = false ) : bool;
+    public function setCookieParams( int   $lifetime, ?string $path = null, ?string $domain = null,
+                                     ?bool $secure = null, ?bool $httponly = null ) : bool;
+
+
+    /** @param array<string, int|string|bool> $params */
+    public function setCookieParamsFromArray( array $params ) : bool;
 
 
     public function setSaveHandler( callable  $open, callable $close, callable $read, callable $write,
@@ -119,11 +124,11 @@ interface SessionBackendInterface {
                                     ?callable $validate_sid = null, ?callable $update_timestamp = null ) : bool;
 
 
-    /** @param array<string, int|string> $options */
+    /** @param array<string, bool|int|string> $options */
     public function start( array $options = [] ) : bool;
 
 
-    /** @param array<string, int|string> $options */
+    /** @param array<string, bool|int|string> $options */
     public function startEx( array $options = [] ) : void;
 
 

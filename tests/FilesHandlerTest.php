@@ -7,8 +7,10 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Tests;
 
 
+use InvalidArgumentException;
 use JDWX\Web\Backends\MockFilesBackend;
 use JDWX\Web\FilesHandler;
+use JDWX\Web\SafetyException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -161,6 +163,7 @@ final class FilesHandlerTest extends TestCase {
     }
 
 
+    /** @suppress PhanDeprecatedFunction */
     public function testMove() : void {
         $stContent = 'test-content';
         $rFiles = [ 'foo' => [
@@ -172,11 +175,153 @@ final class FilesHandlerTest extends TestCase {
         $be = new MockFilesBackend();
         $be->addUploadedFile( '/tmp/foo.txt', $stContent );
         $fh = new FilesHandler( $rFiles, $be );
+        /** @noinspection PhpDeprecationInspection */
         $fh->move( 'foo', '/tmp/bar.txt' );
         self::assertSame( $stContent, $be->fileGetContentsEx( '/tmp/bar.txt' ) );
         $be->bFailToMoveUpload = true;
         $this->expectException( RuntimeException::class );
+        /** @noinspection PhpDeprecationInspection */
         $fh->move( 'foo', '/tmp/baz.txt' );
+    }
+
+
+    public function testMoveSafely() : void {
+        $stContent = 'test-content';
+        $dir = $this->makeTempDir();
+        try {
+            $rFiles = [ 'foo' => [
+                'error' => UPLOAD_ERR_OK,
+                'name' => 'foo.txt',
+                'size' => strlen( $stContent ),
+                'tmp_name' => '/tmp/foo.txt',
+            ] ];
+            $be = $this->makeDiskWritingBackend();
+            $be->addUploadedFile( '/tmp/foo.txt', $stContent );
+            $fh = new FilesHandler( $rFiles, $be );
+
+            $stResult = $fh->moveSafely( 'foo', $dir, 'final.txt' );
+            self::assertSame( realpath( $dir . '/final.txt' ), $stResult );
+            self::assertFileExists( $dir . '/final.txt' );
+            self::assertSame( $stContent, file_get_contents( $dir . '/final.txt' ) );
+        } finally {
+            $this->removeTempDir( $dir );
+        }
+    }
+
+
+    public function testMoveSafelyWithRandomFilename() : void {
+        $stContent = 'test-content';
+        $dir = $this->makeTempDir();
+        try {
+            $rFiles = [ 'foo' => [
+                'error' => UPLOAD_ERR_OK,
+                'name' => 'client-supplied-name.txt',
+                'size' => strlen( $stContent ),
+                'tmp_name' => '/tmp/foo.txt',
+            ] ];
+            $be = $this->makeDiskWritingBackend();
+            $be->addUploadedFile( '/tmp/foo.txt', $stContent );
+            $fh = new FilesHandler( $rFiles, $be );
+
+            $stResult = $fh->moveSafely( 'foo', $dir );
+            # The returned path must live inside the requested dir, and the
+            # filename must be random (not the client-supplied one).
+            self::assertStringStartsWith( realpath( $dir ) . '/', $stResult );
+            self::assertFileExists( $stResult );
+            self::assertMatchesRegularExpression( '#/[0-9a-f]{32}$#', $stResult );
+            self::assertStringNotContainsString( 'client-supplied-name', $stResult );
+        } finally {
+            $this->removeTempDir( $dir );
+        }
+    }
+
+
+    public function testMoveSafelyRejectsNonexistentDir() : void {
+        $rFiles = [ 'foo' => [
+            'error' => UPLOAD_ERR_OK,
+            'name' => 'foo.txt',
+            'size' => 4,
+            'tmp_name' => '/tmp/foo.txt',
+        ] ];
+        $be = new MockFilesBackend();
+        $be->addUploadedFile( '/tmp/foo.txt', 'test' );
+        $fh = new FilesHandler( $rFiles, $be );
+        $this->expectException( InvalidArgumentException::class );
+        $fh->moveSafely( 'foo', '/nonexistent/directory/that/does/not/exist', 'final.txt' );
+    }
+
+
+    public function testMoveSafelyRejectsSlashInFilename() : void {
+        $rFiles = [ 'foo' => [
+            'error' => UPLOAD_ERR_OK,
+            'name' => 'foo.txt',
+            'size' => 4,
+            'tmp_name' => '/tmp/foo.txt',
+        ] ];
+        $be = new MockFilesBackend();
+        $be->addUploadedFile( '/tmp/foo.txt', 'test' );
+        $fh = new FilesHandler( $rFiles, $be );
+        $this->expectException( SafetyException::class );
+        $fh->moveSafely( 'foo', sys_get_temp_dir(), '../../etc/passwd' );
+    }
+
+
+    public function testMoveSafelyRejectsBackslashInFilename() : void {
+        $rFiles = [ 'foo' => [
+            'error' => UPLOAD_ERR_OK,
+            'name' => 'foo.txt',
+            'size' => 4,
+            'tmp_name' => '/tmp/foo.txt',
+        ] ];
+        $be = new MockFilesBackend();
+        $be->addUploadedFile( '/tmp/foo.txt', 'test' );
+        $fh = new FilesHandler( $rFiles, $be );
+        $this->expectException( SafetyException::class );
+        $fh->moveSafely( 'foo', sys_get_temp_dir(), 'bad\\name.txt' );
+    }
+
+
+    public function testMoveSafelyRejectsNullByteInFilename() : void {
+        $rFiles = [ 'foo' => [
+            'error' => UPLOAD_ERR_OK,
+            'name' => 'foo.txt',
+            'size' => 4,
+            'tmp_name' => '/tmp/foo.txt',
+        ] ];
+        $be = new MockFilesBackend();
+        $be->addUploadedFile( '/tmp/foo.txt', 'test' );
+        $fh = new FilesHandler( $rFiles, $be );
+        try {
+            $fh->moveSafely( 'foo', sys_get_temp_dir(), "bad\0name.txt" );
+            self::fail( 'Expected SafetyException.' );
+        } catch ( SafetyException $e ) {
+            # The null byte must be escaped in the exception message to prevent
+            # log truncation.
+            self::assertStringNotContainsString( "\0", $e->getMessage() );
+            self::assertStringContainsString( '\\0', $e->getMessage() );
+        }
+    }
+
+
+    public function testMoveSafelyThrowsWhenFileIsMissingAfterMove() : void {
+        # The stock MockFilesBackend records the move in memory but does not
+        # write to disk — so realpath() fails and moveSafely() must throw.
+        $dir = $this->makeTempDir();
+        try {
+            $rFiles = [ 'foo' => [
+                'error' => UPLOAD_ERR_OK,
+                'name' => 'foo.txt',
+                'size' => 4,
+                'tmp_name' => '/tmp/foo.txt',
+            ] ];
+            $be = new MockFilesBackend();
+            $be->addUploadedFile( '/tmp/foo.txt', 'test' );
+            $fh = new FilesHandler( $rFiles, $be );
+            $this->expectException( RuntimeException::class );
+            $fh->moveSafely( 'foo', $dir, 'final.txt' );
+        } finally {
+            $this->removeTempDir( $dir );
+        }
     }
 
 
@@ -268,6 +413,46 @@ final class FilesHandlerTest extends TestCase {
     }
 
 
+    private function makeDiskWritingBackend() : MockFilesBackend {
+        # Subclass that mirrors moves to the real filesystem so realpath() works
+        # in moveSafely(). The parent class records the move in memory; we then
+        # write the content to disk.
+        return new class extends MockFilesBackend {
+
+
+            public function moveUploadedFile( string $i_stFrom, string $i_stTo ) : bool {
+                if ( ! isset( $this->rUploadedFiles[ $i_stFrom ] ) ) {
+                    return false;
+                }
+                $stContent = $this->rUploadedFiles[ $i_stFrom ];
+                if ( ! parent::moveUploadedFile( $i_stFrom, $i_stTo ) ) {
+                    return false;
+                }
+                file_put_contents( $i_stTo, $stContent );
+                return true;
+            }
+
+
+        };
+    }
+
+
+    private function makeTempDir() : string {
+        $dir = sys_get_temp_dir() . '/jdwx-web-test-' . bin2hex( random_bytes( 8 ) );
+        mkdir( $dir );
+        return $dir;
+    }
+
+
+    private function removeTempDir( string $dir ) : void {
+        foreach ( glob( $dir . '/*' ) ?: [] as $stPath ) {
+            unlink( $stPath );
+        }
+        rmdir( $dir );
+    }
+
+
+    /** @suppress PhanDeprecatedFunction */
     public function testValidate() : void {
         $stContent = 'test-content';
         $rFiles = [ 'foo' => [
@@ -294,6 +479,7 @@ final class FilesHandlerTest extends TestCase {
         $be->addUploadedFile( '/tmp/quux.txt', $stContent );
         $fh = new FilesHandler( $rFiles, $be );
         self::assertTrue( $fh->validate( 'foo' ) );
+        /** @noinspection PhpDeprecationInspection */
         $fh->move( 'foo', '/tmp/foo-moved.txt' );
         self::assertTrue( $be->fileExists( '/tmp/foo-moved.txt' ) );
 

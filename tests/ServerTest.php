@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Web\Tests;
 
 
+use JDWX\Web\SafetyException;
 use JDWX\Web\Server;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -69,6 +70,51 @@ class ServerTest extends TestCase {
     }
 
 
+    public function testHttpHostForAllowedHostArray() : void {
+        $srv = new Server( [ 'HTTP_HOST' => 'example.com' ] );
+        self::assertSame(
+            'example.com',
+            $srv->httpHost( null, [ 'example.com', 'www.example.com' ] )
+        );
+    }
+
+
+    public function testHttpHostForAllowedHostString() : void {
+        $srv = new Server( [ 'HTTP_HOST' => 'example.com' ] );
+        self::assertSame( 'example.com', $srv->httpHost( null, 'example.com' ) );
+    }
+
+
+    public function testHttpHostForDisallowedHost() : void {
+        $srv = new Server( [ 'HTTP_HOST' => 'evil.com' ] );
+        $this->expectException( SafetyException::class );
+        $srv->httpHost( null, [ 'example.com' ] );
+    }
+
+
+    public function testHttpHostForDisallowedHostString() : void {
+        $srv = new Server( [ 'HTTP_HOST' => 'evil.com' ] );
+        $this->expectException( SafetyException::class );
+        $srv->httpHost( null, 'example.com' );
+    }
+
+
+    public function testHttpHostWithAllowlistReturnsNullWhenUnset() : void {
+        # The allow list must not be consulted when HTTP_HOST is absent.
+        $srv = new Server( [] );
+        self::assertNull( $srv->httpHost( null, [ 'example.com' ] ) );
+    }
+
+
+    public function testHttpHostWithAllowlistUsesDefault() : void {
+        $srv = new Server( [] );
+        self::assertSame(
+            'example.com',
+            $srv->httpHost( 'example.com', [ 'example.com' ] )
+        );
+    }
+
+
     public function testHttpHostEx() : void {
         $srv = new Server( [
             'HTTP_HOST' => 'foo',
@@ -79,6 +125,20 @@ class ServerTest extends TestCase {
         self::assertSame( 'bar', $srv->httpHostEx( 'bar' ) );
         $this->expectException( RuntimeException::class );
         $srv->httpHostEx();
+    }
+
+
+    public function testHttpHostExForAllowedHost() : void {
+        $srv = new Server( [ 'HTTP_HOST' => 'example.com' ] );
+        self::assertSame( 'example.com', $srv->httpHostEx( null, [ 'example.com' ] ) );
+        self::assertSame( 'example.com', $srv->httpHostEx( null, 'example.com' ) );
+    }
+
+
+    public function testHttpHostExForDisallowedHost() : void {
+        $srv = new Server( [ 'HTTP_HOST' => 'evil.com' ] );
+        $this->expectException( SafetyException::class );
+        $srv->httpHostEx( null, [ 'example.com' ] );
     }
 
 

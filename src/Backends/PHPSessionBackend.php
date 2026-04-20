@@ -88,7 +88,7 @@ class PHPSessionBackend extends AbstractSessionBackend {
      */
     public function list( array $namespace ) : array {
         $r = $this->getNamespace( $namespace );
-        # This forces a copy so we don't hand back a modifiable reference to $_SESSION.
+        # This forces a copy, so we don't hand back a modifiable reference to $_SESSION.
         return array_merge( [], $r );
     }
 
@@ -138,9 +138,19 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    public function setCookieParams( int  $lifetime, string $path = '', string $domain = '',
-                                     bool $secure = false, bool $httponly = false ) : bool {
+    /** @suppress PhanTypeMismatchArgumentNullableInternal Phan is wrong. */
+    public function setCookieParams( int   $lifetime, ?string $path = null, ?string $domain = null,
+                                     ?bool $secure = null, ?bool $httponly = null ) : bool {
         return session_set_cookie_params( $lifetime, $path, $domain, $secure, $httponly );
+    }
+
+
+    /** @param array<string, int|string|bool> $params */
+    public function setCookieParamsFromArray( array $params ) : bool {
+        /** Phpstan is too picky; we don't use array keys in type declarations.
+         * @phpstan-ignore argument.type
+         */
+        return session_set_cookie_params( $params );
     }
 
 
@@ -167,7 +177,7 @@ class PHPSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @param array<string, int|string> $options */
+    /** @param array<string, bool|int|string> $options */
     public function start( array $options = [] ) : bool {
         return session_start( $options );
     }

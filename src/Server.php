@@ -93,6 +93,23 @@ readonly class Server implements ServerInterface {
     }
 
 
+    /**
+     * @param list<string>|string|null $i_nrAllowedHosts An optional list of valid hostnames.
+     */
+    private static function checkHost( string $i_stHost, array|string|null $i_nrAllowedHosts ) : string {
+        if ( is_null( $i_nrAllowedHosts ) ) {
+            return $i_stHost;
+        }
+        if ( is_string( $i_nrAllowedHosts ) ) {
+            $i_nrAllowedHosts = [ $i_nrAllowedHosts ];
+        }
+        if ( in_array( $i_stHost, $i_nrAllowedHosts, true ) ) {
+            return $i_stHost;
+        }
+        throw new SafetyException( "Unexpected host \"{$i_stHost}\"" );
+    }
+
+
     public function documentRoot() : string {
         return $this->stDocumentRoot;
     }
@@ -112,13 +129,27 @@ readonly class Server implements ServerInterface {
     }
 
 
-    public function httpHost( ?string $i_nstDefault = null ) : ?string {
-        return $this->httpHeader( 'HTTP_HOST', $i_nstDefault );
+    /**
+     * @param string|null $i_nstDefault
+     * @param list<string>|string|null $i_nrAllowedHosts An optional list of valid hostnames.
+     * @return string|null
+     */
+    public function httpHost( ?string $i_nstDefault = null, array|string|null $i_nrAllowedHosts = null ) : ?string {
+        $nst = $this->httpHeader( 'HTTP_HOST', $i_nstDefault );
+        if ( is_string( $nst ) ) {
+            return self::checkHost( $nst, $i_nrAllowedHosts );
+        }
+        return null;
     }
 
 
-    public function httpHostEx( ?string $i_nstDefault = null ) : string {
-        return $this->httpHeaderEx( 'HTTP_HOST', $i_nstDefault );
+    /**
+     * @param string|null $i_nstDefault
+     * @param list<string>|string|null $i_nrAllowedHosts
+     * @return string
+     */
+    public function httpHostEx( ?string $i_nstDefault = null, array|string|null $i_nrAllowedHosts = null ) : string {
+        return self::checkHost( $this->httpHeaderEx( 'HTTP_HOST', $i_nstDefault ), $i_nrAllowedHosts );
     }
 
 

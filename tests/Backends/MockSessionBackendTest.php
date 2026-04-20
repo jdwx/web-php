@@ -35,6 +35,58 @@ class MockSessionBackendTest extends TestCase {
     }
 
 
+    public function testSetCookieParams() : void {
+        $be = new MockSessionBackend( [] );
+
+        # Only non-null parameters are recorded.
+        self::assertTrue( $be->setCookieParams( 3600 ) );
+        self::assertSame( [ 'lifetime' => 3600 ], $be->rCookieParams );
+
+        self::assertTrue( $be->setCookieParams( 3600, '/', 'example.com', true, true ) );
+        self::assertSame( [
+            'lifetime' => 3600,
+            'path' => '/',
+            'domain' => 'example.com',
+            'secure' => true,
+            'httponly' => true,
+        ], $be->rCookieParams );
+    }
+
+
+    public function testSetCookieParamsFromArray() : void {
+        $be = new MockSessionBackend( [] );
+        self::assertTrue( $be->setCookieParamsFromArray( [
+            'httponly' => true,
+            'secure' => true,
+            'samesite' => 'Strict',
+        ] ) );
+        self::assertSame( [
+            'httponly' => true,
+            'secure' => true,
+            'samesite' => 'Strict',
+        ], $be->rCookieParams );
+    }
+
+
+    public function testSetCookieParamsFailure() : void {
+        $be = new MockSessionBackend( [] );
+        $be->bFailSetCookieParams = true;
+        self::assertFalse( $be->setCookieParams( 3600 ) );
+        self::assertFalse( $be->setCookieParamsFromArray( [ 'httponly' => true ] ) );
+        self::assertSame( [], $be->rCookieParams );
+    }
+
+
+    public function testStartRecordsOptions() : void {
+        $be = new MockSessionBackend( [] );
+        self::assertTrue( $be->start( [ 'use_strict_mode' => true, 'sid_length' => 32 ] ) );
+        self::assertSame(
+            [ 'use_strict_mode' => true, 'sid_length' => 32 ],
+            $be->rStartOptions
+        );
+    }
+
+
     public function testGetForBadNamespace() : void {
         $be = new MockSessionBackend( [ 'foo' => 'bar' ] );
         $this->expectException( LogicException::class );

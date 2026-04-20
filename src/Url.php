@@ -38,6 +38,8 @@ class Url {
         . self::ALLOWED_ENCODE
         . self::ALLOWED_UNRESERVED;
 
+    public const array   DEFAULT_ALLOWED_SCHEMES  = [ 'http', 'https' ];
+
 
     public static function host( string $i_url ) : ?string {
         return self::splitEx( $i_url )->nstHost;
@@ -49,7 +51,28 @@ class Url {
         if ( is_string( $nst ) ) {
             return $nst;
         }
-        throw new \RuntimeException( "No host in URL: {$i_url}" );
+        throw new \InvalidArgumentException( "No host in URL: {$i_url}" );
+    }
+
+
+    /**
+     * @param string $i_url
+     * @param list<string>|string $i_rAllowedSchemes
+     * @return bool
+     */
+    public static function isSafeWeb( string $i_url, array|string $i_rAllowedSchemes = self::DEFAULT_ALLOWED_SCHEMES ) : bool {
+        return self::splitEx( $i_url )->isSafeWeb( $i_rAllowedSchemes );
+    }
+
+
+    /**
+     * @param string $i_url
+     * @param list<string>|string $i_rAllowedSchemes
+     * @return bool
+     */
+    public static function isSchemeAllowed( string       $i_url,
+                                            array|string $i_rAllowedSchemes = self::DEFAULT_ALLOWED_SCHEMES ) : bool {
+        return self::splitEx( $i_url )->isSchemeAllowed( $i_rAllowedSchemes );
     }
 
 
@@ -73,7 +96,7 @@ class Url {
         if ( is_string( $nst ) ) {
             return $nst;
         }
-        throw new \RuntimeException( "No scheme in URL: {$i_url}" );
+        throw new \InvalidArgumentException( "No scheme in URL: {$i_url}" );
     }
 
 
@@ -176,7 +199,7 @@ class Url {
         $i_nstComponent = OK::preg_replace( '/%[0-9A-Fa-f]{2}/', '', $i_nstComponent );
 
         # Now remove the sub-delims. Note % is no longer valid after above,
-        # but we'll get : and @ while we're at it.
+        # but we'll get ":" and "@" while we're at it.
         $i_nstComponent = OK::preg_replace( '/[!$&\'()*+,;=:@]/', '', $i_nstComponent );
 
         # Now remove the unreserved characters.

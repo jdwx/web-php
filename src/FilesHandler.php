@@ -78,9 +78,39 @@ readonly class FilesHandler {
     }
 
 
+    /** @deprecated Use moveSafely() instead. */
     public function move( string $i_stTag, string $i_stToPath, ?int $i_niIndex = null ) : void {
-        $stFromPath = $this->tmpName( $i_stTag, $i_niIndex );
-        $this->be->moveUploadedFileEx( $stFromPath, $i_stToPath );
+        $this->be->moveUploadedFileEx( $this->tmpName( $i_stTag, $i_niIndex ), $i_stToPath );
+    }
+
+
+    /**
+     * @param string $i_stTag Tag of file.
+     * @param string $i_stToDir Destination directory (NOT a full path.)
+     * @param string|null $i_nstFilename Filename to use (null for random)
+     * @param int|null $i_niIndex Index of file (if applicable)
+     * @return string The full path to the moved file.
+     *
+     * This method forces the destination path and filename to be provided separately,
+     * allowing additional safety checks to be performed on the filename, which is
+     * often derived from the original filename provided by the client.
+     */
+    public function moveSafely( string $i_stTag, string $i_stToDir, ?string $i_nstFilename = null, ?int $i_niIndex = null ) : string {
+        $i_nstFilename ??= bin2hex( random_bytes( 16 ) );
+        if ( ! is_dir( $i_stToDir ) ) {
+            throw new \InvalidArgumentException( "Destination does not exist or is not a directory: {$i_stToDir}" );
+        }
+        if ( str_contains( $i_nstFilename, '/' ) || str_contains( $i_nstFilename, '\\' ) || str_contains( $i_nstFilename, "\0" ) ) {
+            $i_nstFilename = str_replace( "\0", '\\0', $i_nstFilename );
+            throw new SafetyException( "Filename is unsafe: {$i_nstFilename}" );
+        }
+        $stToPath = rtrim( $i_stToDir, '/' ) . '/' . $i_nstFilename;
+        $this->be->moveUploadedFileEx( $this->tmpName( $i_stTag, $i_niIndex ), $stToPath );
+        $stRealPath = realpath( $stToPath );
+        if ( empty( $stRealPath ) ) {
+            throw new RuntimeException( "Unable to find uploaded file after move to {$stToPath}" );
+        }
+        return $stRealPath;
     }
 
 

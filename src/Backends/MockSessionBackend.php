@@ -39,11 +39,20 @@ class MockSessionBackend extends AbstractSessionBackend {
 
     public bool $bFailReset = false;
 
+    public bool $bFailSetCookieParams = false;
+
     public bool $bFailStart = false;
 
     public bool $bFailUnset = false;
 
     public bool $bFailWriteClose = false;
+
+
+    /** @var array<string, int|string|bool> */
+    public array $rCookieParams = [];
+
+    /** @var array<string, int|string|bool> */
+    public array $rStartOptions = [];
 
 
     /** @param array<string, mixed> $rBackup */
@@ -225,10 +234,32 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @codeCoverageIgnore */
-    public function setCookieParams( int  $lifetime, string $path = '', string $domain = '',
-                                     bool $secure = false, bool $httponly = false ) : bool {
-        throw new LogicException( 'Not implemented.' );
+    public function setCookieParams( int   $lifetime, ?string $path = null, ?string $domain = null,
+                                     ?bool $secure = null, ?bool $httponly = null ) : bool {
+        $rCookieParams = [ 'lifetime' => $lifetime ];
+        if ( is_string( $path ) ) {
+            $rCookieParams[ 'path' ] = $path;
+        }
+        if ( is_string( $domain ) ) {
+            $rCookieParams[ 'domain' ] = $domain;
+        }
+        if ( is_bool( $secure ) ) {
+            $rCookieParams[ 'secure' ] = $secure;
+        }
+        if ( is_bool( $httponly ) ) {
+            $rCookieParams[ 'httponly' ] = $httponly;
+        }
+        return $this->setCookieParamsFromArray( $rCookieParams );
+    }
+
+
+    /** @param array<string, int|string|bool> $params */
+    public function setCookieParamsFromArray( array $params ) : bool {
+        if ( $this->bFailSetCookieParams ) {
+            return false;
+        }
+        $this->rCookieParams = $params;
+        return true;
     }
 
 
@@ -250,7 +281,7 @@ class MockSessionBackend extends AbstractSessionBackend {
     }
 
 
-    /** @param array<string, int|string> $options */
+    /** @param array<string, bool|int|string> $options */
     public function start( array $options = [] ) : bool {
         if ( $this->bFailStart ) {
             return false;
@@ -258,6 +289,7 @@ class MockSessionBackend extends AbstractSessionBackend {
         if ( $this->bActive ) {
             throw new LogicException( 'Session already started.' );
         }
+        $this->rStartOptions = $options;
         $this->bActive = true;
         $this->stID = $this->stNewID;
         return true;

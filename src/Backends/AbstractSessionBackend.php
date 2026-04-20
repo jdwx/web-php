@@ -32,6 +32,7 @@ abstract class AbstractSessionBackend implements SessionBackendInterface {
     }
 
 
+    /** @param list<string>|string $i_namespace */
     public function clear( array|string $i_namespace = [] ) : void {
         if ( ! is_array( $i_namespace ) ) {
             $i_namespace = [ $i_namespace ];
@@ -97,6 +98,7 @@ abstract class AbstractSessionBackend implements SessionBackendInterface {
     }
 
 
+    /** @param array<string, bool|int|string> $options */
     public function startEx( array $options = [] ) : void {
         $b = $this->start( $options );
         if ( $b ) {

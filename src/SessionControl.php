@@ -27,9 +27,13 @@ class SessionControl extends SessionBase {
 
     private const int DEFAULT_LIFETIME_SECONDS = 14400;
 
+    private const int DEFAULT_SID_LENGTH       = 36;
+
     private static SessionControl $instance;
 
     protected readonly int $uLifetimeSeconds;
+
+    protected readonly int $uSidLength;
 
 
     /**
@@ -37,9 +41,11 @@ class SessionControl extends SessionBase {
      * @param int|null $nuLifetimeSeconds The session lifetime in seconds, or null for the default (4 hours).
      */
     public function __construct( ?SessionBackendInterface $backend = null,
-                                 ?int                     $nuLifetimeSeconds = null ) {
+                                 ?int                     $nuLifetimeSeconds = null,
+                                 ?int                     $nuSidLength = null ) {
         parent::__construct( $backend );
         $this->uLifetimeSeconds = $nuLifetimeSeconds ?? self::DEFAULT_LIFETIME_SECONDS;
+        $this->uSidLength = $nuSidLength ?? self::DEFAULT_SID_LENGTH;
     }
 
 
@@ -274,12 +280,19 @@ class SessionControl extends SessionBase {
      * @param LoggerInterface|null $i_logger Logger for session warnings (bogus cookie, expiry).
      * @param string|null $i_stSessionName Custom session name or null to use the current/default name.
      * @param RequestInterface|null $i_req The request to read session cookies from, or null for the global request.
+     * @param bool $i_bForceStrictMode Whether to enforce strict mode for session handling. (default: true)
+     * @param bool $i_bForceHttpOnly Whether to enforce HTTP-only session cookies. (default: true)
+     * @param bool $i_bForceSecure Whether to enforce secure session cookies. (default: true)
+     * @param ?string $i_nstForceSameSite Whether to enforce SameSite attribute for session cookies. (default: 'Strict')
+     *
      * @return bool True if the session was started successfully, false if the session
      *              cookie was rejected (invalid characters or too long).
      * @throws LogicException If a session is already active.
      */
     public function start( ?LoggerInterface  $i_logger = null, ?string $i_stSessionName = null,
-                           ?RequestInterface $i_req = null ) : bool {
+                           ?RequestInterface $i_req = null, bool $i_bForceStrictMode = true,
+                           bool              $i_bForceHttpOnly = true, bool $i_bForceSecure = true,
+                           ?string           $i_nstForceSameSite = 'Strict' ) : bool {
         if ( is_string( $i_stSessionName ) ) {
             $stSessionName = $i_stSessionName;
             $this->backend->name( $stSessionName );
@@ -292,12 +305,19 @@ class SessionControl extends SessionBase {
         }
         if ( $i_req->cookieHas( $stSessionName ) ) {
             $sid = $i_req->cookieEx( $stSessionName )->asString();
-            if ( ! preg_match( '/^[-a-zA-Z0-9,]+$/', $sid ) ) {
-                $i_logger?->warning( "Bogus characters in session cookie: {$sid}" );
+            $uSidLength = strlen( $sid );
+            if ( $uSidLength != $this->uSidLength ) {
+                $i_logger?->warning(
+                    "Session cookie length is incorrect (is {$uSidLength}, should be {$this->uSidLength})", [
+                        'sid' => $sid,
+                        'sid_length' => $uSidLength,
+                        'sid_length_expected' => $this->uSidLength,
+                    ]
+                );
                 return false;
             }
-            if ( strlen( $sid ) > 40 ) {
-                $i_logger?->warning( "Session cookie is too long: {$sid}" );
+            if ( ! preg_match( '/^[-a-zA-Z0-9,]+$/', $sid ) ) {
+                $i_logger?->warning( "Bogus characters in session cookie: {$sid}" );
                 return false;
             }
         }
@@ -306,7 +326,25 @@ class SessionControl extends SessionBase {
             throw new LogicException( 'Session already started.' );
         }
 
-        $this->backend->startEx();
+        $rCookieOptions = [];
+        if ( $i_bForceHttpOnly ) {
+            $rCookieOptions[ 'httponly' ] = true;
+        }
+        if ( $i_bForceSecure ) {
+            $rCookieOptions[ 'secure' ] = true;
+        }
+        if ( is_string( $i_nstForceSameSite ) ) {
+            $rCookieOptions[ 'samesite' ] = $i_nstForceSameSite;
+        }
+        if ( ! empty( $rCookieOptions ) ) {
+            $this->backend->setCookieParamsFromArray( $rCookieOptions );
+        }
+
+        $rSessionOptions = [ 'sid_length' => $this->uSidLength ];
+        if ( $i_bForceStrictMode ) {
+            $rSessionOptions[ 'use_strict_mode' ] = true;
+        }
+        $this->backend->startEx( $rSessionOptions );
 
         $vars = $this->namespace();
         $ntmExpire = $vars->getIntOrNull( 'tmExpire' );

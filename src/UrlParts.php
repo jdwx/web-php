@@ -73,6 +73,27 @@ class UrlParts implements \ArrayAccess, Stringable {
     }
 
 
+    /**
+     * @param list<string>|string $i_rAllowedSchemes
+     * @return bool
+     */
+    public function isSafeWeb( array|string $i_rAllowedSchemes = Url::DEFAULT_ALLOWED_SCHEMES ) : bool {
+        return ! empty( $this->nstHost ) && $this->isSchemeAllowed( $i_rAllowedSchemes );
+    }
+
+
+    /**
+     * @param list<string>|string $i_rAllowedSchemes
+     * @return bool
+     */
+    public function isSchemeAllowed( array|string $i_rAllowedSchemes = Url::DEFAULT_ALLOWED_SCHEMES ) : bool {
+        if ( is_string( $i_rAllowedSchemes ) ) {
+            $i_rAllowedSchemes = [ $i_rAllowedSchemes ];
+        }
+        return in_array( $this->nstScheme, $i_rAllowedSchemes, true );
+    }
+
+
     /** @param ?string $offset */
     public function offsetExists( mixed $offset ) : bool {
         return isset( $this->rQuery[ $offset ] );

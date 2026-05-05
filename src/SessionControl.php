@@ -27,7 +27,7 @@ class SessionControl extends SessionBase {
 
     private const int DEFAULT_LIFETIME_SECONDS = 14400;
 
-    private const int DEFAULT_SID_LENGTH       = 36;
+    private const int DEFAULT_SID_LENGTH       = 32;
 
     private static SessionControl $instance;
 

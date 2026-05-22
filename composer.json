@@ -27,6 +27,6 @@
   "scripts": {
     "phan": "PHAN_ALLOW_XDEBUG=1 php -d xdebug.mode=off vendor/bin/phan --no-progress-bar -S --analyze-twice",
     "phpstan": "php -d xdebug.so vendor/bin/phpstan --no-progress",
-    "test": "vendor/bin/phpunit tests"
+    "phpunit": "vendor/bin/phpunit tests"
   }
 }

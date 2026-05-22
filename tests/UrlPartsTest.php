@@ -86,10 +86,13 @@ final class UrlPartsTest extends TestCase {
     }
 
 
+    /** @suppress PhanTypeMismatchArgumentProbablyReal */
     public function testOffsetExists() : void {
         $url = Url::splitEx( 'https://example.com/path/to/resource?query=string#fragment' );
         self::assertTrue( $url->offsetExists( 'query' ) );
         self::assertFalse( $url->offsetExists( 'nonexistent' ) );
+
+        /** @phpstan-ignore argument.type */
         self::assertFalse( $url->offsetExists( 123 ) );
         self::assertFalse( $url->offsetExists( null ) );
 

@@ -96,7 +96,10 @@ class UrlParts implements \ArrayAccess, Stringable {
 
     /** @param ?string $offset */
     public function offsetExists( mixed $offset ) : bool {
-        return isset( $this->rQuery[ $offset ] );
+        if ( is_string( $offset ) ) {
+            return isset( $this->rQuery[ $offset ] );
+        }
+        return false;
     }
 
 

@@ -86,6 +86,18 @@ final class UrlPartsTest extends TestCase {
     }
 
 
+    public function testOffsetExists() : void {
+        $url = Url::splitEx( 'https://example.com/path/to/resource?query=string#fragment' );
+        self::assertTrue( $url->offsetExists( 'query' ) );
+        self::assertFalse( $url->offsetExists( 'nonexistent' ) );
+        self::assertFalse( $url->offsetExists( 123 ) );
+        self::assertFalse( $url->offsetExists( null ) );
+
+        $url = Url::splitEx( 'https://example.com/path/to/resource?query=string' );
+        self::assertFalse( $url->offsetExists( 'fragment' ) );
+    }
+
+
     public function testOffsetSet() : void {
         $url = Url::splitEx( 'https://example.com/path/to/resource?query=string#fragment' );
         $this->expectException( LogicException::class );
